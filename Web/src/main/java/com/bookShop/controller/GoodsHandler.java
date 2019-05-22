@@ -1,24 +1,17 @@
 package com.bookShop.controller;
 
-import com.bookShop.service.CommentService;
-import com.bookShop.service.GoodService;
-import com.bookShop.service.MerchantService;
-import com.bookShop.service.SaledGoodsService;
-import com.haizhang.entity.CommentItem;
-import com.haizhang.entity.GoodsInfo;
-import com.haizhang.entity.MerchantShop;
-import com.haizhang.entity.SaledInfo;
+import com.bookShop.service.*;
+import com.haizhang.entity.*;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +27,8 @@ public class GoodsHandler {
     MerchantService merchantServiceImpl;
     @Resource
     CommentService commentServiceImpl;
-
+    @Resource
+    EnshrineService enshrineServiceImpl;
 
 
     public GoodsHandler(){}
@@ -80,11 +74,67 @@ public class GoodsHandler {
     }
 
 
-    @RequestMapping("/enshrine/{goodsId}")
-    public String enshrine(@PathVariable int goodsId,Model model){
-        model.addAttribute("enshrine_state","收藏成功"+goodsId);
-        return "homePage";
+    @RequestMapping("/enshrine/{goodsId}&{id}")
+    public String enshrine(@PathVariable int goodsId, @PathVariable int id, Model model){
+        /*UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");*/
+
+        if(enshrineServiceImpl.queryIsHaveId(goodsId,id)==0) {
+            enshrineServiceImpl.addEnshrineGood(id, goodsId);
+            enshrineServiceImpl.addupdateNameAndPriceById(goodsId);
+            model.addAttribute("enshrine_state", "收藏成功");
+            //model.addAttribute("enshrine_state","收藏成功"+goodsId);
+            return "homePage";
+        }else {
+            model.addAttribute("enshrine_state", "已经收藏过了");
+            return "homePage";
+        }
+
     }
+
+
+    @RequestMapping("/deleteEnshrineGoods/{goodsId}")
+    public String deleteEnshrineGoods(HttpSession session,@PathVariable int goodsId ,Model model){
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        int userId=userInfo.getId();
+        enshrineServiceImpl.removeEnshrineGood(userId,goodsId);
+
+        List<EnshrineItem> enshrineItemList=enshrineServiceImpl.getAllEnshrineGood(userId);
+        model.addAttribute("enshrineItemList",enshrineItemList);
+        return "enshrineInterface";
+    }
+
+
+    /**
+     * （我的收藏夹点击事件）获取所有收藏货物
+     * @return
+     */
+    @RequestMapping("/queryAllEnshrineGoods")
+    public String queryAllEnshrineGoods(HttpSession session, Model model){
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        int userId=userInfo.getId();
+        List<EnshrineItem> enshrineItemList=enshrineServiceImpl.getAllEnshrineGood(userId);
+        model.addAttribute("enshrineItemList",enshrineItemList);
+        return "enshrineInterface";
+    }
+
+
+
+    /*@RequestMapping("/isEnshrine")
+    public boolean isEnshrine(@PathVariable int goodsId,HttpSession session, Model model){
+
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        int userId=userInfo.getId();
+
+        int num=enshrineServiceImpl.queryIsHaveId(goodsId,userId);
+        if(num==0){
+            return false;
+        }else{
+            return true;
+        }
+
+    }*/
+
+
 
     /**
      *购买书籍打开书本的详细界面

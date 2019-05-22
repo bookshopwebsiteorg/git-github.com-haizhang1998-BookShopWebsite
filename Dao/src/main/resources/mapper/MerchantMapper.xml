@@ -64,7 +64,7 @@
        select merchantshop.merchantId,addr,shopLogo,shopName
        from merchantshop INNER JOIN (select sum(saledNumber)as 'total'
        ,merchantId from goodsrecord GROUP BY merchantId
-       ORDER BY total desc limit #{number})as a on merchantshop.merchantId=a.merchantId ORDER BY total desc
+       ORDER BY total desc limit #{number})as a on merchantshop.merchantId>=a.merchantId ORDER BY total desc
     </select>
 
 <!--    //发货-->
