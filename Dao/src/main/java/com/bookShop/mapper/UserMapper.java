@@ -14,7 +14,7 @@ public interface UserMapper {
     //登录
     public UserInfo loginUser(@Param("username") String username, @Param("password") String password);
     //查询指定用户
-    public  UserInfo queryUserInfo(UserInfo userInfo);
+    public  List<UserInfo> queryUserInfo(UserInfo userInfo);
     //查询全部用户
     public  List<UserInfo> queryAllUserInfo();
     //冻结用户

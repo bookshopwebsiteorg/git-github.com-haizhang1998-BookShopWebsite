@@ -163,13 +163,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-<<<<<<< HEAD
                                 <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
-=======
-                                <li><a href="/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
-                                <li><a href="/order/getManagerOrder">货物管理</a></li>
->>>>>>> origin/master
                             </ul>
                         </li>
                     </c:if>

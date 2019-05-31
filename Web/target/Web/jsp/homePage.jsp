@@ -163,13 +163,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-<<<<<<< HEAD
                                 <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
-=======
-                                <li><a href="/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
-                                <li><a href="/order/getManagerOrder">货物管理</a></li>
->>>>>>> origin/master
                             </ul>
                         </li>
                     </c:if>
@@ -183,13 +178,8 @@
                         <ul class="dropdown-menu">
                             <li><a href="#">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-<<<<<<< HEAD
                             <li><a href="#">我的足迹</a></li>
                             <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
-=======
-                            <li><a href="/goods/myfootprint">我的足迹</a></li>
-                            <li><a href="/order/allOrder">我的订单</a></li>
->>>>>>> origin/master
                         </ul>
                     </li>
                 </ul>
@@ -207,17 +197,16 @@
     <div class="container" >
         <div class="row">
             <img src="/images/logo.jpg" class="pull-left"><span class="searchFont col-md-2" style="margin-top: 40px">海淘商城</span>
-            <div >
-                <form class="form-horizontal" action="/goods/searchGoods" method="post">
+
+                <form class="form-horizontal" action="/goods/searchGoods/2">
                     <div class="form-group" style="display: inline-block;margin-left: 150px;">
-                        <input type="text" class="form-control" style="width: 390px" placeholder="Search" name="searchgoods">
+                        <input type="text" id="searchGoodsText" class="form-control" style="width: 390px" placeholder="Search">
                     </div>
-                    <button type="submit"class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px">搜索</button>
+                    <input type="button" class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px" value="Submit">
                 </form>
             </div>
 
         </div>
-
     </div>
 </section>
 
