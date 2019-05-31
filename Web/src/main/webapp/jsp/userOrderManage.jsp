@@ -206,7 +206,7 @@
                                     ${Item.orderDetails.get(0).shopName}
                             </div>
                             <div class="col-md-2 text-center">
-                                <a href="" class="glyphicon glyphicon-user" style="padding:10px">联系卖家</a>
+                                <a href="/merchant/chat/${Item.orderDetails.get(0).merchantId}" class="glyphicon glyphicon-user" style="padding:10px">联系卖家</a>
                             </div>
                             <div class="col-md-2 text-center">
                                 <c:choose>
