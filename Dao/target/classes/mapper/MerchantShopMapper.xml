@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookShop.mapper.MerchantShopMapper">
+
+    <resultMap id="MerchantShopMap" type="MerchantShop">
+        <result property="merchantId" column="merchantId"></result>
+        <result property="addr" column="addr"></result>
+        <result property="shopLogo" column="shopLogo"></result>
+        <result property="shopName" column="shopName"></result>
+    </resultMap>
+    <!--    //模糊查询商家-->
+    <select id="getShopByName" resultMap="MerchantShopMap" resultType="java.lang.String">
+      select * from merchantshop where shopName LIKE "%${shopName}%";
+    </select>
+</mapper>

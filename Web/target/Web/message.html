@@ -11,68 +11,100 @@
 
 <script type="text/javascript">
 
-    //更新用户列表
-    //更新用户列表
-    function updateUser(){
-        var u = document.getElementById("userOnlinePage");
-        var str="                    <div class=\"media\" style=\"width: 95%;margin-top: 20px;margin-left: 20px;cursor: pointer;border: 1px solid #e7e7e7;padding: 10px\" v-on:click=\"showUserChat("+12+")\" >\n" +
-            "                        <div class=\"media-left\">\n" +
-            "                            <a href=\"#\">\n" +
-            "                                <img class=\"media-object\" style=\"width: 64px;height: 64px;\" src=\"images/userLogo/wink.png\">\n" +
-            "                            </a>\n" +
-            "                        </div>\n" +
-            "                        <div class=\"media-body\">\n" +
-            "                            <h5 class=\"media-heading text-muted\">Media heading</h4>\n" +
-            "                            <span style=\"font-size: 21px\">something</span>\n" +
-            "                        </div>\n" +
-            "                    </div>\n";
+    $(function(){
+        $("#clearBtn").click(function () {
+            $("#chatMsg").val("");
+        });
+        if('WebSocket' in window){
+            //连接服务器i
+            var path="ws://"+window.location.host+"/ws";
+            websocket = new WebSocket(path);
+        }
+        //下面有几个回调函数，自动调用
+        //打开socket
+        websocket.onopen = function (event) {
+            //握手成功，会自动调用该函数,同时更新上线和离线列表
+            console.log("hand suc:",event);
+        };
+        //监听消息;用来获取服务端传的消息
+        websocket.onmessage = function (event) {
 
-        $("#userOnlinePage").append(str);
+            var v=JSON.parse(event.data);
+            var nikeName = v.fromName;
+            var imageLogo = v.transportImageLogo;
+            var userId = v.from;
 
+            //判断消息如果是text带初始化列表的则是用户刚刚启动初始化列表的消息
+            if(v.msgType === 2)
+                updateUserList(v);
+            if(v.msgType === 0){
+                //普通的信息
+                receiveMsg(v);
+            }
+            //有人添加了你,要求更新用户列表
+            if(v.msgType===4){
+                //添加成功后发送信息给websocket更新用户列表
+                //检测是否已经连接到服务器
+                if(websocket == null) {
+                    alert("连接已被断开，请重新登入!");
+                    return;
+                }
+                alert("用户："+nikeName+"，刚刚加了你！");
+                updateFriendByType(6,userId,nikeName,imageLogo);
+            }
+
+        };
+        //监听Sokcet关闭(不管是客户端还是服务端关闭，都会触发此时间)
+        websocket.onclose = function (event) {
+            console.log("socketClose",event);
+        };
+        //监听异常
+        websocket.onerror = function (event) {
+            console.log("发生错误",event);
+        };
+
+        //关闭sokcet(客户端主动关闭socket)
+        function closeWebsocket() {
+            if(websocket != null){
+                websocket.close();
+                websocket=null;
+            }
+        }
+    });
+    
+    function appendMsgFromFriend() {
+        var str="<div class=\"media\" style=\"margin-top: 10px;margin-left: 10px\">\n" +
+            "                <div class=\"media-left\">\n" +
+            "                <a href=\"#\">\n" +
+            "                   <img class=\"media-object\" style=\"width: 30px;height: 30px;\" src=\"images/image1.jpg\">\n" +
+            "                </a>\n" +
+            "                </div>\n" +
+            "                <div class=\"media-body\">\n" +
+            "                <h6 class=\"media-heading text-muted\">haizhang</h6>\n" +
+            "                <p style=\"font-size: 20px\">aasd</p>\n" +
+            "                </div>\n" +
+            "                </div>";
+        $("#msgBox").append(str);
     }
-
 
     //发送消息
     function  sendMsg() {
-        var m = document.getElementById("chatMsg").value;
-        if (m === "") {
-            alert("请输入信息！")
-        } else {
 
-            var str="    <div class=\"media\" style=\"margin-top: 10px\">\n" +
-                "                    <div class=\"media-body\">\n" +
-                "                        <h6 style=\"float: right\" class=\"media-heading text-muted\">haizhang</h6>\n" +
-                "                        <p  style=\"float:right;font-size: 20px;margin-top: 5px\" >"+m+"</p>\n" +
-                "                    </div>\n" +
-                "                    <div class=\"media-right\">\n" +
-                "                        <a href=\"#\">\n" +
-                "                            <img class=\"media-object\" style=\"width: 30px;height: 30px;\" src=\"images/userLogo/wink.png\">\n" +
-                "                        </a>\n" +
-                "                    </div>\n" +
-                "                </div>";
+        var str="    <div class=\"media\" style=\"margin-top: 10px;margin-right: 10px\">\n" +
+            "                    <div class=\"media-body\">\n" +
+            "                        <h6 style=\"float: right\" class=\"media-heading text-muted\">123</h6>\n"+
+            "                        <p  style=\"float:right;font-size: 20px;margin-top: 5px\" >"+$("#chatMsg").val()+"</p>\n" +
+            "                    </div>\n" +
+            "                    <div class=\"media-right\">\n" +
+            "                        <a href=\"#\">\n" +
+            "                            <img class=\"media-object\" style=\"width: 50px;height: 50px;\" src=\"images/logo.jpg\">\n" +
+            "                        </a>\n" +
+            "                    </div>\n" +
+            "                </div>";
         $("#msgBox").append(str);
-
-        $("#chatMsg").val("");
-        }
-
-    }
-
-    function showUserChat(param) {
-        alert(1);
-    }
-    function clear(){
+        //清空输入区域
         $("#chatMsg").val("");
     }
-
-    function queryFriend() {
-        $("#addFriendModal").modal();
-    }
-
-    function addFriend() {
-
-    }
-
-
 
 </script>
 <style>
@@ -141,97 +173,41 @@
         <!--</div>-->
     <!--</div>-->
 <!--</section>-->
-<div id="chatSection" style="margin-top: 52px">
+    <div id="chatSection" style="margin-top: 70px;margin-bottom: 50px">
+         <div class="container">
+             <div class="row"  style="padding: 10px ;padding-left: 80px;border: 1px solid #e7e7e7" >
+                 <div class="media" style="margin-top: 10px">
+                     <div class="media-left">
+                         <a href="#">
+                             <img class="media-object" style="width: 50px;height: 50px;" src="images/userLogo/wink.png">
+                         </a>
+                     </div>
+                     <div class="media-body">
+                          <h4 class="media-heading text-muted">talkingNikename</h4>
+                          <p style="font-size: 18px">123</p>
+                     </div>
+                 </div>
+             </div>
 
-    <div class="row">
-    <div  style="border:1px solid #e7e7e7;font-weight: bold" class="col-md-3 text-center text-muted">
-        <h3>用户列表</h3>
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#userOnlinePage" aria-controls="home" role="tab" data-toggle="tab">在线用户<span class="badge">0</span></a></li>
-            <li role="presentation"><a href="#userDisOnlinePage" aria-controls="profile" role="tab" data-toggle="tab">不在线用户<span class="badge">0</span></a></li>
-        </ul>
+             <div class="row">
+                 <div id="msgBox" style="height: 600px;margin-top: 10px;border: 1px solid #e7e7e7;overflow-y: auto" >
+                 </div>
+             </div>
+
+             <div class="row">
+                 <div id="editBox">
+                     <textarea id="chatMsg" style="margin-top: 10px;color:black;font-size: 17px;border: 1px solid #e7e7e7;padding: 10px" autofocus="autofocus" cols="147" rows="6" placeholder="在此处输入消息"></textarea>
+                     <div>
+                         <button type="button" class= "btn btn-success btn-md text-center col-md-offset-9"  id="clearBtn" style="width: 100px">清空消息</button>
+                         <button type="button" class="btn btn-primary btn-md text-center" onclick="sendMsg()" style="width: 100px">发送消息</button>
+                     </div>
+                 </div>
+             </div>
+         </div>
     </div>
-        <div  style="margin-top:50px;font-weight: bold ;font-size: 21px" class="col-md-9 text-muted">
-            <div class="row">
-                <div class="col-md-3">聊天窗口</div>
-                <div class="col-md-6 col-md-offset-2">
-                    <div class="input-group">
-                        <input type="text" id="searchFriendInput" class="form-control" placeholder="请输入好友的昵称或账号id">
-                        <span class="input-group-btn">
-                            <button id="searchBtn" onclick="queryFriend()" class="btn btn-success" type="button">查询好友</button>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3" style="overflow: scroll;height: 650px">
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane  fade in active" id="userOnlinePage">
-                    <div class="media" style="width: 95%;margin-top: 20px;margin-left: 20px;cursor: pointer;border: 1px solid #e7e7e7;padding: 10px" >
-                        <div class="media-left">
-                            <a href="#">
-                                <img class="media-object" style="width: 64px;height: 64px;" src="images/userLogo/wink.png">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading text-muted">Media heading</h4>
-                            <span style="font-size: 21px">something</span>
-                        </div>
-                    </div>
-
-                </div>
-                <div role="tabpanel" class="tab-pane fade" id="userDisOnlinePage">
-
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-9"  style="border-top: 1px solid #e3d2d2;overflow-y:auto;height: 700px;"  >
-            <div style="height: 450px;overflow-y: auto" id="msgBox" class="col-md-11" >
-            </div>
-            <div id="editBox" style="height:199px;border-top: 1px solid #ededed;padding: 5px">
-                <textarea id="chatMsg" style="color:black;background: #e7e7e7;font-size: 17px;border: none;padding: 10px" autofocus="autofocus" cols="95" rows="6" placeholder="在此处输入消息"></textarea>
-                <div>
-                    <button type="button" class= "btn btn-success btn-md text-center" onclick=" clear()" style="margin-left: 650px;width: 100px">清空消息</button>
-                    <button type="button" class="btn btn-primary btn-md text-center" onclick="sendMsg()" style="width: 100px">发送消息</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
 
 
-<div class="modal fade" id="addFriendModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="addFriendModalLabel">选择好友界面</h4>
-            </div>
-            <div class="modal-body" id="searchModal">
-                <div class="row" style="margin-left: 10px;margin-right:10px;margin-bottom: 10px;padding:20px;border: 1px solid #e7e7e7">
-                    <div  class="media col-md-offset-1 col-md-6">
-                        <div class="media-left">
-                            <a href="#">
-                                <img class="media-object" src="images/userLogo/wink.png" alt="用户头像">
-                            </a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading">昵称</h4>
-                            <h6>用户账号</h6>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="button" class="btn btn-md btn-success" onclick="addFriend()">添加好友</button>
-                    </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
-</div>
+
 </body>
 </html>

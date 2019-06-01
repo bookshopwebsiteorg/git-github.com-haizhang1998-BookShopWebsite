@@ -30,7 +30,6 @@ public class ChatHandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         if(request instanceof ServletServerHttpRequest){
             HttpServletRequest servletServerHttpRequest = ((ServletServerHttpRequest) request).getServletRequest();
             HttpSession session = servletServerHttpRequest.getSession(false);
-            System.err.println(session.getId()+";ssid");
             //若用户已登录 ，允许聊天
             if(session.getAttribute("userInfo")!=null){
                 //获取登录的用户

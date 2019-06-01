@@ -48,4 +48,5 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
     public ChatWebSocketHandler chatWebSocketHandler(){
         return new ChatWebSocketHandler();
     }
+
 }

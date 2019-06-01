@@ -21,8 +21,12 @@ public interface ChatService {
     public String deleteFriend( int userId,int friendId);
 
     //获取所有的好友
-    public List<Friend> queryAllFriends(@Param("userId")int userId);
+    public List<Friend> queryAllFriends(int userId);
 
+    public Integer queryMsgNumber(int userId);
+    //查询是否添加过好友
+    public int queryExistFriend(int userId,int friendId);
 
+    public Friend queryFriendById(int userId,int friendId);
 
 }

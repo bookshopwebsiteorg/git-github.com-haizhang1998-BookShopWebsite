@@ -4,11 +4,12 @@ import com.haizhang.entity.FootPrintItem;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface FootPrintService {
 
     //得到所有足迹
-    public List<FootPrintItem> getAllFootPrint(int userId);
+    public Map<String,List<FootPrintItem>> getAllFootPrint(int userId);
 
     /**
      *

@@ -1,5 +1,6 @@
 package com.bookShop.controller;
 
+import com.bookShop.service.ChatService;
 import com.bookShop.service.RequestShopRecordService;
 import com.bookShop.service.UserService;
 
@@ -36,7 +37,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/user")
 public class UserHandler {
-
+    @Resource
+    ChatService chatServiceImpl;
     @Resource
     UserService userServiceImpl;
     @Resource
@@ -60,10 +62,10 @@ public class UserHandler {
     public String loginUser(HttpServletRequest request,UserInfo userInfo)throws Exception{
         UserInfo user=userServiceImpl.loginUser(userInfo.getUsername(),userInfo.getPassword());
         HttpSession session=request.getSession();
-        if(session.getAttribute("userInfo")!=null){
+        /*if(session.getAttribute("userInfo")!=null){
             request.setAttribute("state","禁止在同一个浏览器登录多个账号!");
             return "login";
-        }
+        }*/
         //检查用户状态,0表示没冻结，1表示冻结
         if(user.getFreezeFlag()==1){
             request.setAttribute("freeze_state","账户已冻结，若需解冻请与管理员联系！");
@@ -80,9 +82,11 @@ public class UserHandler {
         //验证用户先前是否申请过店铺
         RequestRecordShop requestRecordShop=requestShopRecordServiceImpl.queryUserRecord(user.getId());
         session.setAttribute("requestRecordShop",requestRecordShop);
+        //获取消息的数量
+        Integer tmpmsgNumber=chatServiceImpl.queryMsgNumber(user.getId());
+        session.setAttribute("tmpmsgNumber",tmpmsgNumber);
         return "forward:/goods/homepage";
     }
-
     /**
      *  返回用户请求窗体
      */

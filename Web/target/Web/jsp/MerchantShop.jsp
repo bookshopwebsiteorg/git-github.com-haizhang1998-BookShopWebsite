@@ -18,7 +18,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>卖家管理界面</title>
 </head>
 <style type="text/css">
     .tabpan-ul{
@@ -198,21 +198,13 @@
     }
 
     function checkUpGoods() {
-        var up_img=document.getElementById("up_img");
-        alert(up_img.value);
+        var up_img=document.getElementById("up_img")
         var up_goodsName=document.getElementById("up_goodsName");
-        alert(up_goodsName.value);
         var up_price=document.getElementById("up_price");
-        alert(up_price.value);
         var up_addr=document.getElementById("up_addr");
-        alert(up_addr.value);
         var up_detail=document.getElementById("up_detail");
-        alert(up_detail.value);
         var up_remainNumber=document.getElementById("up_remainNumber");
-        alert(up_remainNumber.value);
         var up_type=document.getElementById("up_type");
-        alert(up_type.value);
-
         if(up_detail.value=="" || up_detail.value.trim()==null || up_detail.value.length<10){
             alert("商品描述信息不得为空,且至少10个字！");
             return false;
@@ -348,6 +340,7 @@
                 <ul class="nav navbar-nav" style="margin-left: 500px">
                     <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
+                    <li><a href="/goods/homepage">返回首界面</a> </li>
                     <li><a href="/user/logout">注销</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -356,7 +349,7 @@
 </section>
 
 <section  style="margin-top: 30px;background: #e7e7e7; height: 100px">
-    <h1 style="color: black;font-weight: bold;padding:20px;line-height: 20px;display: inline-block;float: left" >卖家管理界面</h1>
+    <h1 style="color: black;font-weight: bold;padding:20px;line-height: 20px;display: inline-block;float: left;margin-top: 20px" >卖家管理界面</h1>
     <ul class="tabpan-ul" role="tablist" >
         <li  role="presentation" class="active tabpan-li"><a href="#shopInfo" id="a1" class="activeA" aria-controls="home" role="tab" data-toggle="tab">店铺信息</a></li>
         <li role="presentation" onclick="qeuryGoods()" class="tabpan-li"><a href="#goodsInfo"   id="a2"  class="disActiveA" aria-controls="profile" role="tab" data-toggle="tab">货物信息</a></li>
@@ -402,11 +395,11 @@
            <form id="upGoodsForm">
                 <div class="row" style="margin-top:15px">
                    <span style="color:#3B3B3B;font-size: 22px; font-weight: bold;margin-right: 20px">货物名称:</span>
-                   <input type="text" maxlength="120" size="50" id="up_goodsName" name="goodsName" style="height: 40px;padding:20px;font-size: 21px" value="asdasdas" >
+                   <input type="text" maxlength="120" size="50" id="up_goodsName" name="goodsName" style="height: 40px;padding:20px;font-size: 21px" >
                 </div>
                 <div class="row" style="margin-top:15px">
                    <span style="color:#3B3B3B;font-size: 22px; font-weight: bold;margin-right: 20px">发货地址:</span>
-                   <input type="text" maxlength="120" size="50" id="up_addr" name="addr" style="height: 40px;padding:20px;font-size: 21px" value="asdasdas" >
+                   <input type="text" maxlength="120" size="50" id="up_addr" name="addr" style="height: 40px;padding:20px;font-size: 21px" >
                 </div>
                 <div class="row" style="margin-top:15px">
                    <span style="color:#3B3B3B;font-size: 22px; font-weight: bold;margin-right: 20px">货物库存:</span>
@@ -414,11 +407,11 @@
                 </div>
                 <div class="row" style="margin-top:15px">
                    <span style="color:#3B3B3B;font-size: 22px; font-weight: bold;margin-right: 20px">货物价格:</span>
-                   <input type="text" maxlength="120" size="50" id="up_price" name="price" style="height: 40px;padding:20px;font-size: 21px" value="asdasdas" >
+                   <input type="text" maxlength="120" size="50" id="up_price" name="price" style="height: 40px;padding:20px;font-size: 21px" >
                 </div>
                 <div class="row" style="margin-top:15px">
                    <span style="color:#3B3B3B;font-size: 22px; font-weight: bold;margin-right: 20px">货物详细描述:</span>
-                   <input type="text" maxlength="120" size="50" id="up_detail" name="detail" style="height: 40px;padding:20px;font-size: 21px" value="asdasdas" placeholder="请输入至少10个字的商品描述信息" >
+                   <input type="text" maxlength="120" size="50" id="up_detail" name="detail" style="height: 40px;padding:20px;font-size: 21px"  placeholder="请输入至少10个字的商品描述信息" >
                 </div>
 
                 <div class="row" style="margin-top:15px">

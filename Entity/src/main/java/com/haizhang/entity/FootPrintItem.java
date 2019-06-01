@@ -9,7 +9,7 @@ import java.util.Date;
  * @author 海章
  * @create 2018-12-16 10:18
  */
-public class FootPrintItem implements Serializable {
+public class FootPrintItem implements Serializable ,Comparable<FootPrintItem>{
     private int goodsId;
     private int id;
     private Date time;
@@ -66,5 +66,25 @@ public class FootPrintItem implements Serializable {
                 ", imgDir='" + imgDir + '\'' +
                 ", goodsName='" + goodsName + '\'' +
                 '}';
+    }
+
+    //重写equals()方法
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj==this)//自己和自己比较
+            return true;//那就是同一个相等了
+        //传入的引用不为空，而且两个的类型一样
+        if(obj!=null&&obj.getClass()==this.getClass())
+        {
+            FootPrintItem footPrintItem=(FootPrintItem) obj;//类型转换
+            return this.time==footPrintItem.time&&this.goodsId==footPrintItem.goodsId;
+            //如果两个的编号一样，那就认为相等
+        }
+        return false;
+    }
+    @Override
+    public int compareTo(FootPrintItem o) {
+        return (this.getTime().after(o.getTime()))?1:(this.getTime().before(o.getTime()))?-1:0;
     }
 }

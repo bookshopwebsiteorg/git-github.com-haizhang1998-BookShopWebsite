@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookShop.mapper.OrderMapper">
+    <resultMap id="OrderMap" type="com.haizhang.entity.Order">
+        <id property="orderId" column="order_id"></id>
+        <result property="actualPay" column="actual_pay"></result>
+        <result property="paymentType" column="payment_type"></result>
+        <result property="postFee" column="post_fee"></result>
+        <result property="userId" column="user_id"></result>
+        <result property="buyerMessage" column="buyer_message"></result>
+        <result property="buyerRate" column="buyer_rate"></result>
+        <result property="receiver" column="receiver"></result>
+        <result property="receiverMobile" column="receiver_mobile"></result>
+        <result property="receiverAddress" column="receiver_address"></result>
+        <result property="receiverZip" column="receiver_zip"></result>
+
+        <association property="orderStatus" javaType="com.haizhang.entity.OrderStatus">
+            <id property="orderId" column="order_id"></id>
+            <result property="status" column="status"></result>
+            <result property="createTime" column="create_time"></result>
+            <result property="paymentTime" column="payment_time"></result>
+            <result property="consignTime" column="consign_time"></result>
+            <result property="endTime" column="end_time"></result>
+            <result property="closeTime" column="close_time"></result>
+            <result property="commentTime" column="comment_time"></result>
+            <result property="backpay" column="backpay"></result>
+        </association>
+
+        <collection property="orderDetails" ofType="com.haizhang.entity.OrderDetail">
+            <id property="id" column="id"></id>
+            <result property="orderId" column="order_id"></result>
+            <result property="goodsId" column="goodsId"></result>
+            <result property="num" column="num"></result>
+            <result property="detail" column="title"></result>
+            <result property="price" column="price"></result>
+            <result property="image" column="image"></result>
+            <result property="shopName" column="shopName"></result>
+            <result property="goodsName" column="goodsName"></result>
+            <result property="merchantId" column="merchantId"></result>
+        </collection>
+    </resultMap>
+
+
+    <select id="test" resultMap="OrderMap">
+        select * from tb_order t1,tb_order_status t2,tb_order_detail t3 where t1.order_id = t2.order_id and t1.order_id = t3.order_id and t1.order_id =#{orderId};
+    </select>
+
+    <select id="queryAllUserOrderByUserId" resultMap="OrderMap">
+         select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+            inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+            inner join merchantshop m on m.merchantId=goods.possesserId
+              where t1.user_id = #{userId};
+    </select>
+
+    <select id="queryUserOrderByStatus" resultMap="OrderMap">
+         select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+            inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+            inner join merchantshop m on m.merchantId=goods.possesserId
+              where  t1.user_id = #{userId} and status=#{status};
+    </select>
+
+    <select id="queryAllUserOrderDetail" resultMap="OrderMap">
+         select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+            inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+            inner join merchantshop m on m.merchantId=goods.possesserId
+              where t1.order_id = #{orderId};
+    </select>
+
+    <delete id="deleteUserOrder">
+        DELETE t1,t2,t3
+            from tb_order as t1 inner JOIN tb_order_detail as t2 ON t1.order_id = t2.order_id
+	            inner join tb_order_status as t3 on t1.order_id = t3.order_id
+		      WHERE t1.order_id = #{orderId};
+    </delete>
+
+    <update id="modifyUserOrderStatus">
+          update tb_order_status set status=#{status} where order_Id=#{orderId};
+    </update>
+
+    <update id="modifyUserOrderBybackpay">
+          update tb_order_status set backpay=#{backpay} where order_Id=#{orderId};
+    </update>
+
+    <insert id="insertOrder">
+            insert into tb_order(order_id,actual_pay,payment_type,post_fee,user_id,buyer_message,receiver_address,receiver_mobile,receiver_zip,receiver)
+            values(#{orderId},#{actualPay},#{paymentType},#{postFee},#{userId},#{buyerMessage},#{receiverAddress},#{receiverMobile},#{receiverZip},#{receiver});
+    </insert>
+
+    <insert id="insertOrderDetail">
+          insert into tb_order_detail(order_id,goodsId,num,title,price,image,merchantId)
+              values(#{orderId},#{goodsId},#{num},
+                    (select detail from goods where goodsId=#{goodsId}),
+					(select price from goods where goodsId=#{goodsId}),
+					(select imgDir from goods where goodsId=#{goodsId}),
+					(select possesserId from goods where goodsId=#{goodsId}))
+    </insert>
+
+
+<!-- insert into tb_order_detail(order_id,goodsId,num)
+            values(#{orderId},#{goodsId},#{num}); -->
+    <insert id="insertOrderStatus">
+            insert into tb_order_status(order_id,status,create_time)
+            values(#{orderId},#{status},#{createTime});
+    </insert>
+
+
+
+   <!-- 商家 -->
+    <select id="queryAllManagerOrderByUserId" resultMap="OrderMap">
+        select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+            inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+            inner join merchantshop m on m.merchantId=goods.possesserId
+              where  t2.merchantId=#{merchantId}
+    </select>
+
+    <select id="queryManagerOrderByStatus" resultMap="OrderMap">
+         select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+            inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+            inner join merchantshop m on m.merchantId=goods.possesserId
+              where  t2.merchantId = #{merchantId} and status=#{status};
+    </select>
+
+    <update id="updatePaymentTime">
+        update tb_order_status set payment_time=#{paymentTime} where order_id = #{orderId};
+    </update>
+
+    <update id="updateConsignTime">
+        update tb_order_status set consign_time=#{consignTime} where order_id = #{orderId};
+    </update>
+
+    <update id="updateEndTime">
+        update tb_order_status set end_time=#{endTime} where order_id = #{orderId};
+    </update>
+
+    <update id="updateCloseTime">
+        update tb_order_status set close_time=#{closeTime} where order_id = #{orderId};
+    </update>
+
+    <update id="updateCommentTime">
+        update tb_order_status set comment_time=#{commentTime} where order_id = #{orderId};
+    </update>
+
+</mapper>

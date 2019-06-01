@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 测试足迹
@@ -25,9 +26,12 @@ public class TestFootPrintService {
 
     @Test
     public void getAllFootPrint(){
-        List<FootPrintItem> footPrintItem=footPrintService.getAllFootPrint(21);
-        for(FootPrintItem f:footPrintItem)
-            System.out.println(f);
+        Map<String,List<FootPrintItem>> footPrintItem=footPrintService.getAllFootPrint(21);
+        for(Map.Entry<String, List<FootPrintItem>> footPrintItemEntry:footPrintItem.entrySet()){
+            System.out.println(footPrintItemEntry.getKey()+":");
+            System.out.println(footPrintItemEntry.getValue());
+        }
+
     }
 
     @Test
