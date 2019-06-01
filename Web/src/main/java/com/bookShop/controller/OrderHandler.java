@@ -29,8 +29,6 @@ import java.util.List;
 @RequestMapping("/order")
 public class OrderHandler {
     @Resource
-    GoodService goodServiceImpl;
-    @Resource
     OrderService orderServiceImpl;
 
 
@@ -39,6 +37,14 @@ public class OrderHandler {
      * @param
      * @return
      */
+
+    public OrderHandler(){}
+
+    public OrderHandler(OrderService orderService){
+    }
+
+
+
     @RequestMapping(value = "/test",method = RequestMethod.GET)
     public String test(HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -80,9 +86,7 @@ public class OrderHandler {
     @RequestMapping("/queryAllUserOrderByUserId")
     public String queryAllUserOrderByUserId(Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        //PageHelper.startPage(1,2);
         List<Order> list = orderServiceImpl.queryAllUserOrderByUserId(userInfo.getId());
-        //PageInfo<Order> page = new PageInfo<>(list);
         model.addAttribute("list",list);
         return "userOrderManage";
     }
@@ -90,14 +94,7 @@ public class OrderHandler {
     @RequestMapping("/queryAllUserOrderDetail/{orderId}")
     public String queryAllUserOrderDetail(@PathVariable long orderId,Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        //PageHelper.startPage(1,2);
         Order order = orderServiceImpl.queryAllUserOrderDetail(orderId);
-        //PageInfo<Order> page = new PageInfo<>(list);
-        System.out.println(order.toString());
-        System.out.println(order.getOrderStatus().toString());
-        for(OrderDetail o:order.getOrderDetails()){
-            System.out.println(o.toString());
-        }
         model.addAttribute("order",order);
         return "orderDetail";
     }
@@ -106,8 +103,6 @@ public class OrderHandler {
     public String queryUserOrderByStatus(@PathVariable int status,@PathVariable String url,Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
         List<Order> list = orderServiceImpl.queryUserOrderByStatus(userInfo.getId(),status);
-        //PageHelper.startPage(1,2);
-        //PageInfo<Order> page = new PageInfo<>(list);
         if(status == 2){
             List<Order> list2 = orderServiceImpl.queryUserOrderByStatus(userInfo.getId(),7);
             for(Order order:list2){
@@ -158,9 +153,7 @@ public class OrderHandler {
     @RequestMapping("/queryAllUserOrderDetail")
     public String queryAllUserOrderDetail(Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        //PageHelper.startPage(1,2);
         List<Order> list = orderServiceImpl.queryAllUserOrderByUserId(userInfo.getId());
-        //PageInfo<Order> page = new PageInfo<>(list);
         model.addAttribute("list",list);
         return "userOrderManage";
     }
@@ -171,9 +164,7 @@ public class OrderHandler {
     @RequestMapping("/queryAllManagerOrderByUserId")
     public String queryAllManagerOrderByUserId(Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        //PageHelper.startPage(1,2);
         List<Order> list = orderServiceImpl.queryAllManagerOrderByUserId(userInfo.getId());
-        //PageInfo<Order> page = new PageInfo<>(list);
         model.addAttribute("list",list);
         return "ManagerOrderManage";
     }
@@ -182,8 +173,6 @@ public class OrderHandler {
     public String queryManagerOrderByStatus(@PathVariable int status,@PathVariable String url,Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
         List<Order> list = orderServiceImpl.queryManagerOrderByStatus(userInfo.getId(),status);
-        //PageHelper.startPage(1,2);
-        //PageInfo<Order> page = new PageInfo<>(list);
         if(status == 2){
             List<Order> list2 = orderServiceImpl.queryManagerOrderByStatus(userInfo.getId(),7);
             for(Order order:list2){

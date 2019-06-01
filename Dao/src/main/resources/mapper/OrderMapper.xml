@@ -48,10 +48,10 @@
     </select>
 
     <select id="queryAllUserOrderByUserId" resultMap="OrderMap">
-         select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
-            inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
-            inner join merchantshop m on m.merchantId=goods.possesserId
-              where t1.user_id = #{userId};
+          select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+    inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+    inner join merchantshop m on m.merchantId=goods.possesserId
+    where t1.user_id = #{userId};
     </select>
 
     <select id="queryUserOrderByStatus" resultMap="OrderMap">
@@ -141,11 +141,6 @@
     <update id="updateCommentTime">
         update tb_order_status set comment_time=#{commentTime} where order_id = #{orderId};
     </update>
-
-    <select id="countOrderDetail" resultType="int">
-        select count(order_id) from tb_order_detail
-	        where order_id = #{orderId};
-    </select>
 
 
 </mapper>

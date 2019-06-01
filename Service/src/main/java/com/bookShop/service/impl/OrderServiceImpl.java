@@ -120,11 +120,6 @@ public class OrderServiceImpl implements OrderService {
         return flag;
     }
 
-    //查询订单商品种数
-    public int countOrderDetail(long orderId){
-        return OrderMapper.countOrderDetail(orderId);
-    }
-
     /*******************************商家***************************************/
 
     //查询商家订单
@@ -161,4 +156,6 @@ public class OrderServiceImpl implements OrderService {
     public boolean updateCommentTime(long orderId){
         return OrderMapper.updateCommentTime(new Date(),orderId);
     }
+
+
 }

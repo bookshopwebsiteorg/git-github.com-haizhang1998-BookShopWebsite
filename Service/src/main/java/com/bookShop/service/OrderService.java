@@ -34,9 +34,6 @@ public interface OrderService {
     //创建订单
     public boolean createOrder(OrderDTO orderDTO, List<OrderDetailDTO> orderDetailDTOList);
 
-    //查询订单商品种数
-    public int countOrderDetail(long orderId);
-
 
     /********************************商家********************************************/
 
@@ -60,5 +57,7 @@ public interface OrderService {
 
     //更新评价时间
     public boolean updateCommentTime(long orderId);
+
+
 
 }

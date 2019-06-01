@@ -43,9 +43,6 @@ public interface OrderMapper {
     //插入订单状态
     public boolean insertOrderStatus(OrderStatus orderStatus);
 
-    //查询订单商品种数
-    public int countOrderDetail(long orderId);
-
 
 
     /************************************商家********************************************/
