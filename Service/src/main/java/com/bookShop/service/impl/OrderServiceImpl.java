@@ -100,7 +100,7 @@ public class OrderServiceImpl implements OrderService {
         for(OrderDetailDTO orderDetailDTO:orderDetailDTOList){
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderId(orderId);
-            orderDetail.setPrice(orderDetailDTO.getGoodsId());
+            orderDetail.setGoodsId(orderDetailDTO.getGoodsId());
             orderDetail.setNum(orderDetailDTO.getNum());
             flag2 = OrderMapper.insertOrderDetail(orderDetail);
         }
@@ -111,6 +111,8 @@ public class OrderServiceImpl implements OrderService {
         orderStatus.setCreateTime(new Date());
         orderStatus.setStatus(1);
         boolean flag3 = OrderMapper.insertOrderStatus(orderStatus);
+        System.out.println(flag3);
+
 
         if(flag1&&flag2&&flag3){
             flag=true;
@@ -118,6 +120,10 @@ public class OrderServiceImpl implements OrderService {
         return flag;
     }
 
+    //查询订单商品种数
+    public int countOrderDetail(long orderId){
+        return OrderMapper.countOrderDetail(orderId);
+    }
 
     /*******************************商家***************************************/
 

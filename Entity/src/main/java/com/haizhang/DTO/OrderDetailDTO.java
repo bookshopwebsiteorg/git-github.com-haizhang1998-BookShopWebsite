@@ -8,7 +8,6 @@ package com.haizhang.DTO;
 public class OrderDetailDTO {
     private int goodsId;  //商品编号
     private int num;  //购买数量
-    private double price;   //商品单价
 
     public int getGoodsId() {
         return goodsId;
@@ -26,11 +25,12 @@ public class OrderDetailDTO {
         this.num = num;
     }
 
-    public double getPrice() {
-        return price;
-    }
 
-    public void setPrice(double price) {
-        this.price = price;
+    @Override
+    public String toString() {
+        return "OrderDetailDTO{" +
+                "goodsId=" + goodsId +
+                ", num=" + num +
+                '}';
     }
 }

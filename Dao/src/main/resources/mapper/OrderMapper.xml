@@ -142,4 +142,10 @@
         update tb_order_status set comment_time=#{commentTime} where order_id = #{orderId};
     </update>
 
+    <select id="countOrderDetail" resultType="int">
+        select count(order_id) from tb_order_detail
+	        where order_id = #{orderId};
+    </select>
+
+
 </mapper>
