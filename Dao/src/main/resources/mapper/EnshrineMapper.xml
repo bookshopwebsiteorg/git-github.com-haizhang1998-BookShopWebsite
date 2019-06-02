@@ -8,15 +8,53 @@
     private int updatePriceFlag=0; //降价标志   -1为降价0为正常1为升价
     private int validFlag=0;  //无效标志   0为有效1为无校
     private double changePrice=0; //价格较上次降低或升高多少
-    private String goodsName; //货物名称-->
+    private String goodsName; //货物名称
+    private double price; //goodsPrice    -->
+
+
     <resultMap id="enshrineItemMap" type="EnshrineItem">
+    <id column="id" property="id"></id>
+    <result column="goodsId" property="goodsId"></result>
+    <result column="updatePriceFlag" property="updatePriceFlag"></result>
+    <result column="validFlag" property="validFlag"></result>
+    <result column="changePrice" property="changePrice"></result>
+    <!--<result column="goodsName" property="goodsName"></result>
+    <result column="price" property="price"></result>-->
+    </resultMap>
+
+    <resultMap id="enshrineItemPackingMap" type="EnshrineItemPacking">
         <id column="id" property="id"></id>
         <result column="goodsId" property="goodsId"></result>
         <result column="updatePriceFlag" property="updatePriceFlag"></result>
         <result column="validFlag" property="validFlag"></result>
         <result column="changePrice" property="changePrice"></result>
         <result column="goodsName" property="goodsName"></result>
+        <result column="price" property="price"></result>
+        <result column="imgDir" property="imgDir"></result>
     </resultMap>
+
+    <!--//获取收藏夹所有货物-->
+    <!--resultType="com.haizhang.entity.EnshrineItem"-->
+    <!--public List<EnshrineItem> getAllEnshrineGood(int userId);-->
+    <select id="getAllEnshrineGood"  resultMap="enshrineItemPackingMap">
+           select enshrine.*,goods.imgDir from enshrine,goods where enshrine.goodsId=goods.goodsId and id=#{userId} order by validFlag ASC;
+    </select>
+    <!--//删除收藏夹的指定商品-->
+    <!--public boolean removeEnshrineGood(int userId, int goodsId);-->
+    <delete id="removeEnshrineGood" >
+            delete from enshrine where id=#{userId} and goodsId=#{goodsId};
+    </delete>
+    <!--//添加收藏夹的商品-->
+    <!--public boolean addEnshrineGood(int userId, int goodsId);-->
+    <insert id="addEnshrineGood">
+           insert into enshrine(goodsId,id) values(#{goodsId},#{userId});
+    </insert>
+
+    <!--<insert id="addEnshrineGood1">
+           insert into enshrine(goodsId,id) values(#{goodsId},#{userId});
+    </insert>-->
+
+    <!--修改商品的降价状态-->
 <!--    public boolean updatePriceFlagStatus(int updatePriceFlag,double changePrice);-->
     <update id="updatePriceFlagStatus">
         update enshrine set updatePriceFlag=#{updatePriceFlag} , changePrice=#{changePrice} where goodsId=#{goodsId}
@@ -27,4 +65,17 @@
     <update id="updateValidStatus">
         update enshrine set validFlag=1 where goodsId=#{goodsId}
     </update>
+
+
+    <!--根据goodsId更新商品名称和单价-->
+    <update id="addupdateNameAndPriceById">
+        update enshrine set price=#{price},goodsName=#{goodsName} where goodsId=#{goodsId};
+    </update>
+
+    <!--检查重复-->
+    <select id="queryIsHaveId" resultType="int" >
+        select count(goodsId) from enshrine where goodsId=#{goodsId} and id = #{userId}
+    </select>
+
+
 </mapper>

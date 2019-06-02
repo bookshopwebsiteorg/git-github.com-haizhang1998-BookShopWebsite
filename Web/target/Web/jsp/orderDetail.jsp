@@ -178,7 +178,6 @@ $(function(){
                                         </c:choose>
                                     </span>
                                 </p>
-                                <p>还剩06天00小时 自动确认收货</p>
                             </div>
                         </div>
                         <div class="order-info">
@@ -187,9 +186,19 @@ $(function(){
                             <p>创建时间：${order.orderStatus.createTime}</p>
                             <p>付款时间：${order.orderStatus.paymentTime}</p>
                             <p>发货时间：${order.orderStatus.consignTime}</p>
-                            <p>交易完成时间：${order.orderStatus.endTime}</p>
-                            <p>交易关闭时间：${order.orderStatus.closeTime}</p>
-                            <p>评论时间：${order.orderStatus.commentTime}</p>
+                            <c:choose>
+                                <c:when test="${order.orderStatus.status==4}">
+                                    <p>交易完成时间：${order.orderStatus.endTime}</p>
+                                </c:when>
+                                <c:when test="${order.orderStatus.status==5}">
+                                    <p>交易关闭时间：${order.orderStatus.closeTime}</p>
+                                </c:when>
+                            </c:choose>
+                            <c:choose>
+                                <c:when test="${order.orderStatus.status!=5}">
+                                    <p>评论时间：${order.orderStatus.commentTime}</p>
+                                </c:when>
+                            </c:choose>
                             <p>收货地址：${order.receiverAddress}</p>
                             <p>收货人姓名：${order.receiver}</p>
                             <p>收货人电话：${order.receiverMobile}</p>

@@ -42,16 +42,29 @@
         </collection>
     </resultMap>
 
+    <resultMap id="orderDetails" type="OrderDetail">
+        <id property="id" column="id"></id>
+        <result property="orderId" column="order_id"></result>
+        <result property="goodsId" column="goodsId"></result>
+        <result property="num" column="num"></result>
+        <result property="detail" column="title"></result>
+        <result property="price" column="price"></result>
+        <result property="image" column="image"></result>
+        <result property="shopName" column="shopName"></result>
+        <result property="goodsName" column="goodsName"></result>
+        <result property="merchantId" column="merchantId"></result>
+    </resultMap>
+
 
     <select id="test" resultMap="OrderMap">
         select * from tb_order t1,tb_order_status t2,tb_order_detail t3 where t1.order_id = t2.order_id and t1.order_id = t3.order_id and t1.order_id =#{orderId};
     </select>
 
     <select id="queryAllUserOrderByUserId" resultMap="OrderMap">
-         select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
-            inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
-            inner join merchantshop m on m.merchantId=goods.possesserId
-              where t1.user_id = #{userId};
+          select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+    inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+    inner join merchantshop m on m.merchantId=goods.possesserId
+    where t1.user_id = #{userId};
     </select>
 
     <select id="queryUserOrderByStatus" resultMap="OrderMap">
@@ -142,4 +155,24 @@
         update tb_order_status set comment_time=#{commentTime} where order_id = #{orderId};
     </update>
 
+
+    <!--JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ-->
+    <!--根据orderId查询取到没有被评论的商品goodsId
+    public String queryGoodIdHaveNotRateByOrderId(@Param("orderId")long orderId);-->
+    <select id="queryGoodIdHaveNotRateByOrderId" resultType="String">
+        select  distinct t1.goodsId from tb_order_detail t1 inner join comment t2
+on t1.order_id = t2.order_id and t1.goodsId not in(select goodsId from comment where order_id = #{orderId})
+    </select>
+
+    <!--//根据goodsId查询取到该orderId
+    public long queryOrderIdByGoodsId(@Param("id") long id);-->
+    <select id="queryOrderIdByGoodsId" resultType="long">
+        select order_id from tb_order_detail where goodsId=#{goodsId};
+    </select>
+
+    <!--//通过goodsId查询货物，返回orderDetail
+    public OrderDetail queryOrderDetailByGoodsId(@Param("goodsId") int goodsId);-->
+    <select id="queryOrderDetailByGoodsId" resultMap="orderDetails">
+        select * from tb_order_detail where goodsId=#{goodsId};
+    </select>
 </mapper>

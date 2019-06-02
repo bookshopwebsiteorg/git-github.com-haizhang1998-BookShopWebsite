@@ -44,6 +44,17 @@ public interface OrderMapper {
     public boolean insertOrderStatus(OrderStatus orderStatus);
 
 
+    /*JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ*/
+    //根据orderId查询取到没有被评论的商品goodsId
+    public List<String> queryGoodIdHaveNotRateByOrderId(@Param("orderId")long orderId);
+
+    //根据goodsId查询取到该所属的orderId
+    public long queryOrderIdByGoodsId(@Param("goodsId") int goodsId);
+
+    //通过goodsId查询货物，返回orderDetail
+    public OrderDetail queryOrderDetailByGoodsId(@Param("goodsId") int goodsId);
+
+
 
     /************************************商家********************************************/
 

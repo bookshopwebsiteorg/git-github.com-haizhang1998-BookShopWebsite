@@ -120,6 +120,24 @@ public class OrderServiceImpl implements OrderService {
         return flag;
     }
 
+    /*JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ*/
+
+    @Override
+    public List<String> queryGoodIdHaveNotRateByOrderId(long orderId) {
+        return OrderMapper.queryGoodIdHaveNotRateByOrderId(orderId);
+    }
+
+    @Override
+    public long queryOrderIdByGoodsId(int goodsId) {
+        return OrderMapper.queryOrderIdByGoodsId(goodsId);
+    }
+
+    @Override
+    public OrderDetail queryOrderDetailByGoodsId(int goodsId) {
+        return OrderMapper.queryOrderDetailByGoodsId(goodsId);
+    }
+
+
     /*******************************商家***************************************/
 
     //查询商家订单

@@ -206,7 +206,7 @@
                             ${Item.orderDetails.get(0).shopName}
                     </div>
                     <div class="col-md-2 text-center">
-                        <a href="" class="glyphicon glyphicon-user" style="padding:10px">联系买家</a>
+                        <a href="/merchant/chat/${Item.userId}" class="glyphicon glyphicon-user" style="padding:10px">联系买家</a>
                     </div>
                     <div class="col-md-2 text-center">
                         <c:choose>
@@ -246,9 +246,21 @@
                                     <c:when test="${Item.orderStatus.backpay==1}">退款申请中</c:when>
                                     <c:when test="${Item.orderStatus.backpay==2}">退货申请中</c:when>
                                     <c:when test="${Item.orderStatus.backpay==3}">退款成功</c:when>
-                                    <c:when test="${Item.orderStatus.backpay==4}">不同意退款申请</c:when>
+                                    <c:when test="${Item.orderStatus.backpay==4}">
+                                        <c:choose>
+                                            <c:when test="${Item.orderStatus.status!=4}">
+                                                不同意退款申请
+                                            </c:when>
+                                        </c:choose>
+                                    </c:when>
                                     <c:when test="${Item.orderStatus.backpay==5}">同意退货申请</c:when>
-                                    <c:when test="${Item.orderStatus.backpay==6}">不同意退货申请</c:when>
+                                    <c:when test="${Item.orderStatus.backpay==6}">
+                                        <c:choose>
+                                            <c:when test="${Item.orderStatus.status!=4}">
+                                                不同意退货申请
+                                            </c:when>
+                                        </c:choose>
+                                    </c:when>
                                     <c:when test="${Item.orderStatus.backpay==7}">退货审核中</c:when>
                                     <c:when test="${Item.orderStatus.backpay==8}">退货成功</c:when>
                                     <c:when test="${Item.orderStatus.backpay==9}">退货失败</c:when>
@@ -307,8 +319,8 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManageruserOrderManagePay/0/3/${detail.orderId}">同意退款</a></li>
-                                                <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManageruserOrderManagePay/0/4/${detail.orderId}">拒绝退款</a></li>
+                                                <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManageruserOrderManagePay/1/3/${detail.orderId}">同意退款</a></li>
+                                                <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManageruserOrderManagePay/1/4/${detail.orderId}">拒绝退款</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -321,8 +333,8 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManageruserOrderManagePay/0/5/${detail.orderId}">同意退货</a></li>
-                                                <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManageruserOrderManagePay/0/6/${detail.orderId}">拒绝退货</a></li>
+                                                <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManageruserOrderManagePay/1/5/${detail.orderId}">同意退货</a></li>
+                                                <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManageruserOrderManagePay/1/6/${detail.orderId}">拒绝退货</a></li>
                                             </ul>
                                         </div>
                                     </div>

@@ -118,7 +118,7 @@
 <body>
 <%--收藏成功--%>
 <c:if test="${enshrine_state!=null}">
-    <script>alert("收藏成功")</script>
+    <script>alert("${enshrine_state}")</script>
 </c:if>
 <%--申请店铺成功--%>
 <c:if test="${requestScope.msg!=null}">
@@ -164,6 +164,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
+                                <li><a href="/order/test">订单</a></li>
                             </ul>
                         </li>
                     </c:if>
@@ -175,13 +176,9 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">收藏夹</a></li>
+                            <li><a href="/goods/queryAllEnshrineGoods" target="_blank">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-<<<<<<< HEAD
-                            <li><a href="#">我的足迹</a></li>
-=======
                             <li><a href="/goods/myfootprint">我的足迹</a></li>
->>>>>>> b51484125b013ff8cd6de45fe490d35445ec59bf
                             <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
@@ -202,11 +199,7 @@
         <div class="row">
             <img src="/images/logo.jpg" class="pull-left"><span class="searchFont col-md-2" style="margin-top: 40px">海淘商城</span>
 
-<<<<<<< HEAD
-                <form class="form-horizontal" action="/goods/searchGoods/2">
-=======
                 <form class="form-horizontal" style="margin-top: 30px" action="/goods/searchGoods/2">
->>>>>>> b51484125b013ff8cd6de45fe490d35445ec59bf
                     <div class="form-group" style="display: inline-block;margin-left: 150px;">
                         <input type="text" id="searchGoodsText" class="form-control" style="width: 390px" placeholder="Search">
                     </div>
@@ -286,7 +279,7 @@
                                     <div class="caption">
                                         <h4 class="tab_content">${book.detail}</h4>
                                         <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                        <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                        <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                            <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                         </p>
                                     </div>
@@ -308,7 +301,7 @@
                                     <div class="caption">
                                         <h4 class="tab_content">${book.detail}</h4>
                                         <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                        <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                        <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                             <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                         </p>
                                     </div>
@@ -328,7 +321,7 @@
                                     <div class="caption">
                                         <h4 class="tab_content">${book.detail}</h4>
                                         <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                        <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                        <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                             <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                         </p>
                                     </div>
@@ -348,7 +341,7 @@
                                     <div class="caption">
                                         <h4 class="tab_content">${book.detail}</h4>
                                         <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                        <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                        <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                             <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                         </p>
                                     </div>
@@ -368,7 +361,7 @@
                                     <div class="caption">
                                         <h4 class="tab_content">${book.detail}</h4>
                                         <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                        <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                        <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                             <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                         </p>
                                     </div>
@@ -388,7 +381,7 @@
                                     <div class="caption">
                                         <h4 class="tab_content">${book.detail}</h4>
                                         <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                        <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                        <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                             <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                         </p>
                                     </div>
@@ -408,7 +401,7 @@
                                     <div class="caption">
                                         <h4 class="tab_content">${book.detail}</h4>
                                         <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                        <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                        <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                             <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                         </p>
                                     </div>
@@ -438,7 +431,7 @@
                                         <div class="caption">
                                             <h4 class="tab_content">${book.detail}</h4>
                                             <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                            <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                            <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                                 <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                             </p>
                                         </div>
@@ -488,7 +481,7 @@
                                     <div class="caption">
                                         <h4 class="tab_content">${book.detail}</h4>
                                         <p><span style="color: #f40;" class="text-center">价格${book.price}</span></p>
-                                        <p><a href="/goods/enshrine/${book.goodsId}" class="btn btn-primary" role="button">收藏</a>
+                                        <p><a href="/goods/enshrine/${book.goodsId}&${sessionScope.userInfo.id}" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-heart-empty"></i>收藏</a>
                                             <a href="/goods/buy/${book.goodsId}" class="btn btn-default" role="button">购买</a>
                                         </p>
                                     </div>

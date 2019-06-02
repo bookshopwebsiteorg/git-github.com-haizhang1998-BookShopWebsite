@@ -34,6 +34,16 @@ public interface OrderService {
     //创建订单
     public boolean createOrder(OrderDTO orderDTO, List<OrderDetailDTO> orderDetailDTOList);
 
+    /*JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ*/
+
+    //根据orderId查询取到没有被评论的商品goodsId
+    public List<String> queryGoodIdHaveNotRateByOrderId(long orderId);
+
+    //根据goodsId查询取到该orderId
+    public long queryOrderIdByGoodsId(int goodsId);
+
+    //通过goodsId查询货物，返回orderDetail
+    public OrderDetail queryOrderDetailByGoodsId(int goodsId);
 
     /********************************商家********************************************/
 
