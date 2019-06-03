@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookShop.mapper.OrderMapper">
+   <!-- <resultMap id="OrderItemMap" type="OrderItem">
+        <id property="id" column="id"></id>
+        <result property="goodsId" column="goodsId"></result>
+        <result property="merchantId" column="merchantId"></result>
+        <result property="sumOfGoods" column="sumOfGoods"></result>
+        <result property="name" column="name"></result>
+        <result property="addr" column="addr"></result>
+        <result property="phone" column="phone"></result>
+        <result property="totalMoney" column="totalMoney"></result>
+        <result property="payFlag" column="payFlag"></result>
+        <result property="backFlag" column="backFlag"></result>
+        <result property="sendFlag" column="sendFlag"></result>
+    </resultMap>-->
+
+   <!-- <resultMap id="OrderItemCustomMap" type="OrderItemCustom">
+        <id property="orderId" column="orderId"></id>
+        <result property="id" column="id"></result>
+        <result property="goodsId" column="goodsId"></result>
+        <result property="merchantId" column="merchantId"></result>
+        <result property="sumOfGoods" column="sumOfGoods"></result>
+        <result property="name" column="name"></result>
+        <result property="addr" column="addr"></result>
+        <result property="createTime" column="createTime"></result>
+        <result property="phone" column="phone"></result>
+        <result property="payFlag" column="payFlag"></result>
+        <result property="backFlag" column="backFlag"></result>
+        <result property="sendFlag" column="sendFlag"></result>
+        <result property="goodsName" column="goodsName"></result>
+        <result property="price" column="price"></result>
+        <result property="imgDir" column="imgDir"></result>
+        <result property="shopName" column="shopName"></result>
+        <result property="orderFlag" column="orderFlag"></result>
+    </resultMap>-->
+
+    <resultMap id="OrderMap" type="com.haizhang.entity.Order">
+        <id property="orderId" column="order_id"></id>
+        <result property="actualPay" column="actual_pay"></result>
+        <result property="paymentType" column="payment_type"></result>
+        <result property="postFee" column="post_fee"></result>
+        <result property="userId" column="user_id"></result>
+        <result property="buyerMessage" column="buyer_message"></result>
+        <result property="buyerRate" column="buyer_rate"></result>
+        <result property="receiver" column="receiver"></result>
+        <result property="receiverMobile" column="receiver_mobile"></result>
+        <result property="receiverAddress" column="receiver_address"></result>
+        <result property="receiverZip" column="receiver_zip"></result>
+
+        <association property="orderStatus" javaType="com.haizhang.entity.OrderStatus">
+            <id property="orderId" column="order_id"></id>
+            <result property="status" column="status"></result>
+            <result property="createTime" column="create_time"></result>
+            <result property="paymentTime" column="payment_time"></result>
+            <result property="consignTime" column="consign_time"></result>
+            <result property="endTime" column="end_time"></result>
+            <result property="closeTime" column="close_time"></result>
+            <result property="commentTime" column="comment_time"></result>
+            <result property="backpay" column="backpay"></result>
+        </association>
+
+        <collection property="orderDetails" ofType="com.haizhang.entity.OrderDetail">
+            <id property="id" column="id"></id>
+            <result property="orderId" column="order_id"></result>
+            <result property="goodsId" column="goodsId"></result>
+            <result property="num" column="num"></result>
+            <result property="detail" column="title"></result>
+            <result property="price" column="price"></result>
+            <result property="image" column="image"></result>
+            <result property="shopName" column="shopName"></result>
+            <result property="goodsName" column="goodsName"></result>
+            <result property="merchantId" column="merchantId"></result>
+        </collection>
+    </resultMap>
+
+    <resultMap id="orderDetails" type="OrderDetail">
+            <id property="id" column="id"></id>
+            <result property="orderId" column="order_id"></result>
+            <result property="goodsId" column="goodsId"></result>
+            <result property="num" column="num"></result>
+            <result property="detail" column="title"></result>
+            <result property="price" column="price"></result>
+            <result property="image" column="image"></result>
+            <result property="shopName" column="shopName"></result>
+            <result property="goodsName" column="goodsName"></result>
+            <result property="merchantId" column="merchantId"></result>
+    </resultMap>
+
+
+    <!--madeByJJ
+            通过查询order_id查询有多少个goods(goodsId)，查询表为tb_order_detail
+            public List<OrderDetail> queryOrerDetailByOrderId(@Param("order_id") int order_id);-->
+    <select id="queryOrerDetailByOrderId" resultMap="orderDetails">
+        select * from tb_order_detail where order_id=#{order_id};
+    </select>
+
+    <select id="queryAllUserOrderDetail" resultMap="OrderMap">
+     select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+        inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+        inner join merchantshop m on m.merchantId=goods.possesserId
+          where t1.order_id = #{orderId};
+    </select>
+
+    <!--修改是否评价状态
+    public boolean changeBuyerRate(@Param("orderId")long orderId);-->
+    <update id="changeBuyerRate">
+        update tb_order SET buyer_rate=1 where order_id=#{orderId};
+    </update>
+
+    <!--根据orderId查询取到没有被评论的商品goodsId
+    public String queryGoodIdHaveNotRateByOrderId(@Param("orderId")long orderId);-->
+    <select id="queryGoodIdHaveNotRateByOrderId" resultType="String">
+        select  distinct t1.goodsId from tb_order_detail t1 inner join comment t2
+on t1.order_id = t2.order_id and t1.goodsId not in(select goodsId from comment where order_id = #{orderId})
+    </select>
+
+    <!--//根据goodsId查询取到该orderId
+    public long queryOrderIdByGoodsId(@Param("id") long id);-->
+    <select id="queryOrderIdByGoodsId" resultType="long">
+        select order_id from tb_order_detail where goodsId=#{goodsId};
+    </select>
+
+    <!--//通过goodsId查询货物，返回orderDetail
+    public OrderDetail queryOrderDetailByGoodsId(@Param("goodsId") int goodsId);-->
+    <select id="queryOrderDetailByGoodsId" resultMap="orderDetails">
+        select * from tb_order_detail where goodsId=#{goodsId};
+    </select>
+
+
+    <update id="modifyUserOrderStatus">
+          update tb_order_status set status=#{status} where order_Id=#{orderId};
+    </update>
+</mapper>
