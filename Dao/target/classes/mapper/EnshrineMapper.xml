@@ -20,7 +20,7 @@
     <result column="changePrice" property="changePrice"></result>
     <!--<result column="goodsName" property="goodsName"></result>
     <result column="price" property="price"></result>-->
-</resultMap>
+    </resultMap>
 
     <resultMap id="enshrineItemPackingMap" type="EnshrineItemPacking">
         <id column="id" property="id"></id>

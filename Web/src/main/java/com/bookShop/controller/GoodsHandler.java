@@ -2,19 +2,16 @@ package com.bookShop.controller;
 
 import com.bookShop.service.*;
 import com.haizhang.entity.*;
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/goods")
@@ -29,7 +26,10 @@ public class GoodsHandler {
     CommentService commentServiceImpl;
     @Resource
     EnshrineService enshrineServiceImpl;
-
+    @Resource
+    OrderService orderServiceImpl;
+    @Resource
+    UserService userServiceImpl;
 
     public GoodsHandler(){}
     public GoodsHandler(GoodService goodService){
@@ -74,68 +74,6 @@ public class GoodsHandler {
     }
 
 
-    @RequestMapping("/enshrine/{goodsId}&{id}")
-    public String enshrine(@PathVariable int goodsId, @PathVariable int id, Model model){
-        /*UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");*/
-
-        if(enshrineServiceImpl.queryIsHaveId(goodsId,id)==0) {
-            enshrineServiceImpl.addEnshrineGood(id, goodsId);
-            enshrineServiceImpl.addupdateNameAndPriceById(goodsId);
-            model.addAttribute("enshrine_state", "收藏成功");
-            //model.addAttribute("enshrine_state","收藏成功"+goodsId);
-            return "homePage";
-        }else {
-            model.addAttribute("enshrine_state", "已经收藏过了");
-            return "homePage";
-        }
-
-    }
-
-
-    @RequestMapping("/deleteEnshrineGoods/{goodsId}")
-    public String deleteEnshrineGoods(HttpSession session,@PathVariable int goodsId ,Model model){
-        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
-        int userId=userInfo.getId();
-        enshrineServiceImpl.removeEnshrineGood(userId,goodsId);
-
-        List<EnshrineItem> enshrineItemList=enshrineServiceImpl.getAllEnshrineGood(userId);
-        model.addAttribute("enshrineItemList",enshrineItemList);
-        return "enshrineInterface";
-    }
-
-
-    /**
-     * （我的收藏夹点击事件）获取所有收藏货物
-     * @return
-     */
-    @RequestMapping("/queryAllEnshrineGoods")
-    public String queryAllEnshrineGoods(HttpSession session, Model model){
-        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
-        int userId=userInfo.getId();
-        List<EnshrineItem> enshrineItemList=enshrineServiceImpl.getAllEnshrineGood(userId);
-        model.addAttribute("enshrineItemList",enshrineItemList);
-        return "enshrineInterface";
-    }
-
-
-
-    /*@RequestMapping("/isEnshrine")
-    public boolean isEnshrine(@PathVariable int goodsId,HttpSession session, Model model){
-
-        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
-        int userId=userInfo.getId();
-
-        int num=enshrineServiceImpl.queryIsHaveId(goodsId,userId);
-        if(num==0){
-            return false;
-        }else{
-            return true;
-        }
-
-    }*/
-
-
-
     /**
      *购买书籍打开书本的详细界面
      * @param goodsId
@@ -170,4 +108,141 @@ public class GoodsHandler {
         return "homePage";
     }
 
+
+    /**
+     * 添加收藏
+     * @param goodsId
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping("/enshrine/{goodsId}&{id}")
+    public String enshrine(@PathVariable int goodsId, @PathVariable int id, Model model){
+        /*UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");*/
+
+        if(enshrineServiceImpl.queryIsHaveId(goodsId,id)==0) {
+            enshrineServiceImpl.addEnshrineGood(id, goodsId);
+            enshrineServiceImpl.addupdateNameAndPriceById(goodsId);
+            model.addAttribute("enshrine_state", "收藏成功");
+            //model.addAttribute("enshrine_state","收藏成功"+goodsId);
+            return "homePage";
+        }else {
+            model.addAttribute("enshrine_state", "已经收藏过了");
+            return "homePage";
+        }
+
+    }
+
+    /**
+     * 删除收藏
+     * @param session
+     * @param goodsId
+     * @param model
+     * @return
+     */
+    @RequestMapping("/deleteEnshrineGoods/{goodsId}")
+    public String deleteEnshrineGoods(HttpSession session,@PathVariable int goodsId ,Model model){
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        int userId=userInfo.getId();
+        enshrineServiceImpl.removeEnshrineGood(userId,goodsId);
+
+        List<EnshrineItem> enshrineItemList=enshrineServiceImpl.getAllEnshrineGood(userId);
+        model.addAttribute("enshrineItemList",enshrineItemList);
+        model.addAttribute("enshrine_state", "删除收藏成功");
+        return "enshrineInterface";
+    }
+
+
+    /**
+     * （我的收藏夹点击事件）查询收藏，获取所有收藏货物
+     * @return
+     */
+    @RequestMapping("/queryAllEnshrineGoods")
+    public String queryAllEnshrineGoods(HttpSession session, Model model){
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        int userId=userInfo.getId();
+        List<EnshrineItem> enshrineItemList=enshrineServiceImpl.getAllEnshrineGood(userId);
+        model.addAttribute("enshrineItemList",enshrineItemList);
+        return "enshrineInterface";
+    }
+
+
+    /**
+     * 点击评价订单
+     * @param session
+     * @param order_id
+     * @param model
+     * @return
+     */
+    @RequestMapping("/makeComment/{order_id}")
+    public String makeComment(HttpSession session,@PathVariable String order_id,Model model){
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        int userId=userInfo.getId();
+
+
+        long orderIdLong=new Long(order_id);
+        Order order=orderServiceImpl.queryAllUserOrderDetail(orderIdLong);
+
+        //orderServiceImpl.queryGoodIdHaveNotRateByOrderId(orderIdLong);
+
+        /*List<Integer> goodsIdList=new ArrayList<>();
+        for (int i=0;i<order.getOrderDetails().size();i++){
+            int goodsId = order.getOrderDetails().get(i).getGoodsId();
+            goodsIdList.add(goodsId);
+            //System.out.println(goodsId);
+        }
+        //System.out.println(goodsIdList.get(0));
+        //System.out.println(goodsIdList.get(1));
+        model.addAttribute("goodsIdList",goodsIdList);*/
+
+        model.addAttribute("order",order);
+        return "comment";
+    }
+
+
+    /**
+     * 提交评论
+     * @param session
+     * @param remark
+     * @param grade
+     * @param goodsId
+     * @param model
+     * @return
+     */
+    @RequestMapping(value="/addComment/{remark}&{grade}&{goodsId}")
+    public String addComment(HttpSession session,@PathVariable String remark, @PathVariable String grade,@PathVariable String goodsId,Model model){
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        int userId=userInfo.getId();
+        long orderId=orderServiceImpl.queryOrderIdByGoodsId(Integer.parseInt(goodsId));
+        GoodsInfo goodsInfo=new GoodsInfo();
+        goodsInfo.setGoodsId(Integer.parseInt(goodsId));
+        CommentItem item=new CommentItem();
+        item.setImageLogo(goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo).getImgDir());
+        item.setNikeName(userServiceImpl.queryUserInfoById(userId).getNikeName());
+        item.setTime(new Date());
+        item.setId(userId);
+        item.setGoodsId(Integer.parseInt(goodsId));
+        item.setCommentDetail(remark);
+        item.setScore(Integer.parseInt(grade));
+        item.setOrderId(orderId);
+        commentServiceImpl.sendCommentItem(item);
+        model.addAttribute("state","提交成功");
+
+        //一个订单中没有评价的goodsId
+        List<String> goodsIdNoRateList=orderServiceImpl.queryGoodIdHaveNotRateByOrderId(orderServiceImpl.queryOrderIdByGoodsId(Integer.parseInt(goodsId)));
+
+        if(goodsIdNoRateList.size()==0){
+            orderServiceImpl.modifyUserOrderStatus(orderId,6);
+            return "finishCommentPage";    //订单全部商品评论完跳转的页面
+        }else{
+            List<OrderDetail> orderDetails=new ArrayList<>();
+            for(int i=0;i<goodsIdNoRateList.size();i++)
+            {
+                orderDetails.add(orderServiceImpl.queryOrderDetailByGoodsId(Integer.parseInt(goodsIdNoRateList.get(i))));
+            }
+            model.addAttribute("orderDetails",orderDetails);
+            return "commentContinue";
+        }
+        //System.out.println(remark+"+"+grade+"+"+goodsId);
+    }
 }

@@ -129,6 +129,10 @@
             background-color: #000000;
         }
     </style>
+    <%--收藏提示--%>
+    <c:if test="${enshrine_state!=null}">
+        <script>alert("${enshrine_state}")</script>
+    </c:if>
     <%--导航栏--%>
     <section id="navbarSection">
         <nav id="nav-head" class="navbar navbar-inverse navbar-fixed-top">
@@ -202,10 +206,11 @@
     </section>
 
     <div class="content">
-        <div class="container">
+            <div class="container">
             <div class="content-header">
-                <a href="#">图书收藏</a><span >|</span>
-                <a href="#">店铺收藏</a><span >|</span>
+                <span >|</span>
+                <a href="/goods/queryAllEnshrineGoods">图书收藏</a><span >|</span>
+                <a href="/goods/makeComment/992320901993336213">test，定值跳向评论表</a><span >|</span>
             </div>
             <hr>
                 <br>
@@ -248,8 +253,8 @@
 
 
 
-
-    <nav aria-label="Page navigation" class="text-center">
+    <%-- 分页功能--%>
+    <<%--nav aria-label="Page navigation" class="text-center">
         <ul class="pagination">
             <li>
                 <a href="#" aria-label="Previous">
@@ -267,7 +272,7 @@
                 </a>
             </li>
         </ul>
-    </nav>
+    </nav>--%>
 
     <section id="FooterSection">
         <div class="page-header" style="background: black;color:white;padding-top: 1px">

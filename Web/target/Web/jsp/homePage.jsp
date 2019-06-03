@@ -117,7 +117,7 @@
 
 </style>
 <body>
-<%--收藏成功--%>
+<%--收藏成功/收藏过了--%>
 <c:if test="${enshrine_state!=null}">
     <script>alert("${enshrine_state}")</script>
 </c:if>
