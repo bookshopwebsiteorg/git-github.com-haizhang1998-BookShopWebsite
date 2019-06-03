@@ -44,7 +44,7 @@ public class OrderHandler {
     }
 
 
-
+    //创建订单测试
     @RequestMapping(value = "/test",method = RequestMethod.GET)
     public String test(HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -82,7 +82,7 @@ public class OrderHandler {
     }
 
 
-
+    //根据用户id查询用户订单
     @RequestMapping("/queryAllUserOrderByUserId")
     public String queryAllUserOrderByUserId(Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -91,6 +91,7 @@ public class OrderHandler {
         return "userOrderManage";
     }
 
+    //根据订单id查询用户订单详情
     @RequestMapping("/queryAllUserOrderDetail/{orderId}")
     public String queryAllUserOrderDetail(@PathVariable long orderId,Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -99,6 +100,8 @@ public class OrderHandler {
         return "orderDetail";
     }
 
+
+    //根据订单状态查询用户订单信息
     @RequestMapping(value = "/queryUserOrderByStatus/{url}/{status}",method = RequestMethod.GET)
     public String queryUserOrderByStatus(@PathVariable int status,@PathVariable String url,Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -113,6 +116,7 @@ public class OrderHandler {
         return url;
     }
 
+    //根据订单id删除用户订单
     @RequestMapping(value = "/deleteUserOrder/{orderId}",method = RequestMethod.GET)
     public String deleteUserOrder(@PathVariable long orderId,Model model,HttpSession session){
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -121,10 +125,15 @@ public class OrderHandler {
         return url;
     }
 
+    //根据订单id更改用户订单状态
     @RequestMapping(value = "/modifyUserOrderStatus/{url}/{status}/{orderId}",method = RequestMethod.GET)
     public String modifyUserOrderStatus(@PathVariable long orderId,@PathVariable int status,@PathVariable String url,Model model, HttpSession session){
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
         boolean flag = orderServiceImpl.modifyUserOrderStatus(orderId,status);
+        if(flag == false){
+            model.addAttribute("state",status);
+            System.out.println(flag);
+        }
         if(url.equals("userOrderManage")){
             queryAllUserOrderByUserId(model,session);
         }else{
@@ -133,7 +142,7 @@ public class OrderHandler {
         return url;
     }
 
-
+   //用户退款/退货申请
     @RequestMapping(value = "/modifyUserOrderBybackpay/{url}/{status}/{backpay}/{orderId}",method = RequestMethod.GET)
     public String modifyUserOrderBybackpay(@PathVariable int status,@PathVariable long orderId,@PathVariable int backpay,@PathVariable String url,Model model, HttpSession session){
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -150,17 +159,12 @@ public class OrderHandler {
         return url;
     }
 
-    @RequestMapping("/queryAllUserOrderDetail")
-    public String queryAllUserOrderDetail(Model model, HttpSession session) {
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        List<Order> list = orderServiceImpl.queryAllUserOrderByUserId(userInfo.getId());
-        model.addAttribute("list",list);
-        return "userOrderManage";
-    }
+
 
 
 
     /*************************************商家****************************************************/
+    //查询商家订单信息
     @RequestMapping("/queryAllManagerOrderByUserId")
     public String queryAllManagerOrderByUserId(Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -169,6 +173,7 @@ public class OrderHandler {
         return "ManagerOrderManage";
     }
 
+    //根据货物状态查询订单信息
     @RequestMapping(value = "/queryManagerOrderByStatus/{url}/{status}",method = RequestMethod.GET)
     public String queryManagerOrderByStatus(@PathVariable int status,@PathVariable String url,Model model, HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -183,6 +188,7 @@ public class OrderHandler {
         return url;
     }
 
+    //商家货物管理
     @RequestMapping(value = "/modifyManagerOrderStatus/{url}/{status}/{orderId}",method = RequestMethod.GET)
     public String modifyManagerOrderStatus(@PathVariable long orderId,@PathVariable int status,@PathVariable String url,Model model, HttpSession session){
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -195,7 +201,7 @@ public class OrderHandler {
         return url;
     }
 
-
+    //商家退款/退货审批
     @RequestMapping(value = "/modifyManagerOrderBybackpay/{url}/{status}/{backpay}/{orderId}",method = RequestMethod.GET)
     public String modifyManagerOrderBybackpay(@PathVariable int status,@PathVariable long orderId,@PathVariable int backpay,@PathVariable String url,Model model, HttpSession session){
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
@@ -212,6 +218,7 @@ public class OrderHandler {
     }
 
 
+    //删除商家订单
     @RequestMapping(value = "/deleteManagerOrder/{orderId}",method = RequestMethod.GET)
     public String deleteManagerOrder(@PathVariable long orderId,Model model,HttpSession session){
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");

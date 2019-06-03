@@ -3,6 +3,7 @@ package com.bookShop.service;
 import com.haizhang.DTO.OrderDTO;
 import com.haizhang.DTO.OrderDetailDTO;
 import com.haizhang.entity.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -59,5 +60,18 @@ public interface OrderService {
     public boolean updateCommentTime(long orderId);
 
 
+
+
+
+    /********************************************************************************/
+
+    //根据orderId查询取到没有被评论的商品goodsId
+    public List<String> queryGoodIdHaveNotRateByOrderId(long orderId);
+
+    //根据goodsId查询取到该orderId
+    public long queryOrderIdByGoodsId(int goodsId);
+
+    //通过goodsId查询货物，返回orderDetail
+    public OrderDetail queryOrderDetailByGoodsId(int goodsId);
 
 }

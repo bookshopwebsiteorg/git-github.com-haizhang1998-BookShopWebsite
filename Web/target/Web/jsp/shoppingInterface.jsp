@@ -143,7 +143,7 @@
     <li class="li2"><a id="myFootPrint">我的足迹</a></li>
     <li class="li2"> <a href="openShop.jsp">我要开店</a></li>
     <li class="li2"><a href="affair.do?action=updateHotAndNew">返回首页</a></li>
-    <li class="li2"><a href="affair.do?action=getUserOrders"> 我的订单</a>
+    <li class="li2"><a href="/order/queryAllUserOrderByUserId"> 我的订单</a>
     <li class="li2"><a href="merchantManage.jsp">卖家管理</a>
 
 </ul>

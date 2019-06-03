@@ -1,11 +1,5 @@
 Manifest-Version: 1.0
-<<<<<<< HEAD
 Built-By: MrAustin
 Created-By: IntelliJ IDEA
 Build-Jdk: 1.8.0_77
-=======
-Built-By: 86137
-Created-By: IntelliJ IDEA
-Build-Jdk: 1.8.0_181
->>>>>>> b51484125b013ff8cd6de45fe490d35445ec59bf
 

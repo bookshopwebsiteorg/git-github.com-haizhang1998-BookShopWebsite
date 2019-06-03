@@ -6,6 +6,7 @@ import com.bookShop.utils.IdWorker;
 import com.haizhang.DTO.OrderDTO;
 import com.haizhang.DTO.OrderDetailDTO;
 import com.haizhang.entity.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -120,6 +121,9 @@ public class OrderServiceImpl implements OrderService {
         return flag;
     }
 
+
+
+
     /*******************************商家***************************************/
 
     //查询商家订单
@@ -158,4 +162,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+
+
+
+    /************************************************************************/
+    @Override
+    public List<String> queryGoodIdHaveNotRateByOrderId(long orderId) {
+        return OrderMapper.queryGoodIdHaveNotRateByOrderId(orderId);
+    }
+
+    @Override
+    public long queryOrderIdByGoodsId(int goodsId) {
+        return OrderMapper.queryOrderIdByGoodsId(goodsId);
+    }
+
+    @Override
+    public OrderDetail queryOrderDetailByGoodsId(int goodsId) {
+        return OrderMapper.queryOrderDetailByGoodsId(goodsId);
+    }
 }

@@ -15,6 +15,15 @@ public class CommentItem implements Serializable {
     private String nikeName; //用户昵称
     private int score; //书本的评分
     private String imageLogo;//评论用户的头像
+    private long orderId;
+
+    public long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
+    }
 
     public String getNikeName() {
         return nikeName;

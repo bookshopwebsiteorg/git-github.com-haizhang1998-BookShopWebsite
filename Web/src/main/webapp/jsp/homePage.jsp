@@ -164,6 +164,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
+                                <li><a href="/order/test">创建订单</a> </li>
                             </ul>
                         </li>
                     </c:if>

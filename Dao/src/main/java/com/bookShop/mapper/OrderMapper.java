@@ -16,25 +16,25 @@ import java.util.List;
 public interface OrderMapper {
 
     /************************************用户**************************************/
-    //查询用户订单
+    //根据用户id查询用户订单
     public List<Order> queryAllUserOrderByUserId(@Param("userId") int userId);
 
-    //查询用户订单详情
+    //根据订单id查询用户订单详情
     public Order queryAllUserOrderDetail(@Param("orderId") long orderId);
 
-    //根据订单状态查询用户订单
+    //根据订单状态status查询用户订单
     public List<Order> queryUserOrderByStatus(@Param("userId") int userId,@Param("status") int status);
 
-    //删除用户订单
+    //根据订单id删除用户订单
     public boolean deleteUserOrder(@Param("orderId") long orderId);
 
-    //修改用户订单状态
+    //修改用户订单状态status
     public boolean modifyUserOrderStatus(@Param("orderId") long orderId,@Param("status") int status);
 
     //修改用户退款/退货状态
     public boolean modifyUserOrderBybackpay(@Param("orderId") long orderId,@Param("backpay") int backpay);
 
-    //插入订单
+    //创建订单
     public boolean insertOrder(Order order);
 
     //插入订单详情
@@ -43,11 +43,14 @@ public interface OrderMapper {
     //插入订单状态
     public boolean insertOrderStatus(OrderStatus orderStatus);
 
+    //付款方式
+    public boolean updatePaymentType(@Param("orderId") long orderId,@Param("paymentType") int paymentType);
+
 
 
     /************************************商家********************************************/
 
-    //查询商家订单
+    //根据用户id查询商家订单
     public List<Order> queryAllManagerOrderByUserId(@Param("merchantId") int merchantId);
 
     //根据订单状态查询用户订单
@@ -67,5 +70,20 @@ public interface OrderMapper {
 
     //更新评价时间
     public boolean updateCommentTime(@Param("commentTime") Date commentTime,@Param("orderId") long orderId);
+
+
+
+
+    /**************************************************************************************/
+
+    //根据orderId查询取到没有被评论的商品goodsId
+    public List<String> queryGoodIdHaveNotRateByOrderId(@Param("orderId")long orderId);
+
+    //根据goodsId查询取到该所属的orderId
+    public long queryOrderIdByGoodsId(@Param("goodsId") int goodsId);
+
+    //通过goodsId查询货物，返回orderDetail
+    public OrderDetail queryOrderDetailByGoodsId(@Param("goodsId") int goodsId);
+
 
 }

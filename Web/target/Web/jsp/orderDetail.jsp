@@ -75,7 +75,7 @@ $(function(){
                         <c:choose>
                         <c:when test="${sessionScope.userInfo==null}">
                         <a href="/user/login">
-                    <li>亲，请登录</li>
+                    <li >亲，请登录</li>
                     <span class="sr-only">(current)</span></a>
                     </c:when>
                     <c:otherwise>
@@ -85,7 +85,7 @@ $(function(){
                     </c:otherwise>
                     </c:choose>
                     </li>
-                    <li><a href="#">消息<span class="badge">0</span></a></li>
+                    <li><a href="#">消息<span class="badge">${sessionScope.tmpmsgNumber}</span></a></li>
 
                     <c:if test="${sessionScope.userInfo.merchantFlag==0}">
                         <li class="dropdown">
@@ -104,9 +104,9 @@ $(function(){
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">收藏夹</a></li>
+                            <li><a href="/goods/queryAllEnshrineGoods">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-                            <li><a href="#">我的足迹</a></li>
+                            <li><a href="/goods/myfootprint">我的足迹</a></li>
                             <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
@@ -149,14 +149,12 @@ $(function(){
 						</dl>
 						<dl>
 							<dt><i>·</i> 我的中心</dt>
-							<dd><a href="">我的收藏</a></dd>
-							<dd><a href="">我的足迹</a></dd>
+							<dd><a href="/goods/queryAllEnshrineGoods">我的收藏</a></dd>
+							<dd><a href="/goods/myfootprint">我的足迹</a></dd>
 						</dl>
 						<dl>
 							<dt><i>·</i> 设置</dt>
-							<dd><a href="">个人信息</a></dd>
-							<dd><a href=""  >地址管理</a></dd>
-							<dd><a href="" >安全管理</a></dd>
+							<dd><a href="/user/revise">个人中心</a></dd>
 						</dl>
                     </div>
                 </div>
@@ -178,7 +176,6 @@ $(function(){
                                         </c:choose>
                                     </span>
                                 </p>
-                                <p>还剩06天00小时 自动确认收货</p>
                             </div>
                         </div>
                         <div class="order-info">
@@ -187,9 +184,19 @@ $(function(){
                             <p>创建时间：${order.orderStatus.createTime}</p>
                             <p>付款时间：${order.orderStatus.paymentTime}</p>
                             <p>发货时间：${order.orderStatus.consignTime}</p>
-                            <p>交易完成时间：${order.orderStatus.endTime}</p>
-                            <p>交易关闭时间：${order.orderStatus.closeTime}</p>
-                            <p>评论时间：${order.orderStatus.commentTime}</p>
+                            <c:choose>
+                                <c:when test="${order.orderStatus.status==4}">
+                                    <p>交易完成时间：${order.orderStatus.endTime}</p>
+                                </c:when>
+                                <c:when test="${order.orderStatus.status==5}">
+                                    <p>交易关闭时间：${order.orderStatus.closeTime}</p>
+                                </c:when>
+                            </c:choose>
+                            <c:choose>
+                                <c:when test="${order.orderStatus.status!=5}">
+                                    <p>评论时间：${order.orderStatus.commentTime}</p>
+                                </c:when>
+                            </c:choose>
                             <p>收货地址：${order.receiverAddress}</p>
                             <p>收货人姓名：${order.receiver}</p>
                             <p>收货人电话：${order.receiverMobile}</p>

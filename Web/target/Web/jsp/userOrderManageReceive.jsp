@@ -88,6 +88,8 @@
             background-color: #d4d4d4;
         }
     </style>
+
+
 </head>
 <body>
 <%--导航栏--%>
@@ -123,13 +125,13 @@
                     </c:otherwise>
                     </c:choose>
                     </li>
-                    <li><a href="#">消息<span class="badge">0</span></a></li>
+                    <li><a href="#">消息<span class="badge">${sessionScope.tmpmsgNumber}</span></a></li>
 
                     <c:if test="${sessionScope.userInfo.merchantFlag==0}">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">店铺管理</a></li>
+                                <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
                             </ul>
                         </li>
@@ -142,9 +144,9 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">收藏夹</a></li>
+                            <li><a href="/goods/queryAllEnshrineGoods">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-                            <li><a href="#">我的足迹</a></li>
+                            <li><a href="/goods/myfootprint">我的足迹</a></li>
                             <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
@@ -166,6 +168,20 @@
         <a href="${pageContext.request.contextPath}/goods/homepage" style="margin-left: 100px;font-size: 30px;vertical-align: center">首页</a>
     </div>
 </section>
+
+
+<c:if test="${state==2}">
+    <script>alert("付款失败！")</script>
+</c:if>
+<c:if test="${state==7}">
+    <script>alert("提醒发货失败！")</script>
+</c:if>
+<c:if test="${state==4}">
+    <script>alert("确认收货失败！")</script>
+</c:if>
+<c:if test="${state==5}">
+    <script>alert("交易取消失败！")</script>
+</c:if>
 
 <div class="content">
     <div class="container">
@@ -193,6 +209,16 @@
     </div>
 </div>
 
+
+<c:if test="${list.size()==0}">
+    <div class="container">
+        <div class="row" style="height: 300px">
+            <h1 class="text-center" style="margin-top: 10%">待收货订单为空</h1>
+        </div>
+    </div>
+</c:if>
+
+
 <c:forEach var="Item" items="${list}">
     <div class="container" style="margin-top: 20px">
         <div class="row" >
@@ -206,7 +232,7 @@
                             ${Item.orderDetails.get(0).shopName}
                     </div>
                     <div class="col-md-2 text-center">
-                        <a href="" class="glyphicon glyphicon-user" style="padding:10px">联系卖家</a>
+                        <a href="/merchant/chat/${Item.orderDetails.get(0).merchantId}" class="glyphicon glyphicon-user" style="padding:10px">联系卖家</a>
                     </div>
                     <div class="col-md-2 text-center">
                         <c:choose>
@@ -236,8 +262,8 @@
                         <div class="goodsItemLi col-md-2 text-center">
                             <div class="row">
                                 <c:choose>
-                                    <c:when test="${Item.orderStatus.status==1||Item.orderStatus.status==2||Item.orderStatus.status==3}">投诉卖家</c:when>
-                                    <c:when test="${Item.orderStatus.status==4||Item.orderStatus.status==6}">申请售后</c:when>
+                                    <c:when test="${Item.orderStatus.status==1||Item.orderStatus.status==2||Item.orderStatus.status==3}"><a href="">投诉卖家</a></c:when>
+                                    <c:when test="${Item.orderStatus.status==4||Item.orderStatus.status==6}"><a href="">申请售后</a></c:when>
                                     <c:when test="${Item.orderStatus.status==7}">已提醒卖家发货</c:when>
                                 </c:choose>
                             </div>
@@ -246,12 +272,24 @@
                                     <c:when test="${Item.orderStatus.backpay==1}">退款申请中</c:when>
                                     <c:when test="${Item.orderStatus.backpay==2}">退货申请中</c:when>
                                     <c:when test="${Item.orderStatus.backpay==3}">退款成功</c:when>
-                                    <c:when test="${Item.orderStatus.backpay==4}">不同意退款申请</c:when>
-                                    <c:when test="${Item.orderStatus.backpay==5}">
-                                        同意退货申请<br>
-                                        <a href="/order/modifyUserOrderBybackpay/userOrderManageReceive/3/7/${detail.orderId}">填写退货信息</a>
+                                    <c:when test="${Item.orderStatus.backpay==4}">
+                                        <c:choose>
+                                            <c:when test="${Item.orderStatus.status!=4}">
+                                                不同意退款申请
+                                            </c:when>
+                                        </c:choose>
                                     </c:when>
-                                    <c:when test="${Item.orderStatus.backpay==6}">不同意退货申请</c:when>
+                                    <c:when test="${Item.orderStatus.backpay==5}">
+                                        同意退货申请
+                                        <%--<a href="/order/modifyUserOrderBybackpay/userOrderManageReceive/3/7/${detail.orderId}">填写退货信息</a>--%>
+                                    </c:when>
+                                    <c:when test="${Item.orderStatus.backpay==6}">
+                                        <c:choose>
+                                            <c:when test="${Item.orderStatus.status!=4}">
+                                                不同意退货申请
+                                            </c:when>
+                                        </c:choose>
+                                    </c:when>
                                     <c:when test="${Item.orderStatus.backpay==7}">等待卖家退货审核</c:when>
                                     <c:when test="${Item.orderStatus.backpay==8}">退货成功</c:when>
                                     <c:when test="${Item.orderStatus.backpay==9}">退货失败(卖家寄回,等待签收)</c:when>
@@ -351,8 +389,13 @@
                                 </c:when>
                                 <c:when test="${Item.orderStatus.status==4}">
                                     <div class="row">
-                                        <a href="" class="btn btn-primary btn-sm active" role="button">评价</a>
+                                        <a href="/goods/makeComment/${Item.orderId}" class="btn btn-primary btn-sm active" role="button">评价</a>
                                     </div>
+                                </c:when>
+                            </c:choose>
+                            <c:choose>
+                                <c:when test="${Item.orderStatus.backpay==5}">
+                                    <a href="/order/modifyUserOrderBybackpay/userOrderManageReceive/3/7/${detail.orderId}" class="btn btn-primary btn-sm active" role="button">寄回图书</a>
                                 </c:when>
                             </c:choose>
                         </div>

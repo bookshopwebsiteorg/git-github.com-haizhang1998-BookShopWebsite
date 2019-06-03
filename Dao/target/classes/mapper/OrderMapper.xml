@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bookShop.mapper.OrderMapper">
+
     <resultMap id="OrderMap" type="com.haizhang.entity.Order">
         <id property="orderId" column="order_id"></id>
         <result property="actualPay" column="actual_pay"></result>
@@ -43,31 +44,45 @@
     </resultMap>
 
 
+    <!-- 根据用户id查询用户订单
+    public List<Order> queryAllUserOrderByUserId(@Param("userId") int userId);-->
     <select id="test" resultMap="OrderMap">
         select * from tb_order t1,tb_order_status t2,tb_order_detail t3 where t1.order_id = t2.order_id and t1.order_id = t3.order_id and t1.order_id =#{orderId};
     </select>
 
+    <!-- //根据订单id查询用户订单详情
+    public Order queryAllUserOrderDetail(@Param("orderId") long orderId); -->
     <select id="queryAllUserOrderByUserId" resultMap="OrderMap">
-         select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
-            inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
-            inner join merchantshop m on m.merchantId=goods.possesserId
-              where t1.user_id = #{userId};
+          select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
+    inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
+    inner join merchantshop m on m.merchantId=goods.possesserId
+    where t1.user_id = #{userId}
+      order by consign_time,payment_time,create_time DESC;
     </select>
 
+    <!-- //根据订单状态status查询用户订单
+    public List<Order> queryUserOrderByStatus(@Param("userId") int userId,@Param("status") int status); -->
     <select id="queryUserOrderByStatus" resultMap="OrderMap">
          select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
             inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
             inner join merchantshop m on m.merchantId=goods.possesserId
-              where  t1.user_id = #{userId} and status=#{status};
+              where  t1.user_id = #{userId} and status=#{status}
+                order by consign_time,payment_time,create_time DESC;
     </select>
 
+    <!--//根据订单id查询用户订单详情-->
+    <!--public Order queryAllUserOrderDetail(@Param("orderId") long orderId);-->
     <select id="queryAllUserOrderDetail" resultMap="OrderMap">
          select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
             inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
             inner join merchantshop m on m.merchantId=goods.possesserId
-              where t1.order_id = #{orderId};
+              where t1.order_id = #{orderId}
+              order by consign_time,payment_time,create_time DESC;
     </select>
 
+
+    <!--//根据订单id删除用户订单-->
+    <!--public boolean deleteUserOrder(@Param("orderId") long orderId);-->
     <delete id="deleteUserOrder">
         DELETE t1,t2,t3
             from tb_order as t1 inner JOIN tb_order_detail as t2 ON t1.order_id = t2.order_id
@@ -75,19 +90,29 @@
 		      WHERE t1.order_id = #{orderId};
     </delete>
 
+
+    <!--//修改用户订单状态status-->
+    <!--public boolean modifyUserOrderStatus(@Param("orderId") long orderId,@Param("status") int status);-->
     <update id="modifyUserOrderStatus">
           update tb_order_status set status=#{status} where order_Id=#{orderId};
     </update>
 
+
+    <!--//修改用户退款/退货状态-->
+    <!--public boolean modifyUserOrderBybackpay(@Param("orderId") long orderId,@Param("backpay") int backpay);-->
     <update id="modifyUserOrderBybackpay">
           update tb_order_status set backpay=#{backpay} where order_Id=#{orderId};
     </update>
 
+    <!--//创建订单-->
+    <!--public boolean insertOrder(Order order);-->
     <insert id="insertOrder">
             insert into tb_order(order_id,actual_pay,payment_type,post_fee,user_id,buyer_message,receiver_address,receiver_mobile,receiver_zip,receiver)
             values(#{orderId},#{actualPay},#{paymentType},#{postFee},#{userId},#{buyerMessage},#{receiverAddress},#{receiverMobile},#{receiverZip},#{receiver});
     </insert>
 
+    <!--//插入订单详情-->
+    <!--public boolean insertOrderDetail(OrderDetail orderDetail);-->
     <insert id="insertOrderDetail">
           insert into tb_order_detail(order_id,goodsId,num,title,price,image,merchantId)
               values(#{orderId},#{goodsId},#{num},
@@ -98,48 +123,111 @@
     </insert>
 
 
-<!-- insert into tb_order_detail(order_id,goodsId,num)
-            values(#{orderId},#{goodsId},#{num}); -->
+    <!--//插入订单状态-->
+    <!--public boolean insertOrderStatus(OrderStatus orderStatus);-->
     <insert id="insertOrderStatus">
             insert into tb_order_status(order_id,status,create_time)
             values(#{orderId},#{status},#{createTime});
     </insert>
 
-
+    <!--//付款方式-->
+    <!--public boolean updatePaymentType(@Param("orderId") long orderId,@Param("paymentType") int paymentType);-->
+    <update id="updatePaymentType">
+        update tb_order set payment_type = #{paymentType}  where order_id = #{orderId}
+    </update>
 
    <!-- 商家 -->
+
+    <!--//根据用户id查询商家订单-->
+    <!--public List<Order> queryAllManagerOrderByUserId(@Param("merchantId") int merchantId);-->
     <select id="queryAllManagerOrderByUserId" resultMap="OrderMap">
         select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
             inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
             inner join merchantshop m on m.merchantId=goods.possesserId
               where  t2.merchantId=#{merchantId}
+                order by consign_time,payment_time,create_time DESC
     </select>
 
+    <!--//根据订单状态查询用户订单-->
+    <!--public List<Order> queryManagerOrderByStatus(@Param("merchantId") int merchantId,@Param("status") int status);-->
     <select id="queryManagerOrderByStatus" resultMap="OrderMap">
          select t1.*,t2.*,t3.*,goods.goodsName,m.shopName,m.merchantId from tb_order t1 inner join tb_order_detail t2 on t1.order_id = t2.order_id
             inner join tb_order_status t3 on t1.order_id = t3.order_id inner join goods on goods.goodsId=t2.goodsId
             inner join merchantshop m on m.merchantId=goods.possesserId
-              where  t2.merchantId = #{merchantId} and status=#{status};
+              where  t2.merchantId = #{merchantId} and status=#{status}
+                order by consign_time,payment_time,create_time DESC
     </select>
 
+
+    <!--//更新付款时间-->
+    <!--public boolean updatePaymentTime(@Param("paymentTime") Date paymentTime,@Param("orderId") long orderId);-->
     <update id="updatePaymentTime">
         update tb_order_status set payment_time=#{paymentTime} where order_id = #{orderId};
     </update>
 
+    <!--//更新发货时间-->
+    <!--public boolean updateConsignTime(@Param("consignTime") Date consignTime,@Param("orderId") long orderId);-->
     <update id="updateConsignTime">
         update tb_order_status set consign_time=#{consignTime} where order_id = #{orderId};
     </update>
 
+    <!--//更新交易完成时间-->
+    <!--public boolean updateEndTime(@Param("endTime") Date endTime,@Param("orderId") long orderId);-->
     <update id="updateEndTime">
         update tb_order_status set end_time=#{endTime} where order_id = #{orderId};
     </update>
 
+    <!--//更新交易关闭时间-->
+    <!--public boolean updateCloseTime(@Param("closeTime") Date closeTime,@Param("orderId") long orderId);-->
     <update id="updateCloseTime">
         update tb_order_status set close_time=#{closeTime} where order_id = #{orderId};
     </update>
 
+    <!--//更新评价时间-->
+    <!--public boolean updateCommentTime(@Param("commentTime") Date commentTime,@Param("orderId") long orderId);-->
     <update id="updateCommentTime">
         update tb_order_status set comment_time=#{commentTime} where order_id = #{orderId};
     </update>
+
+
+
+
+
+
+    <!-- -->
+
+    <resultMap id="orderDetails" type="OrderDetail">
+        <id property="id" column="id"></id>
+        <result property="orderId" column="order_id"></result>
+        <result property="goodsId" column="goodsId"></result>
+        <result property="num" column="num"></result>
+        <result property="detail" column="title"></result>
+        <result property="price" column="price"></result>
+        <result property="image" column="image"></result>
+        <result property="shopName" column="shopName"></result>
+        <result property="goodsName" column="goodsName"></result>
+        <result property="merchantId" column="merchantId"></result>
+    </resultMap>
+
+
+
+    <!--根据orderId查询取到没有被评论的商品goodsId
+    public String queryGoodIdHaveNotRateByOrderId(@Param("orderId")long orderId);-->
+    <select id="queryGoodIdHaveNotRateByOrderId" resultType="String">
+        select  distinct t1.goodsId from tb_order_detail t1 inner join comment t2
+        on t1.order_id = t2.order_id and t1.goodsId not in(select goodsId from comment where order_id = #{orderId})
+    </select>
+
+    <!--//根据goodsId查询取到该orderId
+    public long queryOrderIdByGoodsId(@Param("id") long id);-->
+    <select id="queryOrderIdByGoodsId" resultType="long">
+        select order_id from tb_order_detail where goodsId=#{goodsId};
+    </select>
+
+    <!--//通过goodsId查询货物，返回orderDetail
+    public OrderDetail queryOrderDetailByGoodsId(@Param("goodsId") int goodsId);-->
+    <select id="queryOrderDetailByGoodsId" resultMap="orderDetails">
+        select * from tb_order_detail where goodsId=#{goodsId};
+    </select>
 
 </mapper>

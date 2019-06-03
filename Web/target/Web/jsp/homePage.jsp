@@ -164,6 +164,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
+                                <li><a href="/order/test">创建订单</a> </li>
                             </ul>
                         </li>
                     </c:if>
@@ -177,11 +178,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="#">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-<<<<<<< HEAD
-                            <li><a href="#">我的足迹</a></li>
-=======
                             <li><a href="/goods/myfootprint">我的足迹</a></li>
->>>>>>> b51484125b013ff8cd6de45fe490d35445ec59bf
                             <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
@@ -202,11 +199,7 @@
         <div class="row">
             <img src="/images/logo.jpg" class="pull-left"><span class="searchFont col-md-2" style="margin-top: 40px">海淘商城</span>
 
-<<<<<<< HEAD
-                <form class="form-horizontal" action="/goods/searchGoods/2">
-=======
                 <form class="form-horizontal" style="margin-top: 30px" action="/goods/searchGoods/2">
->>>>>>> b51484125b013ff8cd6de45fe490d35445ec59bf
                     <div class="form-group" style="display: inline-block;margin-left: 150px;">
                         <input type="text" id="searchGoodsText" class="form-control" style="width: 390px" placeholder="Search">
                     </div>

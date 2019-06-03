@@ -123,13 +123,13 @@
                     </c:otherwise>
                     </c:choose>
                     </li>
-                    <li><a href="#">消息<span class="badge">0</span></a></li>
+                    <li><a href="#">消息<span class="badge">${sessionScope.tmpmsgNumber}</span></a></li>
 
                     <c:if test="${sessionScope.userInfo.merchantFlag==0}">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">店铺管理</a></li>
+                                <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
                             </ul>
                         </li>
@@ -142,9 +142,9 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">收藏夹</a></li>
+                            <li><a href="/goods/queryAllEnshrineGoods">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-                            <li><a href="#">我的足迹</a></li>
+                            <li><a href="/goods/myfootprint">我的足迹</a></li>
                             <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
@@ -193,6 +193,14 @@
             </div>
         </div>
 
+<c:if test="${list.size()==0}">
+    <div class="container">
+        <div class="row" style="height: 300px">
+            <h1 class="text-center" style="margin-top: 10%">商家订单为空</h1>
+        </div>
+    </div>
+</c:if>
+
             <c:forEach var="Item" items="${list}">
                 <div class="container" style="margin-top: 20px">
                 <div class="row" >
@@ -206,7 +214,7 @@
                                     ${Item.orderDetails.get(0).shopName}
                             </div>
                             <div class="col-md-2 text-center">
-                                <a href="" class="glyphicon glyphicon-user" style="padding:10px">联系买家</a>
+                                <a href="/merchant/chat/${Item.userId}" class="glyphicon glyphicon-user" style="padding:10px">联系买家</a>
                             </div>
                             <div class="col-md-2 text-center">
                                 <c:choose>
@@ -246,9 +254,21 @@
                                                 <c:when test="${Item.orderStatus.backpay==1}">退款申请中</c:when>
                                                 <c:when test="${Item.orderStatus.backpay==2}">退货申请中</c:when>
                                                 <c:when test="${Item.orderStatus.backpay==3}">退款成功</c:when>
-                                                <c:when test="${Item.orderStatus.backpay==4}">不同意退款申请</c:when>
+                                                <c:when test="${Item.orderStatus.backpay==4}">
+                                                    <c:choose>
+                                                        <c:when test="${Item.orderStatus.status!=4}">
+                                                            不同意退款申请
+                                                        </c:when>
+                                                    </c:choose>
+                                                </c:when>
                                                 <c:when test="${Item.orderStatus.backpay==5}">同意退货申请</c:when>
-                                                <c:when test="${Item.orderStatus.backpay==6}">不同意退货申请</c:when>
+                                                <c:when test="${Item.orderStatus.backpay==6}">
+                                                    <c:choose>
+                                                        <c:when test="${Item.orderStatus.status!=4}">
+                                                            不同意退货申请
+                                                        </c:when>
+                                                    </c:choose>
+                                                </c:when>
                                                 <c:when test="${Item.orderStatus.backpay==7}">退货审核中</c:when>
                                                 <c:when test="${Item.orderStatus.backpay==8}">退货成功</c:when>
                                                 <c:when test="${Item.orderStatus.backpay==9}">退货失败</c:when>
@@ -323,6 +343,20 @@
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                                             <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManagerOrderManage/0/5/${detail.orderId}">同意退货</a></li>
                                                             <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManagerOrderManage/0/6/${detail.orderId}">拒绝退货</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </c:when>
+                                            <c:when test="${Item.orderStatus.backpay==7}">
+                                                <div class="row">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                            退货签收
+                                                            <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                            <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManagerOrderManage/0/8/${detail.orderId}">确认签收</a></li>
+                                                            <li class="text-center"><a href="/order/modifyManagerOrderBybackpay/ManagerOrderManage/0/9/${detail.orderId}">拒绝签收</a></li>
                                                         </ul>
                                                     </div>
                                                 </div>

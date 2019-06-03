@@ -12,6 +12,7 @@
         <result property="nikeName" column="nikeName"></result>
         <result property="score" column="score"></result>
         <result property="imageLogo" column="imageLogo"></result>
+        <result property="orderId" column="order_id"></result>
     </resultMap>
 
 <!--    //获取商品所有的评价-->
@@ -22,7 +23,7 @@
 <!--    //发送评价-->
 <!--    public boolean sendCommentItem(CommentItem commentItem);-->
        <insert id="sendCommentItem">
-           insert into comment values(#{goodsId},#{id},#{commentDetail},#{time},#{nikeName},#{score},#{imageLogo});
+           insert into comment values(#{goodsId},#{id},#{commentDetail},#{time},#{nikeName},#{score},#{imageLogo},#{orderId});
        </insert>
 
 <!--    //删除评价-->
