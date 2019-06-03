@@ -18,9 +18,9 @@
             display: inline-block;
             margin-top: 50px;
             padding-left: 50px;
-            background-color: black;
+            background-color: gray;
             font-size: 60px;
-            color: white;
+            color: black;
             line-height: 120px;
         }
         .headerOfCartDivSon{
@@ -68,22 +68,9 @@
             height: 100px;
             line-height: 100px;
         }
-        .goodDetail-shang{
 
-
-
-        }
-        .goodDetail-xia{
-            height: 80px;
-        }
-        .goodAll{
-            margin-bottom: 40px;
-            border: 1px solid;
-            height: 170px;
-            width: 100%;
-        }
         #nav-head{
-            background-color: #d4d4d4;
+            background-color: black;
         }
     </style>
 </head>

@@ -202,6 +202,7 @@ $("#ratingId").rating({min:0, max:5, step:1, size:'lg'});
                             <li><a href="/goods/queryAllEnshrineGoods" target="_blank">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
                             <li><a href="#">我的足迹</a></li>
+                            <li><a href="#">我的订单</a></li>
                             <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
@@ -292,12 +293,18 @@ $("#ratingId").rating({min:0, max:5, step:1, size:'lg'});
        }else {
 
 
+
+           window.location.href="/goods/addComment/"+remark+"&"+ grade+"&"+goodsId;
+
+
+
            window.location.href="/goods/addComment/"+remark+"&"+ grade+"&"+goodsId;
 
 
        }
    }
 </script>
+
 
 
 

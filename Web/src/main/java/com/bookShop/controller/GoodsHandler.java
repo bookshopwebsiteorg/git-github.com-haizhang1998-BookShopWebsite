@@ -41,6 +41,7 @@ public class GoodsHandler {
     @Resource
     UserService userServiceImpl;
 
+
     public GoodsHandler(){}
     public GoodsHandler(GoodService goodService){
     }
@@ -84,11 +85,6 @@ public class GoodsHandler {
     }
 
 
-    @RequestMapping("/enshrine/{goodsId}")
-    public String enshrine(@PathVariable int goodsId,Model model){
-        model.addAttribute("enshrine_state","收藏成功"+goodsId);
-        return "homePage";
-    }
 
     /**
      *购买书籍打开书本的详细界面
@@ -190,6 +186,7 @@ public class GoodsHandler {
         return "searchGoods";
     }
 
+
     /**
      * 添加收藏
      * @param goodsId
@@ -197,6 +194,23 @@ public class GoodsHandler {
      * @param model
      * @return
      */
+
+    @RequestMapping("/enshrine/{goodsId}&{id}")
+    public String enshrine(@PathVariable int goodsId, @PathVariable int id, Model model){
+        /*UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");*/
+
+        if(enshrineServiceImpl.queryIsHaveId(goodsId,id)==0) {
+            enshrineServiceImpl.addEnshrineGood(id, goodsId);
+            enshrineServiceImpl.addupdateNameAndPriceById(goodsId);
+            model.addAttribute("enshrine_state", "收藏成功");
+            //model.addAttribute("enshrine_state","收藏成功"+goodsId);
+            return "homePage";
+        }else {
+            model.addAttribute("enshrine_state", "已经收藏过了");
+            return "homePage";
+        }
+
+    }
 
 
     /**
@@ -208,6 +222,8 @@ public class GoodsHandler {
      */
     @RequestMapping("/deleteEnshrineGoods/{goodsId}")
     public String deleteEnshrineGoods(HttpSession session,@PathVariable int goodsId ,Model model){
+
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
         int userId=userInfo.getId();
         enshrineServiceImpl.removeEnshrineGood(userId,goodsId);
@@ -266,6 +282,17 @@ public class GoodsHandler {
     }
 
 
+
+    /**
+     * 提交评论
+     * @param session
+     * @param remark
+     * @param grade
+     * @param goodsId
+     * @param model
+     * @return
+     */
+
     @RequestMapping(value="/addComment/{remark}&{grade}&{goodsId}")
     public String addComment(HttpSession session,@PathVariable String remark, @PathVariable String grade,@PathVariable String goodsId,Model model){
         UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
@@ -290,7 +317,11 @@ public class GoodsHandler {
 
         if(goodsIdNoRateList.size()==0){
             orderServiceImpl.modifyUserOrderStatus(orderId,6);
-            return "aaa";    //订单全部商品评论完跳转的页面
+
+            //return "aaa";    //订单全部商品评论完跳转的页面
+
+            return "finishCommentPage";    //订单全部商品评论完跳转的页面
+
         }else{
             List<OrderDetail> orderDetails=new ArrayList<>();
             for(int i=0;i<goodsIdNoRateList.size();i++)

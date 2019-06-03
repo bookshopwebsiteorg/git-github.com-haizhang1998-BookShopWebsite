@@ -2,6 +2,7 @@ package com.haizhang.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
 /**
  * 用户评论的Javabean
  * @author 海章

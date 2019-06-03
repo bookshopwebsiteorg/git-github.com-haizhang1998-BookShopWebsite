@@ -65,6 +65,8 @@ public interface OrderService {
 
     /********************************************************************************/
 
+    /*JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ*/
+
     //根据orderId查询取到没有被评论的商品goodsId
     public List<String> queryGoodIdHaveNotRateByOrderId(long orderId);
 
@@ -73,5 +75,6 @@ public interface OrderService {
 
     //通过goodsId查询货物，返回orderDetail
     public OrderDetail queryOrderDetailByGoodsId(int goodsId);
+
 
 }

@@ -44,6 +44,7 @@
     </resultMap>
 
 
+
     <!-- 根据用户id查询用户订单
     public List<Order> queryAllUserOrderByUserId(@Param("userId") int userId);-->
     <select id="test" resultMap="OrderMap">
@@ -211,11 +212,15 @@
 
 
 
+
+    <!--JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ-->
+
     <!--根据orderId查询取到没有被评论的商品goodsId
     public String queryGoodIdHaveNotRateByOrderId(@Param("orderId")long orderId);-->
     <select id="queryGoodIdHaveNotRateByOrderId" resultType="String">
         select  distinct t1.goodsId from tb_order_detail t1 inner join comment t2
         on t1.order_id = t2.order_id and t1.goodsId not in(select goodsId from comment where order_id = #{orderId})
+on t1.order_id = t2.order_id and t1.goodsId not in(select goodsId from comment where order_id = #{orderId})
     </select>
 
     <!--//根据goodsId查询取到该orderId
@@ -229,5 +234,6 @@
     <select id="queryOrderDetailByGoodsId" resultMap="orderDetails">
         select * from tb_order_detail where goodsId=#{goodsId};
     </select>
+
 
 </mapper>

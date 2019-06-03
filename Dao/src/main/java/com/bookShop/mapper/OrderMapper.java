@@ -48,6 +48,7 @@ public interface OrderMapper {
 
 
 
+
     /************************************商家********************************************/
 
     //根据用户id查询商家订单
@@ -76,6 +77,7 @@ public interface OrderMapper {
 
     /**************************************************************************************/
 
+    /*JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ*/
     //根据orderId查询取到没有被评论的商品goodsId
     public List<String> queryGoodIdHaveNotRateByOrderId(@Param("orderId")long orderId);
 

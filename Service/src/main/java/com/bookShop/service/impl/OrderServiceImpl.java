@@ -123,7 +123,6 @@ public class OrderServiceImpl implements OrderService {
 
 
 
-
     /*******************************商家***************************************/
 
     //查询商家订单
@@ -166,6 +165,8 @@ public class OrderServiceImpl implements OrderService {
 
 
     /************************************************************************/
+    /*JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ*/
+
     @Override
     public List<String> queryGoodIdHaveNotRateByOrderId(long orderId) {
         return OrderMapper.queryGoodIdHaveNotRateByOrderId(orderId);
