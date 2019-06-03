@@ -197,17 +197,17 @@
     <div class="container" >
         <div class="row">
             <img src="/images/logo.jpg" class="pull-left"><span class="searchFont col-md-2" style="margin-top: 40px">海淘商城</span>
+
             <div >
                 <form class="form-horizontal" action="/goods/searchGoods" method="post">
                     <div class="form-group" style="display: inline-block;margin-left: 150px;">
-                        <input type="text" class="form-control" style="width: 390px" placeholder="Search" name="searchgoods">
+                        <input type="text" class="form-control" style="width: 390px" placeholder="Search" name="searchgoods" required autofocus>
                     </div>
                     <button type="submit"class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px">搜索</button>
                 </form>
             </div>
 
         </div>
-
     </div>
 </section>
 
