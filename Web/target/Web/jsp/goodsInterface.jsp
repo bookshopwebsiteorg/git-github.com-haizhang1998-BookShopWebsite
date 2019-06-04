@@ -211,51 +211,29 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <c:choose>
-                        <c:when test="${sessionScope.userInfo==null}">
-                        <a href="/user/login">
+
+                    <li><a href="#">
                     <li>亲，请登录</li>
                     <span class="sr-only">(current)</span></a>
-                    </c:when>
-                    <c:otherwise>
-                        <a href="/user/revise">
-                            <li>欢迎，${sessionScope.userInfo.nikeName}</li>
-                            <span class="sr-only">(current)</span></a>
-                    </c:otherwise>
-                    </c:choose>
                     </li>
-                    <c:if test="${sessionScope.userInfo!=null}">
-                        <li><a href="/chat/chatPage">消息<span class="badge">${sessionScope.tmpmsgNumber}</span></a></li>
-                    </c:if>
-                    <c:if test="${sessionScope.userInfo.merchantFlag==0}">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
-                                <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
-                            </ul>
-                        </li>
-                    </c:if>
 
-                    <c:if test="${sessionScope.requestRecordShop==null && sessionScope.userInfo.merchantFlag!=0}">
-                        <li><a onclick="openShop()">我要开店</a></li>
-                    </c:if>
+                    <li><a href="#">消息</a></li>
+                    <li><a href="#">店铺管理</a></li>
+                    <li><a href="#">我要开店</a></li>
 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">收藏夹</a></li>
-                            <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-                            <li><a href="/goods/myfootprint">我的足迹</a></li>
-                            <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
+                            <li><a href="#">我的足迹</a></li>
+                            <li><a href="#">我的订单</a></li>
                         </ul>
                     </li>
                 </ul>
+
                 <ul class="nav navbar-nav" style="margin-left: 500px">
                     <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
-                    <li><a href="/goods/homepage">返回首界面</a> </li>
                     <li><a href="/user/logout">注销</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -301,14 +279,14 @@
                                 <h3 class="text-center">${goodsInfo.goodsName}</h3>
                                 <p class="text-center">声明:此书绝对正版，读者朋友们请放心购买！</p>
                                 <p><a href="/goods/enshrine/${goodsInfo.goodsId}" class="btn btn-danger col-md-6" role="button">点击收藏</a>
-                                    <a href="/chat/singleTalkAddFriend/${sessionScope.userInfo.id}/${goodsInfo.possesserId}" class="btn btn-primary  col-md-6"  role="button">联系卖家</a>
+                                    <a href="/merchant/chat/${goodsInfo.possesserId}" class="btn btn-primary  col-md-6"  role="button">联系卖家</a>
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <form class="col-md-6" action="/goods/AddCart/${goodsInfo.goodsId}" method="post">
                 <div class="row">
                     <p style="height: 23px; font-size:20px;color:#000;" ><span>书籍名称:${goodsInfo.goodsName}</span></p>
                 </div>
@@ -353,13 +331,14 @@
                     </span>
                     <div class="input-group col-md-5" >
                         <span class="input-group-addon" id="sub">-</span>
-                        <input type="text" value="0" id="goodsNumber" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        <input type="text" value="0" id="goodsNumber" name="goodsNumber" class="form-control" aria-label="Amount (to the nearest dollar)">
                         <span class="input-group-addon" id="add">+</span>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 30px;">
-                    <input type="button" id="addGoodBtn" value="加入购物车">
+                    <input type="submit" value="加入购物车">
                 </div>
+            </form>
 
                 <div class="row"style="margin-top: 30px;">
                     <span  style="display: inline-block;float: left;margin-top:14px">卖家承诺:正品保障、下单即送、7日包退、诚信交易</span>

@@ -9,7 +9,7 @@ import java.util.List;
 public class Order {
     private Long orderId;           //订单编号
     private double actualPay;         //实付金额
-    private int paymentType;    //支付类型  1、微信支付  2：支付宝支付  3：银行卡支付   4、货到付款
+    private int paymentType;    //支付类型  1、微信支付  2：支付宝支付  3：银行卡支付
     private double postFee;      //邮费
     private int userId;            //用户编号
     private String buyerMessage;    //买家留言

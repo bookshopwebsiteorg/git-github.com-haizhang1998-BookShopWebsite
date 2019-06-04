@@ -35,6 +35,12 @@ public interface OrderService {
     //创建订单
     public boolean createOrder(OrderDTO orderDTO, List<OrderDetailDTO> orderDetailDTOList);
 
+    //付款方式
+    public boolean updatePaymentType(@Param("orderId") long orderId,@Param("paymentType") int paymentType);
+
+
+    //查询最新提交等待付款的订单
+    public Order TheNewOrderBypay();
 
     /********************************商家********************************************/
 

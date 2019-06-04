@@ -164,7 +164,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
-                                <li><a href="/order/test">创建订单</a> </li>
+                                <li><a href="/order/test">创建订单</a></li>
                             </ul>
                         </li>
                     </c:if>
@@ -184,7 +184,7 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-nav" style="margin-left: 500px">
-                    <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
+                    <li><a href="/goods/cart"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
                     <li><a href="/goods/homepage">返回首界面</a> </li>
                     <li><a href="/user/logout">注销</a></li>
@@ -210,6 +210,11 @@
         </div>
     </div>
 </section>
+
+<c:if test="${state!=null}">
+    <script>alert("订单提交成功!")</script>
+</c:if>
+
 
 <section id="carouselSection" >
     <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">

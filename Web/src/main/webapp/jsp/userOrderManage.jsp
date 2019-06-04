@@ -331,17 +331,17 @@
                                                 <c:choose>
                                                     <c:when test="${Item.orderStatus.backpay==0||Item.orderStatus.backpay==4||Item.orderStatus.backpay==6}">
                                                         <div class="row">
-                                                            <div class="dropdown">
-                                                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                                    退货/退款
-                                                                    <span class="caret"></span>
-                                                                </button>
-                                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                                    <li class="text-center"><a href="/order/modifyUserOrderBybackpay/userOrderManage/0/1/${detail.orderId}">仅退款(未收到货)</a></li>
-                                                                    <li class="text-center"><a href="/order/modifyUserOrderBybackpay/userOrderManage/0/2/${detail.orderId}">退货退款(已收到货)</a></li>
-                                                                </ul>
-                                                            </div>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                退货/退款
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                                <li class="text-center"><a href="/order/modifyUserOrderBybackpay/userOrderManage/0/1/${detail.orderId}">仅退款(未收到货)</a></li>
+                                                                <li class="text-center"><a href="/order/modifyUserOrderBybackpay/userOrderManage/0/2/${detail.orderId}">退货退款(已收到货)</a></li>
+                                                            </ul>
                                                         </div>
+                                                    </div>
                                                     </c:when>
                                                 </c:choose>
                                             </c:when>

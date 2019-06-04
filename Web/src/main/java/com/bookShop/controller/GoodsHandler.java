@@ -1,5 +1,7 @@
 package com.bookShop.controller;
 import com.bookShop.service.*;
+import com.haizhang.DTO.OrderDTO;
+import com.haizhang.DTO.OrderDetailDTO;
 import com.haizhang.entity.CommentItem;
 import com.haizhang.entity.GoodsInfo;
 import com.haizhang.entity.MerchantShop;
@@ -14,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/goods")
@@ -40,7 +39,8 @@ public class GoodsHandler {
     OrderService orderServiceImpl;
     @Resource
     UserService userServiceImpl;
-
+    @Resource
+    CartOrderService cartorderServiceImpl;
 
     public GoodsHandler(){}
     public GoodsHandler(GoodService goodService){
@@ -332,6 +332,228 @@ public class GoodsHandler {
             return "commentContinue";
         }
         //System.out.println(remark+"+"+grade+"+"+goodsId);
+    }
+
+
+    /**
+     * 添加物品至购物车
+     *
+     * @param goodsId
+     * @param session
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/AddCart/{goodsId}", method = RequestMethod.POST)
+    public String AddCart(@PathVariable int goodsId, HttpSession session, Model model, HttpServletRequest request) {
+        String num = request.getParameter("goodsNumber");
+        int sumOfGoods = Integer.parseInt(num);
+        CartItem cartItem = new CartItem();
+        cartItem.setSumOfGoods(sumOfGoods);
+        System.out.println(sumOfGoods);
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        GoodsInfo goodsInfo = new GoodsInfo();
+        goodsInfo.setGoodsId(goodsId);
+        goodsInfo = goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo);
+        model.addAttribute("goodInfo", goodsInfo);
+        System.out.println(goodsInfo);
+        boolean addCart = cartorderServiceImpl.addCart(goodsId, userInfo.getId(), goodsInfo.getImgDir(), goodsInfo.getGoodsName(), goodsInfo.getPrice(), sumOfGoods, sumOfGoods * goodsInfo.getPrice());
+        model.addAttribute("addCart", addCart);
+        return "homePage";
+    }
+
+    /**
+     * 删除物品
+     *
+     * @param goodsId
+     * @param session
+     * @param model
+     * @return
+     */
+    @RequestMapping("/delCart/{goodsId}")
+    public String DeleteGoods(@PathVariable int goodsId, HttpSession session, Model model) {
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        System.out.println(userInfo);
+        GoodsInfo goodsInfo = new GoodsInfo();
+        goodsInfo.setGoodsId(goodsId);
+        goodsInfo = goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo);
+        model.addAttribute("goodInfo", goodsInfo);
+        System.out.println(goodsInfo);
+        boolean deleteGoods = cartorderServiceImpl.deleteGoods(goodsId, userInfo.getId());
+        if (deleteGoods == true) {
+            List<CartItem> getAllOrder = cartorderServiceImpl.getAllCart(userInfo.getId());
+            //    List <CartItem> getAllPrice=cartorderServiceImpl.getAllPrice(userInfo.getId());
+            model.addAttribute("getAllOrder", getAllOrder);
+            // model.addAttribute("getAllPrice",getAllPrice);
+        }
+        return "cart";
+    }
+
+    /**
+     * 获取购物车信息
+     *
+     * @param session
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/cart")//购物车页面
+    public String GetAllOrder(HttpSession session, Model model) throws Exception {
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        List<CartItem> getAllOrder = cartorderServiceImpl.getAllCart(userInfo.getId());
+        // List<CartItem> getAllPrice=cartorderServiceImpl.getAllPrice(userInfo.getId());
+        model.addAttribute("getAllOrder", getAllOrder);
+        //  model.addAttribute("getAllPrice",getAllPrice);
+        System.out.println(getAllOrder);
+        // System.out.println(getAllPrice);
+        return "cart";
+    }
+
+    /**
+     * 更新商品数量(添加数量）
+     *
+     * @param goodsId
+     * @param sumOfGoods
+     * @param session
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/UpdateAddCart/{goodsId}&{sumOfGoods}", method = RequestMethod.GET)
+    public String updateAddItemNumber(@PathVariable int goodsId, @PathVariable int sumOfGoods, HttpSession session, Model model) {
+        CartItem cartItem = new CartItem();
+        cartItem.setSumOfGoods(sumOfGoods);
+        model.addAttribute("cartItem", cartItem);
+        System.out.println(cartItem);
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        GoodsInfo goodsInfo = new GoodsInfo();
+        goodsInfo.setGoodsId(goodsId);
+        goodsInfo = goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo);
+        model.addAttribute("goodsInfo", goodsInfo);
+        System.out.println(goodsInfo);
+        boolean updateItemNumber = cartorderServiceImpl.updateItemNumber(goodsId, userInfo.getId(), cartItem.getSumOfGoods() + 1, goodsInfo.getPrice() * (cartItem.getSumOfGoods() + 1));
+        model.addAttribute("updateItemNumber", updateItemNumber);
+        if (updateItemNumber == true) {
+            List<CartItem> getAllOrder = cartorderServiceImpl.getAllCart(userInfo.getId());
+            //   List<CartItem> getAllPrice=cartorderServiceImpl.getAllPrice(userInfo.getId());
+            model.addAttribute("getAllOrder", getAllOrder);
+            // model.addAttribute("getAllPrice",getAllPrice);
+        }
+        return "cart";
+    }
+
+    /**
+     * 更新商品数量(减少数量）
+     *
+     * @param goodsId
+     * @param sumOfGoods
+     * @param session
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/UpdateDelCart/{goodsId}&{sumOfGoods}", method = RequestMethod.GET)
+    public String updateDelItemNumber(@PathVariable int goodsId, @PathVariable int sumOfGoods, HttpSession session, Model model) {
+        CartItem cartItem = new CartItem();
+        cartItem.setSumOfGoods(sumOfGoods);
+        model.addAttribute("cartItem", cartItem);
+        System.out.println(cartItem);
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        GoodsInfo goodsInfo = new GoodsInfo();
+        goodsInfo.setGoodsId(goodsId);
+        goodsInfo = goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo);
+        model.addAttribute("goodsInfo", goodsInfo);
+        System.out.println(goodsInfo);
+        boolean updateItemNumber = cartorderServiceImpl.updateItemNumber(goodsId, userInfo.getId(), cartItem.getSumOfGoods() - 1, goodsInfo.getPrice() * (cartItem.getSumOfGoods() - 1));
+        model.addAttribute("updateItemNumber", updateItemNumber);
+        if (updateItemNumber == true) {
+            List<CartItem> getAllOrder = cartorderServiceImpl.getAllCart(userInfo.getId());
+            model.addAttribute("getAllOrder", getAllOrder);
+        }
+        return "cart";
+    }
+
+    /**
+     * 结算
+     * @param session
+     * @param model
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/ConfirmCart", method = RequestMethod.POST)
+    public String ConfirmCart ( HttpSession session, Model model, HttpServletRequest request) {
+        String ids[] = request.getParameterValues("itemCheckBox");
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        double allPrice=6;
+        for(String i:ids){
+            System.out.println(i);
+        }
+
+        List<OrderDetailDTO> orderlist = new ArrayList<>();
+        for (int i = 0; i < ids.length; i++) {
+            System.out.println("商品"+ids[i]);
+            int goodsId=Integer.parseInt(ids[i]);
+
+            CartItem cartItem=new CartItem();
+            cartItem.setGoodsId(goodsId);
+            cartItem=cartorderServiceImpl.queryCartItem(userInfo.getId(),goodsId);
+            model.addAttribute("cartItem",cartItem);
+            System.out.println(cartItem);
+            OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
+            orderDetailDTO.setNum(cartItem.getSumOfGoods());
+            orderDetailDTO.setGoodsId(goodsId);
+            orderlist.add(orderDetailDTO);
+            System.out.println(orderDetailDTO.toString());
+
+            allPrice=allPrice+cartItem.getSumOfGoods()*cartItem.getPrice();
+            model.addAttribute("allPrice",allPrice);
+            System.out.println("总价"+allPrice);
+        }
+        model.addAttribute("userInfo",userInfo);
+        System.out.println(userInfo);
+        session.setAttribute("orderlist",orderlist);
+        //model.addAttribute("orderlist",orderlist);
+        return "pay";
+    }
+
+    @RequestMapping(value = "/commitOrder", method = RequestMethod.GET)
+    public String ConfirmOrder(HttpSession session,Model model,HttpServletRequest request){
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        String url = "commitOrder";
+        String reciver=request.getParameter("name");//获取收件人姓名
+        String reciverMobile=request.getParameter("phone");//收件人电话
+        String reciverAddress=request.getParameter("addr");//收件人地址
+        String reciverZip=request.getParameter("zip");//收件人邮政编码
+        String remark=request.getParameter("remark");//备注
+        String allPrice = request.getParameter("allPrice");
+        double actualPay = Double.valueOf(allPrice);
+        System.out.println(actualPay);
+        List<OrderDetailDTO> orderlist = (List<OrderDetailDTO>) session.getAttribute("orderlist");
+        for(OrderDetailDTO o:orderlist){
+            System.out.println(o);
+        }
+        System.out.println(reciver+" "+reciverAddress+""+reciverMobile+" "+reciverZip+" "+remark);
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setUserId(userInfo.getId());
+        orderDTO.setReceiver(reciver);
+        orderDTO.setReceiverZip(reciverZip);
+        orderDTO.setReceiverMobile(reciverMobile);
+        orderDTO.setReceiverAddress(reciverAddress);
+        orderDTO.setBuyerMessage(remark);
+        orderDTO.setActualPay(actualPay);
+        orderDTO.setPostFee(6);
+
+        System.out.println(orderDTO.toString());
+        boolean flag = orderServiceImpl.createOrder(orderDTO,orderlist);
+        if(flag == false){
+            model.addAttribute("state","订单提交失败");
+            url = "cart";
+            List<CartItem> getAllOrder = cartorderServiceImpl.getAllCart(userInfo.getId());
+            model.addAttribute("getAllOrder", getAllOrder);
+        }else {
+            model.addAttribute("state","订单提交成功");
+            Order order = orderServiceImpl.TheNewOrderBypay();
+            Order order2 = orderServiceImpl.queryAllUserOrderDetail(order.getOrderId());
+            model.addAttribute("order",order2);
+        }
+        return "commitOrder";
     }
 
 }

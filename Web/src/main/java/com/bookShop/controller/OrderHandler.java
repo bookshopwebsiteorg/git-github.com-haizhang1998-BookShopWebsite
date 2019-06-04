@@ -1,5 +1,6 @@
 package com.bookShop.controller;
 
+import com.bookShop.mapper.OrderMapper;
 import com.bookShop.service.GoodService;
 import com.bookShop.service.OrderService;
 import com.github.pagehelper.PageHelper;
@@ -7,15 +8,18 @@ import com.github.pagehelper.PageInfo;
 import com.haizhang.DTO.OrderDTO;
 import com.haizhang.DTO.OrderDetailDTO;
 import com.haizhang.entity.*;
+import com.sun.media.sound.SoftLowFrequencyOscillator;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.annotation.Resource;
+
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +34,8 @@ import java.util.List;
 public class OrderHandler {
     @Resource
     OrderService orderServiceImpl;
-
+    @Resource
+    GoodsHandler goodsHandler;
 
     /**
      * 进入订单界面
@@ -159,8 +164,18 @@ public class OrderHandler {
         return url;
     }
 
-
-
+    //付款方式
+    @RequestMapping(value = "/updatePaymentType/{orderId}/{paymentType}",method = RequestMethod.GET)
+    public String updatePaymentType(@PathVariable long orderId, @PathVariable int paymentType,Model model,HttpServletRequest request){
+        boolean flag = orderServiceImpl.updatePaymentType(orderId,paymentType);
+        boolean flag2 = orderServiceImpl.updatePaymentTime(orderId);
+        boolean flag3 = orderServiceImpl.modifyUserOrderStatus(orderId,2);
+        if(flag == false){
+            model.addAttribute("state","支付失败");
+        }
+        model.addAttribute("state","支付成功");
+        return "forward:/goods/homepage";
+    }
 
 
     /*************************************商家****************************************************/
