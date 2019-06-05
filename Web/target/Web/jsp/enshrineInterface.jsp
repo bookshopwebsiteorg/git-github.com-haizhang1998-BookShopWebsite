@@ -169,8 +169,12 @@
                         <li><a href="#">消息<span class="badge">0</span></a></li>
 
                         <c:if test="${sessionScope.userInfo.merchantFlag==0}">
-                            <li>
-                                <a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
+                                    <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
+                                </ul>
                             </li>
                         </c:if>
 
@@ -183,10 +187,13 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/goods/queryAllEnshrineGoods">收藏夹</a></li>
                                 <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-                                <li><a href="#">我的足迹</a></li>
-                                <li><a href="#">我的订单</a></li>
+                                <li><a href="/goods/myfootprint">我的足迹</a></li>
+                                <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
+
+
                             </ul>
                         </li>
+                        <li><a href="/goods/homepage">首页</a></li>
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right" style="margin-right: 30px" >

@@ -1,16 +1,16 @@
 package com.haizhang.entity;
-
-import java.sql.Date;
+import java.util.Date;
 
 
 /**
  * @author Austin
  * @date 2019/5/25
+ * 订单状态
  */
 public class OrderStatus{
     private Long orderId;     //订单id
     private int status;   //状态  1：未付款  2：已付款，未发货  3：已发货，未确认  4；交易成功   5：交易取消  6：已经评价   // 7:提醒发货
-    private int backpay=0;      //退款/退货标记位   0:未申请  1：退款申请  2:退货申请   3：退款成功  4：不同意退款  5：同意退货   6：不同退货   7：等待卖家退货审核  8：退货成功  9：退货失败
+    private int backpay;      //退款/退货标记位   0:未申请  1：退款申请  2:退货申请   3：退款成功  4：不同意退款  5：同意退货   6：不同退货   7：等待卖家退货审核  8：退货成功  9：退货失败
     private Date createTime;  //订单创建时间
     private Date paymentTime; //付款时间
     private Date consignTime; //发货时间

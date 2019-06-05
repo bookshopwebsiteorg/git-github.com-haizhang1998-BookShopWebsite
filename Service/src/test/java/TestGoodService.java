@@ -54,13 +54,11 @@ public class TestGoodService {
              System.out.println(r);
     }
 
-    //实现商品名、商品类型、上传时间、地址的模糊查询
+    //实现商品名的模糊查询
     @Test
     public void  TestqueryGoodsInVague(){
-        GoodsInfo goodsInfo=new GoodsInfo();
-
-        List<GoodsInfo> goodsInfos=goodService.queryGoodsInVague(goodsInfo);
-        for(GoodsInfo r:goodsInfos)
+        List<GoodsInfo> goodsInfo=goodService.queryGoodsInVague("小");
+        for(GoodsInfo r:goodsInfo)
             System.out.println(r);
     }
 

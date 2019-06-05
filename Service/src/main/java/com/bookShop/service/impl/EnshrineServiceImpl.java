@@ -106,4 +106,9 @@ public class EnshrineServiceImpl implements EnshrineService {
     public int queryIsHaveId(int goodsId, int userId) {
         return enshrineMapper.queryIsHaveId(goodsId,userId);
     }
+
+    @Override
+    public boolean deleteAllEnshrine(int userId) {
+        return enshrineMapper.deleteAllEnshrine(userId);
+    }
 }

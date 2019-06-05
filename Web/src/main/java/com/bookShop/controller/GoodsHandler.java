@@ -1,17 +1,23 @@
 package com.bookShop.controller;
-
 import com.bookShop.service.*;
+import com.haizhang.entity.CommentItem;
+import com.haizhang.entity.GoodsInfo;
+import com.haizhang.entity.MerchantShop;
+import com.haizhang.entity.SaledInfo;
 import com.haizhang.entity.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/goods")
@@ -25,11 +31,16 @@ public class GoodsHandler {
     @Resource
     CommentService commentServiceImpl;
     @Resource
+    FootPrintService footPrintServiceImpl;
+    @Resource
+    MerchantShopService merchantShopServiceImpl;
+    @Resource
     EnshrineService enshrineServiceImpl;
     @Resource
     OrderService orderServiceImpl;
     @Resource
     UserService userServiceImpl;
+
 
     public GoodsHandler(){}
     public GoodsHandler(GoodService goodService){
@@ -74,6 +85,7 @@ public class GoodsHandler {
     }
 
 
+
     /**
      *购买书籍打开书本的详细界面
      * @param goodsId
@@ -81,32 +93,167 @@ public class GoodsHandler {
      * @return
      */
     @RequestMapping(value = "/buy/{goodsId}",method = RequestMethod.GET)
-    public String GoodsDetailForm(@PathVariable int goodsId,Model model){
+    public String GoodsDetailForm(@PathVariable int goodsId,Model model, Date time, HttpSession session){
         //根据goodsId和goodsName寻找指定书本
         GoodsInfo goodsInfo=new GoodsInfo();
         goodsInfo.setGoodsId(goodsId);
-        model.addAttribute("goodsInfo",  goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo));
+        goodsInfo=goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo);
+        model.addAttribute("goodsInfo",  goodsInfo);
         //寻找该书本的全部评价列表
         List<CommentItem> commentItemLists=commentServiceImpl.getAllCommentOfGood(goodsId);
         model.addAttribute("commentLists",commentItemLists);
         //获取该书本的销量情况
         SaledInfo saledInfo=saledGoodsServiceImpl.getSaledNumberById(goodsId);
         model.addAttribute("saledInfo",saledInfo);
+
+        //添加足迹
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        System.out.println("用户"+userInfo);
+        System.out.println("商品"+goodsInfo);
+        //boolean addFootPrint=footPrintServiceImpl.addFootPrint(goodsId,userInfo.getId(),goodsInfo.getGoodsName(),goodsInfo.getImgDir(),time);
+        boolean addFootPrint=footPrintServiceImpl.addFootPrint(goodsId,userInfo.getId(),goodsInfo.getGoodsName(),goodsInfo.getImgDir(),new Date((new java.util.Date().getTime())));
+        model.addAttribute("addFootPrint",addFootPrint);
+
         //转到商品详细界面
         return "goodsInterface";
     }
 
     /**
      *
-     * @param goodsId
+     * @param
      * @param model
      * @return
      */
-    @RequestMapping("/searchGoods/{goodsId}")
-    public String searchGoods(@PathVariable int goodsId,Model model){
-        System.err.println("search:"+goodsId);
+    @RequestMapping(value ="/searchGoods/{goodsName}",method = RequestMethod.GET)
+    public String searchGoods(@PathVariable String goodsName, Model model){
+        System.out.println("search:"+goodsName);
         return "homePage";
     }
+
+    /**
+     * 获取所有足迹
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value = {"/myfootprint"})
+    public String myFootPrint(Model model, HttpSession session){
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        System.out.println(userInfo);
+        Map<String,List<FootPrintItem>> allFootPrint=footPrintServiceImpl.getAllFootPrint(userInfo.getId());
+        model.addAttribute("allFootPrint",allFootPrint);
+        return "myFootPrint";
+    }
+
+    /**
+     * 删除足迹
+     * @param goodsId
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping("/delFootPrint/{goodsId}")
+    public String delFootPrint(@PathVariable int goodsId, Model model, HttpSession session) {
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        System.out.println("用户"+userInfo);
+        GoodsInfo goodsInfo = new GoodsInfo();
+        goodsInfo.setGoodsId(goodsId);
+        boolean delFootPrint = footPrintServiceImpl.delFootPrint(userInfo.getId(), goodsId);
+        if (delFootPrint == true) {
+            Map<String,List<FootPrintItem>>allFootPrint = footPrintServiceImpl.getAllFootPrint(userInfo.getId());
+            model.addAttribute("allFootPrint", allFootPrint);
+        }
+        return "myFootPrint";
+    }
+
+    /**
+     * 模糊查询商家/货物
+     * @param request
+     * @param model
+     * @param session
+     * @return
+     */
+    @RequestMapping(value="/searchGoods",method = RequestMethod.POST)
+    public String searchGoods(HttpServletRequest request,Model model,HttpSession session){
+        String search=request.getParameter("searchgoods");
+        System.out.println(search);
+        //模糊查询货物
+        List<GoodsInfo> goodsInfo=goodServiceImpl.queryGoodsInVague(search);
+        model.addAttribute("goodsInfo",goodsInfo);
+        //模糊查询商家
+        List<MerchantShop> merchantShop=merchantShopServiceImpl.getShopByName(search);
+        model.addAttribute("merchantShop",merchantShop);
+        return "searchGoods";
+    }
+
+
+    /**
+     * 在商品详情页面的点击收藏事件
+     * @param goodsId
+     * @param session
+     * @param model
+     * @return
+     */
+    @RequestMapping("/enshrineIndetail/{goodsId}")
+    public String enshrine(@PathVariable int goodsId, HttpSession session,Model model){
+        UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
+        int id=userInfo.getId();
+        if(enshrineServiceImpl.queryIsHaveId(goodsId,id)==0) {
+            enshrineServiceImpl.addEnshrineGood(id, goodsId);
+            enshrineServiceImpl.addupdateNameAndPriceById(goodsId);
+            model.addAttribute("enshrine_state", "收藏成功");
+
+            //根据goodsId和goodsName寻找指定书本
+            GoodsInfo goodsInfo=new GoodsInfo();
+            goodsInfo.setGoodsId(goodsId);
+            goodsInfo=goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo);
+            model.addAttribute("goodsInfo",  goodsInfo);
+            //寻找该书本的全部评价列表
+            List<CommentItem> commentItemLists=commentServiceImpl.getAllCommentOfGood(goodsId);
+            model.addAttribute("commentLists",commentItemLists);
+            //获取该书本的销量情况
+            SaledInfo saledInfo=saledGoodsServiceImpl.getSaledNumberById(goodsId);
+            model.addAttribute("saledInfo",saledInfo);
+
+            //添加足迹
+            System.out.println("用户"+userInfo);
+            System.out.println("商品"+goodsInfo);
+            //boolean addFootPrint=footPrintServiceImpl.addFootPrint(goodsId,userInfo.getId(),goodsInfo.getGoodsName(),goodsInfo.getImgDir(),time);
+            boolean addFootPrint=footPrintServiceImpl.addFootPrint(goodsId,userInfo.getId(),goodsInfo.getGoodsName(),goodsInfo.getImgDir(),new Date((new java.util.Date().getTime())));
+            model.addAttribute("addFootPrint",addFootPrint);
+
+            //转到商品详细界面
+            return "goodsInterface";
+            //model.addAttribute("enshrine_state","收藏成功"+goodsId);
+            /*return "homePage";*/
+        }else {
+
+            //根据goodsId和goodsName寻找指定书本
+            GoodsInfo goodsInfo=new GoodsInfo();
+            goodsInfo.setGoodsId(goodsId);
+            goodsInfo=goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo);
+            model.addAttribute("goodsInfo",  goodsInfo);
+            //寻找该书本的全部评价列表
+            List<CommentItem> commentItemLists=commentServiceImpl.getAllCommentOfGood(goodsId);
+            model.addAttribute("commentLists",commentItemLists);
+            //获取该书本的销量情况
+            SaledInfo saledInfo=saledGoodsServiceImpl.getSaledNumberById(goodsId);
+            model.addAttribute("saledInfo",saledInfo);
+
+            //添加足迹
+            System.out.println("用户"+userInfo);
+            System.out.println("商品"+goodsInfo);
+            //boolean addFootPrint=footPrintServiceImpl.addFootPrint(goodsId,userInfo.getId(),goodsInfo.getGoodsName(),goodsInfo.getImgDir(),time);
+            boolean addFootPrint=footPrintServiceImpl.addFootPrint(goodsId,userInfo.getId(),goodsInfo.getGoodsName(),goodsInfo.getImgDir(),new Date((new java.util.Date().getTime())));
+            model.addAttribute("addFootPrint",addFootPrint);
+
+            model.addAttribute("enshrine_state", "已经收藏过了");
+            return "goodsInterface";
+        }
+
+    }
+
+
 
 
     /**
@@ -133,6 +280,7 @@ public class GoodsHandler {
 
     }
 
+
     /**
      * 删除收藏
      * @param session
@@ -142,6 +290,8 @@ public class GoodsHandler {
      */
     @RequestMapping("/deleteEnshrineGoods/{goodsId}")
     public String deleteEnshrineGoods(HttpSession session,@PathVariable int goodsId ,Model model){
+
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
         int userId=userInfo.getId();
         enshrineServiceImpl.removeEnshrineGood(userId,goodsId);
@@ -199,6 +349,14 @@ public class GoodsHandler {
         return "comment";
     }
 
+    //根据用户id查询用户订单
+    @RequestMapping("/queryAllUserOrderByUserId")
+    public String queryAllUserOrderByUserId(Model model, HttpSession session) {
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        List<Order> list = orderServiceImpl.queryAllUserOrderByUserId(userInfo.getId());
+        model.addAttribute("list",list);
+        return "userOrderManage";
+    }
 
     /**
      * 提交评论
@@ -209,14 +367,15 @@ public class GoodsHandler {
      * @param model
      * @return
      */
-    @RequestMapping(value="/addComment/{remark}&{grade}&{goodsId}")
-    public String addComment(HttpSession session,@PathVariable String remark, @PathVariable String grade,@PathVariable String goodsId,Model model){
+    @RequestMapping(value="/addComment/{remark}&{grade}&{goodsId}&{orderIds}")
+    public String addComment(HttpSession session,@PathVariable String remark, @PathVariable String grade,@PathVariable String goodsId,@PathVariable String orderIds,Model model) {
         UserInfo userInfo = (UserInfo) session.getAttribute("userInfo");
-        int userId=userInfo.getId();
-        long orderId=orderServiceImpl.queryOrderIdByGoodsId(Integer.parseInt(goodsId));
-        GoodsInfo goodsInfo=new GoodsInfo();
+        int userId = userInfo.getId();
+        //long orderId=orderServiceImpl.queryOrderIdByGoodsId(Integer.parseInt(goodsId));
+        long orderId = new Long(orderIds);
+        GoodsInfo goodsInfo = new GoodsInfo();
         goodsInfo.setGoodsId(Integer.parseInt(goodsId));
-        CommentItem item=new CommentItem();
+        CommentItem item = new CommentItem();
         item.setImageLogo(goodServiceImpl.queryGoodsByGoodsInfo(goodsInfo).getImgDir());
         item.setNikeName(userServiceImpl.queryUserInfoById(userId).getNikeName());
         item.setTime(new Date());
@@ -225,24 +384,36 @@ public class GoodsHandler {
         item.setCommentDetail(remark);
         item.setScore(Integer.parseInt(grade));
         item.setOrderId(orderId);
+        //System.out.println(orderId);
         commentServiceImpl.sendCommentItem(item);
-        model.addAttribute("state","提交成功");
+        model.addAttribute("state", "提交成功");
+        //List<String> goodsIdNoRateList=new ArrayList<String>();
 
         //一个订单中没有评价的goodsId
-        List<String> goodsIdNoRateList=orderServiceImpl.queryGoodIdHaveNotRateByOrderId(orderServiceImpl.queryOrderIdByGoodsId(Integer.parseInt(goodsId)));
+        List<String>  goodsIdNoRateList = orderServiceImpl.queryGoodIdHaveNotRateByOrderId(orderId);  //?
 
-        if(goodsIdNoRateList.size()==0){
-            orderServiceImpl.modifyUserOrderStatus(orderId,6);
-            return "finishCommentPage";    //订单全部商品评论完跳转的页面
-        }else{
-            List<OrderDetail> orderDetails=new ArrayList<>();
-            for(int i=0;i<goodsIdNoRateList.size();i++)
-            {
-                orderDetails.add(orderServiceImpl.queryOrderDetailByGoodsId(Integer.parseInt(goodsIdNoRateList.get(i))));
+        if (goodsIdNoRateList.size() == 0 || goodsIdNoRateList == null || goodsIdNoRateList.isEmpty()) {
+            orderServiceImpl.modifyUserOrderStatus(orderId, 6); //订单货物评价全部完成，订单修改状态，已经完成评价
+
+            //return "aaa";    //订单全部商品评论完跳转的页面
+            /*model.addAttribute("comment_state","已完成评论");*/
+            String url = queryAllUserOrderByUserId(model, session);
+            //return url;    //订单全部商品评论完跳转的页面
+            return "finishCommentPage";
+        } else {
+            //订单中还有商品没评论完，继续评论
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            for (int i = 0; i < goodsIdNoRateList.size(); i++) {
+
+                orderDetails.add(orderServiceImpl.queryOrderDetailByGoodsId(Integer.parseInt(goodsIdNoRateList.get(i)),orderId));
+
             }
-            model.addAttribute("orderDetails",orderDetails);
+            model.addAttribute("comment_state", "提交成功");
+            model.addAttribute("orderDetails", orderDetails);
             return "commentContinue";
         }
-        //System.out.println(remark+"+"+grade+"+"+goodsId);
+
+
     }
+
 }

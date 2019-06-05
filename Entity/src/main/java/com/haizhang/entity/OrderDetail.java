@@ -3,14 +3,16 @@ package com.haizhang.entity;
 /**
  * @author Austin
  * @date 2019/5/25
+ * 订单详情
  */
 public class OrderDetail {
     private Long id;
     private Long orderId; //订单编号
     private int goodsId;  //商品编号
     private int num;  //购买数量
-    private String detail; //商品描述
     private double price;   //商品单价
+
+    private String detail; //商品描述
     private String image;   //商品图片
     private String shopName;  //店铺名
     private String goodsName; //商品名

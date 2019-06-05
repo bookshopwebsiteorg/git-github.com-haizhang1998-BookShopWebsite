@@ -1,10 +1,7 @@
 package com.bookShop.mapper;
-import com.haizhang.entity.GoodsInfo;
 import com.haizhang.entity.MerchantShop;
-import com.haizhang.entity.OrderItem;
 import org.apache.ibatis.annotations.Param;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface MerchantMapper {
@@ -22,7 +19,7 @@ public interface MerchantMapper {
 
 
     //查询所有订单
-    public List<OrderItem> getAllUserOrder(int merchantId);
+    //public List<OrderItem> getAllUserOrder(int merchantId);
 
     //查询热销量前x的店铺
     public List<MerchantShop>getRankShop(int number);

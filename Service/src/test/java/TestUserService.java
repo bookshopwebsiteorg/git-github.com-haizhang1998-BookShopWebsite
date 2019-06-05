@@ -49,9 +49,10 @@ public class TestUserService {
     public void testQueryUserInfo()throws Exception{
         UserInfo userInfo=new UserInfo();
         UserInfo user=new UserInfo();
-        user.setUsername("2368521029@qq.com");
-        userInfo=userServiceImpl.queryUserInfo(user);
-        System.out.println(userInfo);
+        user.setNikeName("克");
+        user.setNikeName("克");
+        List<UserInfo> userInfos=userServiceImpl.queryUserInfo(user);
+        System.out.println(userInfos);
 
     }
 

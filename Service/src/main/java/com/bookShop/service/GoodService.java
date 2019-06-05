@@ -21,7 +21,7 @@ public interface GoodService {
     public List<GoodsInfo> getAllNewGood();
 
     //实现商品名、商品类型、地址的模糊查询
-    public List<GoodsInfo>  queryGoodsInVague(GoodsInfo goodsInfo);
+    public List<GoodsInfo>  queryGoodsInVague(String goodsName);
     //得到商铺所有商品
     public List<GoodsInfo> queryShopGoods(int merchantId);
 

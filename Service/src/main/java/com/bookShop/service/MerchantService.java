@@ -1,10 +1,7 @@
 package com.bookShop.service;
 
-import com.haizhang.entity.GoodsInfo;
 import com.haizhang.entity.MerchantShop;
-import com.haizhang.entity.OrderItem;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface MerchantService {
@@ -22,7 +19,7 @@ public interface MerchantService {
     public boolean sendGood(int goodsId, int userId, int merchantId, int payFlag);
 
     //查询所有订单
-    public List<OrderItem> getAllUserOrder(int merchantId);
+    //public List<OrderItem> getAllUserOrder(int merchantId);
 
     //查询热销量前x的店铺
     public List<MerchantShop>getRankShop(int number);

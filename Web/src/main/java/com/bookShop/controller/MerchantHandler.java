@@ -96,7 +96,7 @@ public class MerchantHandler {
 
         boolean flag=goodService.updateGoodsPrice(goodsInfo.getGoodsId(),goodsInfo.getPrice());
         //更新收藏货物价格
-        flag=flag&&enshrineService.updatePriceFlagStatus(goodsInfo.getPrice(),oldPrice,goodsInfo.getGoodsId());
+        enshrineService.updatePriceFlagStatus(goodsInfo.getPrice(),oldPrice,goodsInfo.getGoodsId());
         return flag? "{\"msg\":\"更新成功\"}": "{\"msg\":\"更新失败,请重试！\"}";
     }
 
@@ -151,19 +151,15 @@ public class MerchantHandler {
        //仓库下架货物
        boolean flag=goodService.downGoods(goodsInfo.getGoodsId(),goodsInfo.getPossesserId());
        //修改收藏列表
-       if(flag)
-           flag=enshrineService.updateValidStatus(goodsInfo.getGoodsId());
+           enshrineService.updateValidStatus(goodsInfo.getGoodsId());
 
        return flag?"{\"msg\":\"下架成功!\"}":"{\"msg\":\"下架是失败!请检查是否该货物已被下架！\"}";
     }
 
 
-
-
-
-        /**
-         * 上架货物
-         */
+    /**
+     * 上架货物
+     */
     @RequestMapping(value ="/upGoods",produces ="application/json;charset=utf-8")
     @ResponseBody
     public Map<String,String> upGoods(MultipartFile img, @Valid GoodsInfo goodsInfo, BindingResult bindingResult) throws IOException {

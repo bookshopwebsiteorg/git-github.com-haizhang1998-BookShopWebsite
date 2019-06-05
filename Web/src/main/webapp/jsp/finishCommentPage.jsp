@@ -8,9 +8,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>订单完成评价中转页面</title>
 </head>
 <body>
-这是订单全部商品评论完成的页面
+<br><br>
+<hr>
+<p style="font-size: 20px">成功提交，该订单所有商品已完成评价，</p>
+<a href="/order/queryAllUserOrderByUserId" ><p style="font-size: 25px">三秒后将跳转至订单页面，如未跳转请点击这里。。。</p></a>
+<hr>
+<%--<%
+    response.sendRedirect("/order/queryAllUserOrderByUserId");
+%>--%>
+<script>
+window.setTimeout("window.location='/order/queryAllUserOrderByUserId'",3200);
+</script>
+
 </body>
 </html>

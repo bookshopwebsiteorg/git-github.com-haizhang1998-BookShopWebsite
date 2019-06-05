@@ -31,10 +31,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfo queryUserInfo(UserInfo userInfo)throws Exception {
-        UserInfo user=userMapper.queryUserInfo(userInfo);
-        if(user==null)throw new QueryUserException("用户不存在，请检查信息是否正确！");
-        return user;
+    public List<UserInfo> queryUserInfo(UserInfo userInfo)throws Exception {
+        List<UserInfo> users=userMapper.queryUserInfo(userInfo);
+        if(users.isEmpty())throw new QueryUserException("用户不存在，请检查信息是否正确！");
+        return users;
+
     }
 
     @Override

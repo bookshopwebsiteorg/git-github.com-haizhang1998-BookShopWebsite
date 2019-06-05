@@ -202,7 +202,7 @@ $("#ratingId").rating({min:0, max:5, step:1, size:'lg'});
                             <li><a href="/goods/queryAllEnshrineGoods" target="_blank">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
                             <li><a href="#">我的足迹</a></li>
-                            <li><a href="#">我的订单</a></li>
+                            <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -240,7 +240,7 @@ $("#ratingId").rating({min:0, max:5, step:1, size:'lg'});
         <c:forEach varStatus="index" var="orderDetails" items="${order.orderDetails}">
                 <div class="row">
                     <div class="thumbnail col-md-12">
-                        <div class="col-md-2 text-center"> <a href="#" class="thumbnail"><img src="${orderDetails.image}" style="width: 134px;height: 180px" alt="图片" class="tab_img"/></a></div>
+                        <div class="col-md-2 text-center"> <a href="/goods/buy/${orderDetails.goodsId}" target="_blank" class="thumbnail"><img src="${orderDetails.image}" style="width: 134px;height: 180px" alt="图片" class="tab_img"/></a></div>
                         <div class="col-md-2">
                             <br><br><br>
                             <strong>${orderDetails.goodsName}</strong><br><br>
@@ -273,7 +273,7 @@ $("#ratingId").rating({min:0, max:5, step:1, size:'lg'});
                         </div>
                         <div class="col-md-2 text-center">
                             <br><br><br>
-                            <button id="submitButton_${orderDetails.goodsId}" class="btn btn-primary" type="submit" onclick="addComment(${orderDetails.goodsId})">提交评价</button></div>
+                            <button id="submitButton_${orderDetails.goodsId}" class="btn btn-primary" type="submit" onclick="addComment(${orderDetails.goodsId},'${orderDetails.orderId.toString()}')">提交评价</button></div>
                     </div>
                 </div>
         </c:forEach>
@@ -283,19 +283,27 @@ $("#ratingId").rating({min:0, max:5, step:1, size:'lg'});
 <script>
 
 
-   function addComment(goodsId){
+   function addComment(goodsId,orderId){
        var remark=$('#remark_'+goodsId).val();
        var grade=$('#grade_'+goodsId+' input:radio:checked').val();
 
        if(grade==null||remark==''||remark.length<3||remark==null){
            alert("请先确保评论和评分已填写完成（评论不可少于3个字符）");
        }else {
+           window.location.href="/goods/addComment/"+remark+"&"+ grade+"&"+goodsId+"&"+orderId;
 
-           window.location.href="/goods/addComment/"+remark+"&"+ grade+"&"+goodsId;
 
        }
    }
 </script>
+
+
+
+
+
+
+
+
 
 <section id="FooterSection">
     <div class="page-header" style="background: black;color:white;padding-top: 1px">

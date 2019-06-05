@@ -77,5 +77,9 @@
         select count(goodsId) from enshrine where goodsId=#{goodsId} and id = #{userId}
     </select>
 
-
+    <!--//根据用户id 全部删除收藏
+    public boolean deleteAllEnshrine(@Param("userId")int userId);-->
+    <delete id="deleteAllEnshrine">
+        delete from enshrine where id=#{userId} ;
+    </delete>
 </mapper>

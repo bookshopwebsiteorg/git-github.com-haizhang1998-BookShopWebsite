@@ -11,8 +11,8 @@ public interface UserService {
     public String registUserInfo(UserInfo userInfo)throws Exception;
     //登录
     public UserInfo loginUser( String username, String password)throws Exception;
-    //查询指定用户
-    public  UserInfo queryUserInfo(UserInfo userInfo)throws Exception;
+    //查询用户
+    public  List<UserInfo> queryUserInfo(UserInfo userInfo)throws Exception;
     //根据用户id获取用户
     public UserInfo queryUserInfoById(int id)throws UserNotFoundException;
 

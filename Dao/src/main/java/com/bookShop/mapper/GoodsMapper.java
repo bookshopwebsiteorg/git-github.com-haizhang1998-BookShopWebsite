@@ -20,8 +20,8 @@ public interface GoodsMapper {
     //得到所有新上架的商品
     public List<GoodsInfo> getAllNewGood();
 
-    //实现商品名、商品类型、地址的模糊查询(vague是模糊的意思)
-    public List<GoodsInfo> queryGoodsInVague(GoodsInfo goodsInfo);
+    //实现商品名的模糊查询(vague是模糊的意思)
+    public List<GoodsInfo> queryGoodsInVague(@Param("goodsName") String goodsName);
 
      //得到商铺所有商品
     public List<GoodsInfo> queryShopGoods(@Param("merchantId") int merchantId);

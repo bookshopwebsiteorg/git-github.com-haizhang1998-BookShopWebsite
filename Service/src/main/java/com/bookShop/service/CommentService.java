@@ -15,10 +15,10 @@ public interface CommentService {
 
     //删除评价
 
-    public boolean deleteCommentItem( int userId,  int goodsId);
+    public boolean deleteCommentItem(int userId, int goodsId);
 
     //得到某一个用户对商品的评价，可以判断是否追加评价
-    public CommentItem  getOneUserComment( int userId,  int goodsId);
+    public CommentItem  getOneUserComment(int userId, int goodsId);
 
 
 }

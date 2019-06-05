@@ -114,7 +114,6 @@
     <h1 style="color: black">会员登录界面</h1>
     <!--如果登录失败，则打印失败信息-->
 
-
     <c:if test="${state!=null}">
         <p style="color: red"><em style="font-size: 18px;font-style: normal">
                 ${state}

@@ -192,6 +192,10 @@
 
     });
 </script>
+<%--收藏提示--%>
+<c:if test="${enshrine_state!=null}">
+    <script>alert("${enshrine_state}")</script>
+</c:if>
 <body>
 <!-- 导航栏div -->
 <section id="navbarSection">
@@ -211,27 +215,49 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-
-                    <li><a href="#">
+                    <li>
+                        <c:choose>
+                        <c:when test="${sessionScope.userInfo==null}">
+                        <a href="/user/login">
                     <li>亲，请登录</li>
                     <span class="sr-only">(current)</span></a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/user/revise">
+                            <li>欢迎，${sessionScope.userInfo.nikeName}</li>
+                            <span class="sr-only">(current)</span></a>
+                    </c:otherwise>
+                    </c:choose>
                     </li>
+                    <c:if test="${sessionScope.userInfo!=null}">
+                        <li><a href="/chat/chatPage">消息<span class="badge">${sessionScope.tmpmsgNumber}</span></a></li>
+                    </c:if>
+                    <c:if test="${sessionScope.userInfo.merchantFlag==0}">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
+                                <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
+                            </ul>
+                        </li>
+                    </c:if>
 
-                    <li><a href="#">消息</a></li>
-                    <li><a href="#">店铺管理</a></li>
-                    <li><a href="#">我要开店</a></li>
+                    <c:if test="${sessionScope.requestRecordShop==null && sessionScope.userInfo.merchantFlag!=0}">
+                        <li><a onclick="openShop()">我要开店</a></li>
+                    </c:if>
 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">收藏夹</a></li>
-                            <li><a href="#">我的足迹</a></li>
-                            <li><a href="#">我的订单</a></li>
+                            <li><a href="/goods/queryAllEnshrineGoods">收藏夹</a></li>
+                            <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
+                            <li><a href="/goods/myfootprint">我的足迹</a></li>
+                            <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
+                    <li><a href="/goods/homepage">首页</a></li>
                 </ul>
-
-                <ul class="nav navbar-nav" style="margin-left: 500px">
+                <ul class="nav navbar-nav navbar-right" style="margin-right: 30px" >
                     <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
                     <li><a href="/user/logout">注销</a></li>
@@ -278,8 +304,8 @@
                             <div class="caption">
                                 <h3 class="text-center">${goodsInfo.goodsName}</h3>
                                 <p class="text-center">声明:此书绝对正版，读者朋友们请放心购买！</p>
-                                <p><a href="/goods/enshrine/${goodsInfo.goodsId}" class="btn btn-danger col-md-6" role="button">点击收藏</a>
-                                    <a href="/merchant/chat/${goodsInfo.possesserId}" class="btn btn-primary  col-md-6"  role="button">联系卖家</a>
+                                <p><a href="/goods/enshrineIndetail/${goodsInfo.goodsId}" class="btn btn-danger col-md-6" role="button">点击收藏</a>
+                                    <a href="/chat/singleTalkAddFriend/${sessionScope.userInfo.id}/${goodsInfo.possesserId}" class="btn btn-primary  col-md-6"  role="button">联系卖家</a>
                                 </p>
                             </div>
                         </div>

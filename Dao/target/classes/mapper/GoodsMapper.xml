@@ -61,7 +61,7 @@
                  or  goodsName like #{_goodsName}
              </if>
              <if test="type!=null and type.trim()!=null">
-                 or type like '%${type}%'
+                 or type like #{_type}
              </if>
 
          </trim>
@@ -89,14 +89,11 @@
         </select>
 
 
-<!--    //实现商品名、商品类型、地址的模糊查询-->
-<!--    public List<GoodsInfo>  queryGoodsInVague(String goodsName, String type);-->
-        <select id="queryGoodsInVague" resultMap="goodsInfoMap">
-           <include refid="bindSql"></include>
-           select * from goods
-           <include refid="queryGoodsInVagueSql">
-           </include>
-        </select>
+<!--    //实现商品名的模糊查询-->
+        <select id="queryGoodsInVague" resultMap="goodsInfoMap" resultType="java.lang.String">
+            select * from goods where goodsName LIKE "%${goodsName}%";
+    <!-- select * from goods where goodsName LIKE '%'#{goodsName}'%';-->
+ </select>
 <!--    //得到商铺所有商品-->
 <!--    public List<GoodsInfo> queryShopGoods(int merchantId);-->
         <select id="queryShopGoods" resultMap="goodsInfoMap">

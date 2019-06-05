@@ -44,9 +44,10 @@ public class GoodServiceImpl implements GoodService {
         return goodsMapper.getAllNewGood();
     }
 
+    //模糊查询货物
     @Override
-    public List<GoodsInfo>  queryGoodsInVague(GoodsInfo goodsInfo) {
-        return goodsMapper.queryGoodsInVague(goodsInfo);
+    public List<GoodsInfo>  queryGoodsInVague(String goodsName) {
+        return goodsMapper.queryGoodsInVague(goodsName);
     }
 
 

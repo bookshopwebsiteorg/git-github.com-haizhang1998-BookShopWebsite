@@ -20,20 +20,13 @@
 
     <!--查询用户常用sql-->
     <sql id="queryUserSql">
-        <where>
             <if test="username!=null and username.trim()!=''.toString()">
                 username=#{username}
             </if>
             <if test="id>0">
-                and id = #{id}
+                or id = #{id}
             </if>
-            <if test="name!=null and name.trim()!=''.toString()">
-                and name = #{name}
-            </if>
-            <if test="nikeName!=null and nikeName.trim()!=''.toString()">
-                and nikeName = #{nikeName}
-            </if>
-        </where>
+
     </sql>
     <!--更新常用sql片段!-->
     <sql id="updateSql">
@@ -72,10 +65,26 @@
           <select id="loginUser" resultMap="userInfoResMap" >
               select * from user where username=#{username} and password=#{password}
           </select>
-<!--    public  UserInfo queryUserInfo(@Param("userInfo")UserInfo userInfo);-->
+
+
+<!--    public List<UserInfo> queryUserInfo(@Param("userInfo")UserInfo userInfo);-->
           <select id="queryUserInfo" resultMap="userInfoResMap">
+              <if test="name!=null and name.toString().trim()!=null">
+                <bind name="_name" value="'%'+name+'%'"></bind>
+              </if>
+              <if test="nikeName!=null and nikeName.trim()!=''.toString()">
+              <bind name="_nikeName" value="'%'+nikeName+'%'"></bind>
+              </if>
               select * from user
-              <include refid="queryUserSql"></include>
+              <where>
+                  <include refid="queryUserSql"></include>
+                  <if test="name!=null and name.trim()!=''.toString()">
+                      or name like #{_name}
+                  </if>
+                  <if test="nikeName!=null and nikeName.trim()!=''.toString()">
+                      or nikeName like #{_nikeName}
+                  </if>
+              </where>
           </select>
 
 <!--    public  List<UserInfo> queryAllUserInfo-->

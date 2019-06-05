@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 /**
  * 测试时间：2019/5/6
- * 测试人员: 罗海章
+ * 测试人员: 黄骏杰
  * 测试货物相关的service接口
  */
 @RunWith(SpringJUnit4ClassRunner.class)

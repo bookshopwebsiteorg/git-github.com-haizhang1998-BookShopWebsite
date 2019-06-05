@@ -7,7 +7,7 @@ package com.haizhang.entity;
  * Time: 15:42
  * Description: No Description
  */
-public class EnshrineItemPacking extends EnshrineItem{
+public class EnshrineItemPacking extends EnshrineItem {
     private String imgDir;
     /*private String goodsName; //货物名称
     private double price; //价格*/

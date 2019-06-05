@@ -19,15 +19,15 @@
 </head>
 <script>
     function goSearch(){
-        var address="good.do"
-        if($("#searchGoodsText").val()=="请输入关键字") {
+        var address="/goods/searchGoods/"
+        if($("#searchGoodsText").val() == Search) {
             location.href ="#";
         }
         else{
             var search=$("#searchGoodsText").val();
-            var require=$("#require").val();
-            location.href = address+"?search="+search+"&require="+require+"&action=queryGoods";
+            location.href = address+search;
         }
+        //window.location.href="/goods/searchGoods";
     }
 
     function  openShop() {
@@ -37,7 +37,6 @@
     }
 
 </script>
-
 
 <style>
 
@@ -117,7 +116,7 @@
 
 </style>
 <body>
-<%--收藏成功/收藏过了--%>
+<%--收藏成功--%>
 <c:if test="${enshrine_state!=null}">
     <script>alert("${enshrine_state}")</script>
 </c:if>
@@ -138,13 +137,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-
             </div>
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-
                     <li>
                         <c:choose>
                         <c:when test="${sessionScope.userInfo==null}">
@@ -159,11 +155,16 @@
                          </c:otherwise>
                          </c:choose>
                     </li>
-                    <li><a href="#">消息<span class="badge">0</span></a></li>
-
+                    <c:if test="${sessionScope.userInfo!=null}">
+                        <li><a href="/chat/chatPage">消息<span class="badge">${sessionScope.tmpmsgNumber}</span></a></li>
+                    </c:if>
                     <c:if test="${sessionScope.userInfo.merchantFlag==0}">
-                        <li>
-                            <a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
+                                <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
+                            </ul>
                         </li>
                     </c:if>
 
@@ -176,15 +177,15 @@
                         <ul class="dropdown-menu">
                             <li><a href="/goods/queryAllEnshrineGoods" target="_blank">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-                            <li><a href="#">我的足迹</a></li>
-                            <li><a href="#">我的订单</a></li>
+                            <li><a href="/goods/myfootprint">我的足迹</a></li>
+                            <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
                 </ul>
-
-                <ul class="nav navbar-nav" style="margin-left: 500px">
+                <  <ul class="nav navbar-nav navbar-right" style="margin-right: 30px" >
                     <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
+                    <li><a href="/goods/homepage">返回首界面</a> </li>
                     <li><a href="/user/logout">注销</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -196,17 +197,16 @@
     <div class="container" >
         <div class="row">
             <img src="/images/logo.jpg" class="pull-left"><span class="searchFont col-md-2" style="margin-top: 40px">海淘商城</span>
-            <div >
-                <form class="form-horizontal">
+
+                <form class="form-horizontal" style="margin-top: 30px" action="/goods/searchGoods/2">
                     <div class="form-group" style="display: inline-block;margin-left: 150px;">
-                        <input type="text" class="form-control" style="width: 390px" placeholder="Search">
+                        <input type="text" id="searchGoodsText" class="form-control" style="width: 390px" placeholder="Search">
                     </div>
-                    <button type="submit"class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px">查询</button>
+                    <input type="button" class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px" value="Submit">
                 </form>
             </div>
 
         </div>
-
     </div>
 </section>
 
@@ -563,7 +563,6 @@
     </div>
 
 </section>
-
 </body>
 
 

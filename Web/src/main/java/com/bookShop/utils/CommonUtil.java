@@ -38,15 +38,12 @@ public class CommonUtil {
             int id=userInfo.getId();
             userInfo.setId(id);
             //获取个人头像，并生成头像名，然后存储到指定目录
-
             String newFilename="";
             if(profilePicture!=null){
                 String originalName=profilePicture.getOriginalFilename();
                 if(originalName!=null && originalName.trim().length()>0){
-                    String path="F:\\uploads\\";
-                    String pathInProject="F:\\BookShopWebsite\\Web\\src\\main\\webapp\\images\\userLogo\\";
+                    String pathInProject="E:\\BookShopWebsite\\Web\\src\\main\\webapp\\images\\shopImage\\";
                     newFilename= UUID.randomUUID()+originalName.substring(originalName.lastIndexOf("."));
-                    profilePicture.transferTo(new File(path+newFilename));
                     profilePicture.transferTo(new File(pathInProject+newFilename));
                 }
             }
@@ -68,25 +65,17 @@ public class CommonUtil {
      */
     public MerchantShop updateShopImage(MerchantShop merchantShop,MultipartFile profilePicture,String curPic) throws IOException {
         System.err.println("cur:"+curPic);
-
         synchronized (CommonUtil.class){
-
             //删除原先的图片
-            String path="F:\\uploads\\";
-            String pathInProject="F:\\BookShopWebsite\\Web\\src\\main\\webapp\\images\\shopImage\\";
+            String pathInProject="E:\\BookShopWebsite\\Web\\src\\main\\webapp\\images\\shopImage\\";
+            System.err.println(pathInProject);
             if(curPic!=null){
-
-                File file = new File(path+curPic.substring(curPic.lastIndexOf('/')+1));
-                if(file.exists() && file.isFile()){
-                    System.err.println(file.getName().substring(file.getName().lastIndexOf('.')));
-                    file.delete();
-                }
-
                 File relativeFile = new File(pathInProject+curPic.substring(curPic.lastIndexOf('/')+1));
-                if(relativeFile.exists() && relativeFile.isFile()&&!file.getName().equals("defaultShopImag.jpg")){
-                    System.out.println(relativeFile.getName());
+                if(!curPic.contains("defaultShopImag.jpg")){
                     relativeFile.delete();
                 }
+
+
             }
 
             String newFilename="";
@@ -95,7 +84,6 @@ public class CommonUtil {
                 if(originalName!=null && originalName.trim().length()>0){
                     newFilename= UUID.randomUUID()+originalName.substring(originalName.lastIndexOf("."));
                     profilePicture.transferTo(new File(pathInProject+newFilename));
-                    profilePicture.transferTo(new File(path+newFilename));
                 }
             }
 
@@ -112,19 +100,16 @@ public class CommonUtil {
      * @return
      * @throws IOException
      */
-
     public GoodsInfo upGoodsImage(GoodsInfo goodsInfo, MultipartFile profilePicture) throws IOException {
         synchronized (CommonUtil.class){
-
             String newFilename="";
             if(profilePicture!=null){
                 String originalName=profilePicture.getOriginalFilename();
                 if(originalName!=null && originalName.trim().length()>0){
-                    String path="F:\\uploads\\";
-                    String pathInProject="F:\\BookShopWebsite\\Web\\src\\main\\webapp\\images\\"+goodsInfo.getType()+"\\";
+                    String pathInProject="E:\\BookShopWebsite\\Web\\src\\main\\webapp\\images\\"+goodsInfo.getType()+"\\";
                     newFilename= UUID.randomUUID()+originalName.substring(originalName.lastIndexOf("."));
                     profilePicture.transferTo(new File(pathInProject+newFilename));
-                    profilePicture.transferTo(new File(path+newFilename));
+
                 }
             }
             //更新数据库
@@ -138,26 +123,19 @@ public class CommonUtil {
 
 
 
-
-
     public RequestRecordShop resolveShopUpImage(RequestRecordShop requestRecordShop, MultipartFile profilePicture) throws IOException {
-
         synchronized (CommonUtil.class){
-
             //获取个人头像，并生成头像名，然后存储到指定目录
-
             String newFilename="";
             if(profilePicture!=null){
                 String originalName=profilePicture.getOriginalFilename();
                 if(originalName!=null && originalName.trim().length()>0){
-                    String path="F:\\uploads\\";
-                    String pathInProject="F:\\BookShopWebsite\\Web\\src\\main\\webapp\\images\\shopImage\\";
+
+                    String pathInProject="E:\\BookShopWebsite\\Web\\src\\main\\webapp\\images\\shopImage\\";
                     newFilename= UUID.randomUUID()+originalName.substring(originalName.lastIndexOf("."));
-                    profilePicture.transferTo(new File(path+newFilename));
                     profilePicture.transferTo(new File(pathInProject+newFilename));
                 }
             }
-
             //更新数据库
             if(newFilename!=null && newFilename.trim().length()>0){
                 requestRecordShop.setShopLogo("/images/shopImage/"+newFilename);
