@@ -180,17 +180,17 @@
 </div>
 
 
-<div class="container">
-    <div class="row">
-        <div class="headerOfCartDivSon col-md-4 text-center">商品详情</div>
-        <div class="headerOfCartDivSon col-md-1 text-center">单价</div>
-        <div class="headerOfCartDivSon col-md-1 text-center">数量</div>
-        <div class="headerOfCartDivSon col-md-2 text-center">商品操作</div>
-        <div class="headerOfCartDivSon col-md-1 text-center">实付款</div>
-        <div class="headerOfCartDivSon col-md-2 text-center">交易状态</div>
-        <div class="headerOfCartDivSon col-md-1 text-center">交易操作</div>
-    </div>
-</div>
+        <div class="container">
+            <div class="row">
+                <div class="headerOfCartDivSon col-md-4 text-center">商品详情</div>
+                <div class="headerOfCartDivSon col-md-1 text-center">单价</div>
+                <div class="headerOfCartDivSon col-md-1 text-center">数量</div>
+                <div class="headerOfCartDivSon col-md-2 text-center">商品操作</div>
+                <div class="headerOfCartDivSon col-md-1 text-center">实付款</div>
+                <div class="headerOfCartDivSon col-md-2 text-center">交易状态</div>
+                <div class="headerOfCartDivSon col-md-1 text-center">交易操作</div>
+            </div>
+        </div>
 
 
 <c:if test="${list.size()==0}">

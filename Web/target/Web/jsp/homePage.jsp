@@ -184,7 +184,7 @@
                     </li>
                 </ul>
                 <  <ul class="nav navbar-nav navbar-right" style="margin-right: 30px" >
-                    <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
+                    <li><a href="/goods/cart"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
                     <li><a href="/goods/homepage">返回首界面</a> </li>
                     <li><a href="/user/logout">注销</a></li>

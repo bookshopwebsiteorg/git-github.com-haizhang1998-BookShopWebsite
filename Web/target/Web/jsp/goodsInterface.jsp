@@ -215,44 +215,22 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <c:choose>
-                        <c:when test="${sessionScope.userInfo==null}">
-                        <a href="/user/login">
+
+                    <li><a href="#">
                     <li>亲，请登录</li>
                     <span class="sr-only">(current)</span></a>
-                    </c:when>
-                    <c:otherwise>
-                        <a href="/user/revise">
-                            <li>欢迎，${sessionScope.userInfo.nikeName}</li>
-                            <span class="sr-only">(current)</span></a>
-                    </c:otherwise>
-                    </c:choose>
                     </li>
-                    <c:if test="${sessionScope.userInfo!=null}">
-                        <li><a href="/chat/chatPage">消息<span class="badge">${sessionScope.tmpmsgNumber}</span></a></li>
-                    </c:if>
-                    <c:if test="${sessionScope.userInfo.merchantFlag==0}">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
-                                <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
-                            </ul>
-                        </li>
-                    </c:if>
 
-                    <c:if test="${sessionScope.requestRecordShop==null && sessionScope.userInfo.merchantFlag!=0}">
-                        <li><a onclick="openShop()">我要开店</a></li>
-                    </c:if>
+                    <li><a href="#">消息</a></li>
+                    <li><a href="#">店铺管理</a></li>
+                    <li><a href="#">我要开店</a></li>
 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="/goods/queryAllEnshrineGoods">收藏夹</a></li>
-                            <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-                            <li><a href="/goods/myfootprint">我的足迹</a></li>
-                            <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
+                            <li><a href="#">我的足迹</a></li>
+                            <li><a href="#">我的订单</a></li>
                         </ul>
                     </li>
                     <li><a href="/goods/homepage">首页</a></li>

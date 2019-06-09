@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookShop.mapper.CartOrderMapper">
+
+    <resultMap id="cartorderInfoMap" type="com.haizhang.entity.CartItem">
+        <result property="goodsId" column="goodsId"></result>
+        <result property="userId" column="userId"></result>
+        <result property="imgDir"  column="imgDir"></result>
+        <result property="goodsName"  column="goodsName"></result>
+        <result property="price" column="price"></result>
+        <result property="sumOfGoods" column="sumOfGoods"></result>
+        <result property="totalPrice" column="totalPrice"></result>
+    </resultMap>
+
+    <!--//添加商品到购物车  public boolean addCart(@Param("goodsId")int goodsId,@Param("userId") int userId,@Param("imgDir")String imgDir,@Param("goodsName") String goodsName,@Param("price")double price,@Param("sumOfGoods")int sumOfGoods);!-->
+    <insert id="addCart">
+        insert into cart(goodsId,userId,imgDir,goodsName,price,sumOfGoods,totalPrice) values (#{goodsId},#{userId},#{imgDir},#{goodsName},#{price},#{sumOfGoods},#{totalPrice});
+    </insert>
+
+    <!--//删除商品  public boolean deleteGoods(@Param("goodsId")int goodsId,@Param("userId") int userId);!-->
+    <delete id="deleteGoods">
+        delete from cart where goodsId=#{goodsId} and userId=#{userId};
+    </delete>
+
+    <!--//得到所有购物车中的商品信息(包括商品总量)  public List<CartItem> getAllCart(@Param("userId") int userId);!-->
+    <select id="getAllCart" resultMap="cartorderInfoMap">
+           select * from cart where userId=#{userId};
+       </select>
+
+    <!--/更新商品的数量 public boolean updateItemNumber(@Param("goodsId")int goodsId,@Param("userId") int userId,@Param("sumOfGoods")int sumOfGoods);!-->
+    <update id="updateItemNumber">
+        update cart set sumOfGoods = #{sumOfGoods},totalprice=#{totalPrice} where goodsId=#{goodsId} and userId=#{userId};
+    </update>
+    <!--//获取根据商品id和用户id购物车项信息 public CartItem queryCartItem(@Param("userId")int userId,CartItem cartItem);-->
+    <select id="queryCartItem" resultMap="cartorderInfoMap">
+        select* from cart where userId=#{userId} and goodsId=#{goodsId};
+    </select>
+
+</mapper>
