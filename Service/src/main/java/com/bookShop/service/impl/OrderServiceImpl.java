@@ -121,7 +121,15 @@ public class OrderServiceImpl implements OrderService {
         return flag;
     }
 
+    //付款方式
+    public boolean updatePaymentType(@Param("orderId") long orderId,@Param("paymentType") int paymentType){
+        return OrderMapper.updatePaymentType(orderId,paymentType);
+    }
 
+    //查询最新提交等待付款的订单
+    public Order TheNewOrderBypay(){
+        return OrderMapper.TheNewOrderBypay();
+    }
 
     /*******************************商家***************************************/
 

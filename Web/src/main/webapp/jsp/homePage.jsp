@@ -164,6 +164,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
                                 <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
+                                <li><a href="/order/test">创建订单</a></li>
                             </ul>
                         </li>
                     </c:if>
@@ -209,6 +210,11 @@
         </div>
     </div>
 </section>
+
+<c:if test="${state!=null}">
+    <script>alert("订单提交成功!")</script>
+</c:if>
+
 
 <section id="carouselSection" >
     <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">

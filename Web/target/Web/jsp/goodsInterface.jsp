@@ -260,6 +260,7 @@
                 <ul class="nav navbar-nav navbar-right" style="margin-right: 30px" >
                     <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
+                    <li><a href="/goods/homepage">返回首界面</a> </li>
                     <li><a href="/user/logout">注销</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -304,15 +305,15 @@
                             <div class="caption">
                                 <h3 class="text-center">${goodsInfo.goodsName}</h3>
                                 <p class="text-center">声明:此书绝对正版，读者朋友们请放心购买！</p>
-                                <p><a href="/goods/enshrineIndetail/${goodsInfo.goodsId}" class="btn btn-danger col-md-6" role="button">点击收藏</a>
-                                    <a href="/chat/singleTalkAddFriend/${sessionScope.userInfo.id}/${goodsInfo.possesserId}" class="btn btn-primary  col-md-6"  role="button">联系卖家</a>
+                                <p><a href="/goods/enshrine/${goodsInfo.goodsId}" class="btn btn-danger col-md-6" role="button">点击收藏</a>
+                                    <a href="/merchant/chat/${goodsInfo.possesserId}" class="btn btn-primary  col-md-6"  role="button">联系卖家</a>
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <form class="col-md-6" action="/goods/AddCart/${goodsInfo.goodsId}" method="post">
                 <div class="row">
                     <p style="height: 23px; font-size:20px;color:#000;" ><span>书籍名称:${goodsInfo.goodsName}</span></p>
                 </div>
@@ -357,13 +358,14 @@
                     </span>
                     <div class="input-group col-md-5" >
                         <span class="input-group-addon" id="sub">-</span>
-                        <input type="text" value="0" id="goodsNumber" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        <input type="text" value="0" id="goodsNumber" name="goodsNumber" class="form-control" aria-label="Amount (to the nearest dollar)">
                         <span class="input-group-addon" id="add">+</span>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 30px;">
-                    <input type="button" id="addGoodBtn" value="加入购物车">
+                    <input type="submit" value="加入购物车">
                 </div>
+            </form>
 
                 <div class="row"style="margin-top: 30px;">
                     <span  style="display: inline-block;float: left;margin-top:14px">卖家承诺:正品保障、下单即送、7日包退、诚信交易</span>
