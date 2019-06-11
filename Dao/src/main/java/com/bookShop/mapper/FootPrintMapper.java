@@ -23,4 +23,11 @@ public interface FootPrintMapper {
     //删除足迹
     public boolean delFootPrint(@Param("userId") int userId,@Param("goodsId") int goodsId);
 
+    //查询某一项浏览记录是否已存在
+    public FootPrintItem queryFootPrint(@Param("userId")int userId,@Param("goodsId")int goodsId);
+
+    //更新商品的浏览时间
+    public boolean updateFootPrint(@Param("userId")int userId,@Param("goodsId")int goodsId,@Param("time") Date time);
+
+
 }

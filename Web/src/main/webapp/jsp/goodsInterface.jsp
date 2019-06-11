@@ -191,6 +191,22 @@
 
 
     });
+
+    $(document).ready(function(){
+        $("form").submit(function () {
+            var s=document.getElementById("searchgoods");
+
+            if(s.value==""){
+                alert("输入信息不能为空！");
+                return false;
+            }else if(s.value==" "){
+                alert("请输入有效信息！");
+                return false;
+            }
+            return true;
+        })
+    })
+
 </script>
 <body>
 <!-- 导航栏div -->
@@ -225,13 +241,14 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">收藏夹</a></li>
-                            <li><a href="#">我的足迹</a></li>
+                            <li><a href="/goods/myfootprint">我的足迹</a></li>
                             <li><a href="#">我的订单</a></li>
                         </ul>
                     </li>
                 </ul>
 
-                <ul class="nav navbar-nav" style="margin-left: 500px">
+                <ul class="nav navbar-nav" style="margin-left: 400px">
+                    <li><a href="/goods/homepage">回到首页</a></li>
                     <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
                     <li><a href="/user/logout">注销</a></li>
@@ -246,11 +263,11 @@
         <div class="row">
             <img src="/images/logo.jpg" width="64px" height="64px" class="pull-left"><span class="searchFont col-md-2" style="margin-top: 40px">海淘商城</span>
             <div >
-                <form class="form-horizontal">
+                <form class="form-horizontal" action="/goods/searchGoods" method="post">
                     <div class="form-group" style="display: inline-block;margin-left: 150px;">
-                        <input type="text" class="form-control" style="width: 390px" placeholder="搜一搜，更多好书等你看">
+                        <input type="text" class="form-control" style="width: 390px" placeholder="Search" name="searchgoods" id="searchgoods">
                     </div>
-                    <button type="submit"class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px">Submit</button>
+                    <button type="submit"class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px">搜索</button>
                 </form>
             </div>
 

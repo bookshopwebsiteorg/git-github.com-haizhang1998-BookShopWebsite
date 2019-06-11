@@ -109,10 +109,15 @@ public class GoodsHandler {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
         System.out.println("用户"+userInfo);
         System.out.println("商品"+goodsInfo);
-        //boolean addFootPrint=footPrintServiceImpl.addFootPrint(goodsId,userInfo.getId(),goodsInfo.getGoodsName(),goodsInfo.getImgDir(),time);
-        boolean addFootPrint=footPrintServiceImpl.addFootPrint(goodsId,userInfo.getId(),goodsInfo.getGoodsName(),goodsInfo.getImgDir(),new Date((new java.util.Date().getTime())));
-        model.addAttribute("addFootPrint",addFootPrint);
-
+        FootPrintItem queryFootPrint=footPrintServiceImpl.queryFootPrint(userInfo.getId(),goodsId);
+        if(queryFootPrint!=null)
+        {
+            boolean updateFootPrint=footPrintServiceImpl.updateFootPrint(userInfo.getId(),goodsId,new Date((new java.util.Date().getTime())));
+            model.addAttribute("addFootPrint", updateFootPrint);
+        }else {
+            boolean addFootPrint = footPrintServiceImpl.addFootPrint(goodsId, userInfo.getId(), goodsInfo.getGoodsName(), goodsInfo.getImgDir(), new Date((new java.util.Date().getTime())));
+            model.addAttribute("addFootPrint", addFootPrint);
+        }
         //转到商品详细界面
         return "goodsInterface";
     }
@@ -138,7 +143,7 @@ public class GoodsHandler {
     public String myFootPrint(Model model, HttpSession session){
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
         System.out.println(userInfo);
-        List<FootPrintItem> allFootPrint=footPrintServiceImpl.getAllFootPrint(userInfo.getId());
+        Map<String,List<FootPrintItem>> allFootPrint=footPrintServiceImpl.getAllFootPrint(userInfo.getId());
         model.addAttribute("allFootPrint",allFootPrint);
         return "myFootPrint";
     }
@@ -158,7 +163,7 @@ public class GoodsHandler {
         goodsInfo.setGoodsId(goodsId);
         boolean delFootPrint = footPrintServiceImpl.delFootPrint(userInfo.getId(), goodsId);
         if (delFootPrint == true) {
-            List<FootPrintItem> allFootPrint = footPrintServiceImpl.getAllFootPrint(userInfo.getId());
+            Map<String,List<FootPrintItem>> allFootPrint=footPrintServiceImpl.getAllFootPrint(userInfo.getId());
             model.addAttribute("allFootPrint", allFootPrint);
         }
         return "myFootPrint";

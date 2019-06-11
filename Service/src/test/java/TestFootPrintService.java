@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 测试足迹
@@ -25,9 +26,12 @@ public class TestFootPrintService {
 
     @Test
     public void getAllFootPrint(){
-        List<FootPrintItem> footPrintItem=footPrintService.getAllFootPrint(21);
-        for(FootPrintItem f:footPrintItem)
-            System.out.println(f);
+        Map<String,List<FootPrintItem>> footPrintItem=footPrintService.getAllFootPrint(21);
+        for(Map.Entry<String, List<FootPrintItem>> footPrintItemEntry:footPrintItem.entrySet()){
+            System.out.println(footPrintItemEntry.getKey()+":");
+            System.out.println(footPrintItemEntry.getValue());
+        }
+
     }
 
     @Test
@@ -35,10 +39,21 @@ public class TestFootPrintService {
         FootPrintItem footPrintItem=new FootPrintItem();
         footPrintItem.setGoodsId(11);
         footPrintItem.setId(2);
+        footPrintItem.setTime(new Date((new java.util.Date().getTime())));
     }
 
     @Test
-    public void delFootPrint(){
-        System.out.println(footPrintService.delFootPrint(1,11));
+   public void delFootPrint(){
+        System.out.println(footPrintService.delFootPrint(21,2));
+    }
+
+    @Test
+    public void queryFootPrint(){
+        System.out.println(footPrintService.queryFootPrint(21,6));
+    }
+
+    @Test
+    public void updateFootPrint(){
+        System.out.println(footPrintService.updateFootPrint(21,6,new Date((new java.util.Date().getTime()))));
     }
 }

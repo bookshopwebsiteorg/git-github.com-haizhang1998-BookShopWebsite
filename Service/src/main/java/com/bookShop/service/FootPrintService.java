@@ -4,11 +4,12 @@ import com.haizhang.entity.FootPrintItem;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface FootPrintService {
 
     //得到所有足迹
-    public List<FootPrintItem> getAllFootPrint(int userId);
+    public Map<String,List<FootPrintItem>> getAllFootPrint(int userId);
 
     /**
      *
@@ -24,4 +25,10 @@ public interface FootPrintService {
 
     //删除足迹
     public boolean delFootPrint(int userId, int goodsId);
+
+    //查询某一项浏览记录是否已存在
+    public FootPrintItem queryFootPrint(int userId, int goodsId);
+
+    //更新商品的浏览时间
+    public boolean updateFootPrint(int userId,int goodsId, Date time);
 }

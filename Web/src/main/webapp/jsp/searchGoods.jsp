@@ -48,14 +48,6 @@
         color: #dddddd;
     }
 
-    .title{
-        width: 100%;
-        height: 60px;
-        blackground-color: grey;
-        font-size: 30px;
-        color: black;
-    }
-
     #searchSection>div>div>img{
         width:80px;
         height:80px;
@@ -76,6 +68,22 @@
     }
 
 </style>
+<script>
+    $(document).ready(function(){
+        $("form").submit(function () {
+            var s=document.getElementById("searchgoods");
+
+            if(s.value==""){
+                alert("输入信息不能为空！");
+                return false;
+            }else if(s.value==" "){
+                alert("请输入有效信息！");
+                return false;
+            }
+            return true;
+        })
+    })
+</script>
 <%--导航栏--%>
 <section id="navbarSection">
     <nav id="nav-head" class="navbar navbar-inverse navbar-fixed-top">
@@ -133,6 +141,7 @@
                 </ul>
 
                 <ul class="nav navbar-nav" style="margin-left: 500px">
+                    <li><a href="/goods/homepage">回到首页</a></li>
                     <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
                     <li><a href="/user/logout">注销</a></li>
@@ -141,17 +150,14 @@
         </div><!-- /.container-fluid -->
     </nav>
 </section>
-<br>
-<br>
-<br>
-<section id="searchSection">
-    <div class="container" >
+<section id="searchSection" style="margin-top: 60px">
+    <div class="container">
         <div class="row">
             <img src="/images/logo.jpg" class="pull-left"><span class="searchFont col-md-2" style="margin-top: 40px">海淘商城</span>
             <div >
                 <form class="form-horizontal" action="/goods/searchGoods" method="post">
                     <div class="form-group" style="display: inline-block;margin-left: 150px;">
-                        <input type="text" class="form-control" style="width: 390px" placeholder="Search" name="searchgoods">
+                        <input type="text" class="form-control" style="width: 390px" placeholder="Search" name="searchgoods" id="searchgoods">
                     </div>
                     <button type="submit"class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px">搜索</button>
                 </form>
@@ -162,11 +168,14 @@
     </div>
 </section>
 
-<div class="content">
-    <div class="title" align="center">
+<div class="content" style="margin-top: 20px">
+    <div align="center" style="background-color:darkgrey;height: 50px;width: 80%;font-size: 30px;color: black;margin-left: 140px">
         图书
     </div>
-    <div class="container">
+    <div class="container" style="margin-top: 15px">
+        <c:if test="${goodsInfo.size()<=0}">
+            <p style="font-size: 15px;margin-top: 20px;text-align: center">无符合条件的商品</p>
+        </c:if>
         <c:forEach varStatus="index" var="book" items="${goodsInfo}">
             <div class="col-sm-4 col-md-3">
                 <div class="thumbnail">
@@ -186,14 +195,17 @@
     </div>
 </div>
 <div class="content">
-    <div class="title" align="center">
+    <div align="center" style="background-color:darkgrey;height: 50px;width: 80%;font-size: 30px;color: black;margin-left: 140px">
         店铺
     </div>
-    <div class="container">
+    <div class="container" style="margin-top: 20px">
+        <c:if test="${merchantShop.size()<=0}">
+            <p style="font-size: 15px;margin-top: 20px;text-align: center">无符合条件的店铺</p>
+        </c:if>
         <c:forEach varStatus="index" var="shop" items="${merchantShop}">
             <div class="col-sm-4 col-md-3">
                 <div class="thumbnail">
-                    <img src="${shop.shopLogo}" style="width: 200px;height: 200px" class="tab_img">
+                    <img src="${shop.shopLogo}" style="width: 134px;height: 180px" class="tab_img">
                     <div class="caption">
                             <h4 class="tab_content" align="center">${shop.shopName}</h4>
                             <p align="right"> <a href=" " class="btn btn-default" role="button" >查看</a></p>
