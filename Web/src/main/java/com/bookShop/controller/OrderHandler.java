@@ -1,27 +1,27 @@
 package com.bookShop.controller;
 
+import com.bookShop.mapper.OrderMapper;
 import com.bookShop.service.GoodService;
 import com.bookShop.service.OrderService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.haizhang.entity.GoodsInfo;
-import com.haizhang.entity.OrderItem;
-import com.haizhang.entity.OrderItemCustom;
-import com.haizhang.entity.UserInfo;
-import org.apache.ibatis.type.IntegerTypeHandler;
+import com.haizhang.DTO.OrderDTO;
+import com.haizhang.DTO.OrderDetailDTO;
+import com.haizhang.entity.*;
+import com.sun.media.sound.SoftLowFrequencyOscillator;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.test.web.servlet.result.ModelResultMatchers;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.annotation.Resource;
+
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,169 +33,214 @@ import java.util.List;
 @RequestMapping("/order")
 public class OrderHandler {
     @Resource
-    GoodService goodServiceImpl;
-    @Resource
     OrderService orderServiceImpl;
-
+    @Resource
+    GoodsHandler goodsHandler;
 
     /**
      * 进入订单界面
      * @param
      * @return
      */
-    @RequestMapping("/allOrder")
-    public String queryAllOrder(Model model, HttpSession session) throws
-            SQLException{
+
+    public OrderHandler(){}
+
+    public OrderHandler(OrderService orderService){
+    }
+
+
+    //创建订单测试
+    @RequestMapping(value = "/test",method = RequestMethod.GET)
+    public String test(HttpSession session) {
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        //PageHelper.startPage(1,2);
-        List<OrderItemCustom> orderItem = orderServiceImpl.getUserOrders(userInfo.getId());
-        //PageInfo<OrderItemCustom> page = new PageInfo<>(orderItem);
-        for(OrderItem order:orderItem){
-            System.out.println(order);
-        }
-        //long total = page.getTotal();
-        //System.out.println("共有商品"+total);
-        model.addAttribute("orderItem",orderItem);
-        return "userOrderManage";
-    }
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setActualPay(20);
+        orderDTO.setPaymentType(1);
+        orderDTO.setPostFee(10);
+        orderDTO.setBuyerMessage("hahha");
+        orderDTO.setReceiver("austin");
+        orderDTO.setReceiverAddress("吉林" );
+        orderDTO.setReceiverMobile("13726278887");
+        orderDTO.setReceiverZip("123456");
+        orderDTO.setUserId(userInfo.getId());
 
-    @RequestMapping("/deleteOrder")
-    public String deleteOrder(int orderId, Model model, HttpSession session) throws
-            Exception{
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        boolean flag = orderServiceImpl.deleteOrder(orderId);
-        if(flag==true){
-            List<OrderItemCustom> orderItem = orderServiceImpl.getUserOrders(userInfo.getId());
-            model.addAttribute("orderItem",orderItem);
-        }
-        return "userOrderManage";
-    }
+        List<OrderDetailDTO> orderDetailDTOList = new ArrayList<>();
 
-    @RequestMapping("/getUserOrderByPayFlag")
-    public String getUserOrderByPayFlag(int payFlag,Model model, HttpSession session) throws
-            Exception{
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        List<OrderItemCustom> orderItem = orderServiceImpl.getUserOrderByPayFlag(userInfo.getId(),payFlag);
-        model.addAttribute("orderItem",orderItem);
-        return "userOrderManage";
-    }
+        OrderDetailDTO orderDetailDTO1 = new OrderDetailDTO();
+        orderDetailDTO1.setNum(2);
+        orderDetailDTO1.setGoodsId(3);
+        orderDetailDTOList.add(orderDetailDTO1);
 
-    @RequestMapping("/getUserOrderBySendFlag")
-    public String getUserOrderBySendFlag(int sendFlag,Model model, HttpSession session) throws
-            Exception{
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        List<OrderItemCustom> orderItem = orderServiceImpl.getUserOrderBySendFlag(userInfo.getId(),sendFlag);
-        model.addAttribute("orderItem",orderItem);
-        return "userOrderManage";
-    }
+        OrderDetailDTO orderDetailDTO2 = new OrderDetailDTO();
+        orderDetailDTO2.setNum(1);
+        orderDetailDTO2.setGoodsId(4);
+        orderDetailDTOList.add(orderDetailDTO2);
 
-    @RequestMapping("/getUserOrderByOrderFlag")
-    public String getUserOrderByOrderFlag(int orderFlag,Model model, HttpSession session) throws
-            Exception{
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        List<OrderItemCustom> orderItem = orderServiceImpl.getUserOrderByOrderFlag(userInfo.getId(),orderFlag);
-        model.addAttribute("orderItem",orderItem);
-        return "userOrderManage";
-    }
+        OrderDetailDTO orderDetailDTO3 = new OrderDetailDTO();
+        orderDetailDTO3.setNum(1);
+        orderDetailDTO3.setGoodsId(2);
+        orderDetailDTOList.add(orderDetailDTO3);
 
-    @RequestMapping("/modifyOrderFlag")
-    public String modifyOrderFlag(int orderFlag, int orderId, Model model,HttpSession session) throws SQLException{
-        System.out.println("search:"+orderFlag);
-        boolean flag = orderServiceImpl.modifylOrderFlag(orderId,orderFlag);
-        String url = queryAllOrder(model,session);
-        return url;
-    }
-
-    @RequestMapping(value ="/modifybackFlag/{orderId}",method = RequestMethod.GET)
-    public String modifylbackFlag(@PathVariable int orderId, Model model,HttpSession session) throws SQLException{
-        boolean flag = orderServiceImpl.modifybackFlag(orderId);
-        String url = queryAllOrder(model,session);
-        return url;
-    }
-
-    @RequestMapping("/modifysendFlag")
-    public String modifysendFlag(int orderId,int sendFlag, Model model,HttpSession session) throws SQLException{
-        boolean flag = orderServiceImpl.modifysendFlag(orderId,sendFlag);
-        boolean flag2 = orderServiceImpl.modifylOrderFlag(orderId,1);
-        String url = queryAllOrder(model,session);
+        boolean flag = orderServiceImpl.createOrder(orderDTO,orderDetailDTOList);
         System.out.println(flag);
-        System.out.println(flag2);
+        return "homePage";
+    }
+
+
+    //根据用户id查询用户订单
+    @RequestMapping("/queryAllUserOrderByUserId")
+    public String queryAllUserOrderByUserId(Model model, HttpSession session) {
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        List<Order> list = orderServiceImpl.queryAllUserOrderByUserId(userInfo.getId());
+        model.addAttribute("list",list);
+        return "userOrderManage";
+    }
+
+    //根据订单id查询用户订单详情
+    @RequestMapping("/queryAllUserOrderDetail/{orderId}")
+    public String queryAllUserOrderDetail(@PathVariable long orderId,Model model, HttpSession session) {
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        Order order = orderServiceImpl.queryAllUserOrderDetail(orderId);
+        model.addAttribute("order",order);
+        return "orderDetail";
+    }
+
+
+    //根据订单状态查询用户订单信息
+    @RequestMapping(value = "/queryUserOrderByStatus/{url}/{status}",method = RequestMethod.GET)
+    public String queryUserOrderByStatus(@PathVariable int status,@PathVariable String url,Model model, HttpSession session) {
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        List<Order> list = orderServiceImpl.queryUserOrderByStatus(userInfo.getId(),status);
+        if(status == 2){
+            List<Order> list2 = orderServiceImpl.queryUserOrderByStatus(userInfo.getId(),7);
+            for(Order order:list2){
+                list.add(order);
+            }
+        }
+        model.addAttribute("list",list);
+        return url;
+    }
+
+    //根据订单id删除用户订单
+    @RequestMapping(value = "/deleteUserOrder/{orderId}",method = RequestMethod.GET)
+    public String deleteUserOrder(@PathVariable long orderId,Model model,HttpSession session){
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        boolean flag = orderServiceImpl.deleteUserOrder(orderId);
+        String url = queryAllUserOrderByUserId(model,session);
+        return url;
+    }
+
+    //根据订单id更改用户订单状态
+    @RequestMapping(value = "/modifyUserOrderStatus/{url}/{status}/{orderId}",method = RequestMethod.GET)
+    public String modifyUserOrderStatus(@PathVariable long orderId,@PathVariable int status,@PathVariable String url,Model model, HttpSession session){
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        boolean flag = orderServiceImpl.modifyUserOrderStatus(orderId,status);
+        if(flag == false){
+            model.addAttribute("state",status);
+            System.out.println(flag);
+        }
+        if(url.equals("userOrderManage")){
+            queryAllUserOrderByUserId(model,session);
+        }else{
+            queryUserOrderByStatus(status,url,model,session);
+        }
+        return url;
+    }
+
+   //用户退款/退货申请
+    @RequestMapping(value = "/modifyUserOrderBybackpay/{url}/{status}/{backpay}/{orderId}",method = RequestMethod.GET)
+    public String modifyUserOrderBybackpay(@PathVariable int status,@PathVariable long orderId,@PathVariable int backpay,@PathVariable String url,Model model, HttpSession session){
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        boolean flag = orderServiceImpl.modifyUserOrderBybackpay(orderId,backpay);
+
+        if(backpay == 3 || backpay == 8){
+            boolean flag2 = orderServiceImpl.modifyUserOrderStatus(orderId,5);
+        }
+        if(url.equals("userOrderManage")){
+            queryAllUserOrderByUserId(model,session);
+        }else{
+            queryUserOrderByStatus(status,url,model,session);
+        }
+        return url;
+    }
+
+    //付款方式
+    @RequestMapping(value = "/updatePaymentType/{orderId}/{paymentType}",method = RequestMethod.GET)
+    public String updatePaymentType(@PathVariable long orderId, @PathVariable int paymentType,Model model,HttpServletRequest request){
+        boolean flag = orderServiceImpl.updatePaymentType(orderId,paymentType);
+        boolean flag2 = orderServiceImpl.updatePaymentTime(orderId);
+        boolean flag3 = orderServiceImpl.modifyUserOrderStatus(orderId,2);
+        if(flag == false){
+            model.addAttribute("state","支付失败");
+        }
+        model.addAttribute("state","支付成功");
+        return "forward:/goods/homepage";
+    }
+
+
+    /*************************************商家****************************************************/
+    //查询商家订单信息
+    @RequestMapping("/queryAllManagerOrderByUserId")
+    public String queryAllManagerOrderByUserId(Model model, HttpSession session) {
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        List<Order> list = orderServiceImpl.queryAllManagerOrderByUserId(userInfo.getId());
+        model.addAttribute("list",list);
+        return "ManagerOrderManage";
+    }
+
+    //根据货物状态查询订单信息
+    @RequestMapping(value = "/queryManagerOrderByStatus/{url}/{status}",method = RequestMethod.GET)
+    public String queryManagerOrderByStatus(@PathVariable int status,@PathVariable String url,Model model, HttpSession session) {
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        List<Order> list = orderServiceImpl.queryManagerOrderByStatus(userInfo.getId(),status);
+        if(status == 2){
+            List<Order> list2 = orderServiceImpl.queryManagerOrderByStatus(userInfo.getId(),7);
+            for(Order order:list2){
+                list.add(order);
+            }
+        }
+        model.addAttribute("list",list);
+        return url;
+    }
+
+    //商家货物管理
+    @RequestMapping(value = "/modifyManagerOrderStatus/{url}/{status}/{orderId}",method = RequestMethod.GET)
+    public String modifyManagerOrderStatus(@PathVariable long orderId,@PathVariable int status,@PathVariable String url,Model model, HttpSession session){
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        boolean flag = orderServiceImpl.modifyUserOrderStatus(orderId,status);
+        if(url.equals("ManagerOrderManage")){
+            queryAllManagerOrderByUserId(model,session);
+        }else{
+            queryManagerOrderByStatus(status,url,model,session);
+        }
+        return url;
+    }
+
+    //商家退款/退货审批
+    @RequestMapping(value = "/modifyManagerOrderBybackpay/{url}/{status}/{backpay}/{orderId}",method = RequestMethod.GET)
+    public String modifyManagerOrderBybackpay(@PathVariable int status,@PathVariable long orderId,@PathVariable int backpay,@PathVariable String url,Model model, HttpSession session){
+        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
+        boolean flag = orderServiceImpl.modifyUserOrderBybackpay(orderId,backpay);
+        if(backpay == 3 || backpay == 8){
+            boolean flag2 = orderServiceImpl.modifyUserOrderStatus(orderId,5);
+        }
+        if(url.equals("ManagerOrderManage")){
+            queryAllManagerOrderByUserId(model,session);
+        }else{
+            queryManagerOrderByStatus(status,url,model,session);
+        }
         return url;
     }
 
 
-    /*****************************************管理员**********************************************/
-    @RequestMapping("/getManagerOrder")
-    public String getManagerOrder(Model model, HttpSession session) throws
-            Exception{
+    //删除商家订单
+    @RequestMapping(value = "/deleteManagerOrder/{orderId}",method = RequestMethod.GET)
+    public String deleteManagerOrder(@PathVariable long orderId,Model model,HttpSession session){
         UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        List<OrderItemCustom> orderItem = orderServiceImpl.getManagerOrder(userInfo.getId());
-        model.addAttribute("orderItem",orderItem);
-        return "ManagerOrderManage";
-    }
-
-    @RequestMapping("/getManagerReadyOrder")
-    public String getManagerReadyOrder(int orderFlag,int sendFlag,int payFlag,int backFlag,Model model, HttpSession session) throws
-            Exception{
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        System.out.println(orderFlag+"  "+sendFlag+"  "+payFlag+"  "+backFlag);
-        List<OrderItemCustom> orderItem = orderServiceImpl.getManagerReadyOrder(userInfo.getId(),sendFlag,payFlag,backFlag,orderFlag);
-        System.out.println(orderItem.size());
-        model.addAttribute("orderItem",orderItem);
-        return "ManagerOrderManage";
-    }
-
-    @RequestMapping("/getManagerReturnMoney")
-    public String getManagerReturnMoney(int orderFlag,int backFlag,Model model, HttpSession session) throws
-            Exception{
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        List<OrderItemCustom> orderItem = orderServiceImpl.getManagerReturnMoney(userInfo.getId(),backFlag,orderFlag);
-        System.out.println(orderItem.size());
-        model.addAttribute("orderItem",orderItem);
-        return "ManagerOrderManage";
-    }
-
-    @RequestMapping("/getManagerByPayFlag")
-    public String getManagerByPayFlag(int orderFlag,int payFlag,Model model, HttpSession session) throws
-            Exception{
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        List<OrderItemCustom> orderItem = orderServiceImpl.getManagerByPayFlag(userInfo.getId(),payFlag,orderFlag);
-        System.out.println(orderItem.size());
-        model.addAttribute("orderItem",orderItem);
-        return "ManagerOrderManage";
-    }
-
-    @RequestMapping("/modifyManagerSendFlag")
-    public String modifyManagerSendFlag(int orderId,int sendFlag,Model model, HttpSession session) throws
-            Exception{
-        UserInfo userInfo=(UserInfo) session.getAttribute("userInfo");
-        boolean flag = orderServiceImpl.modifyManagerSendFlag(orderId,sendFlag);
-        List<OrderItemCustom> orderItem = orderServiceImpl.getManagerOrder(userInfo.getId());
-        model.addAttribute("orderItem",orderItem);
-        return "ManagerOrderManage";
-    }
-
-    @RequestMapping("/modifyManagerOrderFlag")
-    public String modifyManagerOrderFlag(int orderFlag, int orderId, Model model,HttpSession session) throws Exception{
-        boolean flag = orderServiceImpl.modifyManagerOrderFlag(orderId,orderFlag);
-        String url = getManagerOrder(model,session);
+        boolean flag = orderServiceImpl.deleteUserOrder(orderId);
+        String url = queryAllManagerOrderByUserId(model,session);
         return url;
     }
 
-
-    @RequestMapping("/agreeOrder")
-    public String agreeOrder(int backFlag,int orderFlag, int orderId, Model model,HttpSession session) throws Exception{
-        boolean flag = orderServiceImpl.agreeOrder(orderId,backFlag,orderFlag);
-        String url = getManagerOrder(model,session);
-        return url;
-    }
-
-    @RequestMapping("/deleteManagerOrder")
-    public String deleteManagerOrder(int orderId, Model model, HttpSession session) throws
-            Exception{
-        boolean flag = orderServiceImpl.deleteOrder(orderId);
-        String url = getManagerOrder(model,session);
-        return url;
-    }
 
 }

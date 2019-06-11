@@ -32,7 +32,7 @@
         <property name="suffix" value=".jsp"></property>
     </bean>
 
-    <mvc:resources mapping="images/**" location="/images/"></mvc:resources>
+    <mvc:resources mapping="/images/**" location="/images/"></mvc:resources>
 
 <!--    拦截器，如果有mapping开头的就拦截请求-->
     <mvc:interceptors>

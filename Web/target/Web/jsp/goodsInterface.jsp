@@ -191,23 +191,11 @@
 
 
     });
-
-    $(document).ready(function(){
-        $("form").submit(function () {
-            var s=document.getElementById("searchgoods");
-
-            if(s.value==""){
-                alert("输入信息不能为空！");
-                return false;
-            }else if(s.value==" "){
-                alert("请输入有效信息！");
-                return false;
-            }
-            return true;
-        })
-    })
-
 </script>
+<%--收藏提示--%>
+<c:if test="${enshrine_state!=null}">
+    <script>alert("${enshrine_state}")</script>
+</c:if>
 <body>
 <!-- 导航栏div -->
 <section id="navbarSection">
@@ -240,17 +228,17 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">收藏夹</a></li>
-                            <li><a href="/goods/myfootprint">我的足迹</a></li>
+                            <li><a href="/goods/queryAllEnshrineGoods">收藏夹</a></li>
+                            <li><a href="#">我的足迹</a></li>
                             <li><a href="#">我的订单</a></li>
                         </ul>
                     </li>
+                    <li><a href="/goods/homepage">首页</a></li>
                 </ul>
-
-                <ul class="nav navbar-nav" style="margin-left: 400px">
-                    <li><a href="/goods/homepage">回到首页</a></li>
+                <ul class="nav navbar-nav navbar-right" style="margin-right: 30px" >
                     <li><a href="#"><span>购物车<span class="badge" style="margin-left: 5px">0</span></span></a></li>
                     <li><a href="/user/revise">个人中心</a></li>
+                    <li><a href="/goods/homepage">返回首界面</a> </li>
                     <li><a href="/user/logout">注销</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
@@ -263,11 +251,11 @@
         <div class="row">
             <img src="/images/logo.jpg" width="64px" height="64px" class="pull-left"><span class="searchFont col-md-2" style="margin-top: 40px">海淘商城</span>
             <div >
-                <form class="form-horizontal" action="/goods/searchGoods" method="post">
+                <form class="form-horizontal">
                     <div class="form-group" style="display: inline-block;margin-left: 150px;">
-                        <input type="text" class="form-control" style="width: 390px" placeholder="Search" name="searchgoods" id="searchgoods">
+                        <input type="text" class="form-control" style="width: 390px" placeholder="搜一搜，更多好书等你看">
                     </div>
-                    <button type="submit"class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px">搜索</button>
+                    <button type="submit"class="btn btn-default" style="width:100px;display: inline-block;margin-left: 10px;margin-top: -2px">Submit</button>
                 </form>
             </div>
 
@@ -303,7 +291,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <form class="col-md-6" action="/goods/AddCart/${goodsInfo.goodsId}" method="post">
                 <div class="row">
                     <p style="height: 23px; font-size:20px;color:#000;" ><span>书籍名称:${goodsInfo.goodsName}</span></p>
                 </div>
@@ -348,13 +336,14 @@
                     </span>
                     <div class="input-group col-md-5" >
                         <span class="input-group-addon" id="sub">-</span>
-                        <input type="text" value="0" id="goodsNumber" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        <input type="text" value="0" id="goodsNumber" name="goodsNumber" class="form-control" aria-label="Amount (to the nearest dollar)">
                         <span class="input-group-addon" id="add">+</span>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 30px;">
-                    <input type="button" id="addGoodBtn" value="加入购物车">
+                    <input type="submit" value="加入购物车">
                 </div>
+            </form>
 
                 <div class="row"style="margin-top: 30px;">
                     <span  style="display: inline-block;float: left;margin-top:14px">卖家承诺:正品保障、下单即送、7日包退、诚信交易</span>

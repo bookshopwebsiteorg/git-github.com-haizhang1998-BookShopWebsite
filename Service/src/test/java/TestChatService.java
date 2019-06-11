@@ -1,5 +1,6 @@
 import com.bookShop.mapper.ChatMapper;
 import com.bookShop.service.ChatService;
+import com.haizhang.entity.Friend;
 import com.haizhang.entity.TempMsg;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ public class TestChatService {
     //查询离线记录
     @Test
     public void getTempMsg(){
-        System.out.println(chatService.getTempMsg(1,5));
+        System.out.println(chatService.getTempMsg(5,1));
     }
     //清空指定朋友的所有离线记录
     @Test
@@ -58,6 +59,28 @@ public class TestChatService {
     //查询所有朋友
     @Test
     public void queryAllFriends(){
-        System.out.println(chatService.queryAllFriends(1));
+
+       List<Friend> list=chatService.queryAllFriends(5);
+       for(Friend f: list){
+           System.err.println(f.getFriendInfo().getId());
+           for(int i=0;i<f.getTempMsg().size();i++){
+               System.err.println(f.getTempMsg().get(i).getTempMsg());
+           }
+       }
+    }
+
+    @Test
+    public void queryMsgNumber(){
+        System.out.println(chatService.queryMsgNumber(3));
+    }
+
+    @Test
+    public void queryExistFriend(){
+        System.out.println(chatService.queryExistFriend(1,5));
+    }
+
+    @Test
+    public void queryFriendById(){
+        System.out.println(chatService.queryFriendById(1,5));
     }
 }

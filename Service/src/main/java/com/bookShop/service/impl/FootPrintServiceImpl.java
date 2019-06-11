@@ -21,20 +21,20 @@ public class FootPrintServiceImpl implements FootPrintService{
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
         //便利并获取item的时间
         for(FootPrintItem footPrintItem:footPrintItems){
-            //将时间转为字符串
-            String d=simpleDateFormat.format(footPrintItem.getTime());
-            if(treeMap.containsKey(d)){
-                List<FootPrintItem> items=treeMap.get(d);
-                items.add(footPrintItem);
-                treeMap.put(d,items);
-            }else{
-                List<FootPrintItem> items=new ArrayList<>();
-                items.add(footPrintItem);
-                treeMap.put(d,items);
-            }
+              //将时间转为字符串
+                String d=simpleDateFormat.format(footPrintItem.getTime());
+                if(treeMap.containsKey(d)){
+                    List<FootPrintItem> items=treeMap.get(d);
+                    items.add(footPrintItem);
+                    treeMap.put(d,items);
+                }else{
+                    List<FootPrintItem> items=new ArrayList<>();
+                    items.add(footPrintItem);
+                    treeMap.put(d,items);
+                }
 
         }
-        return treeMap;
+       return treeMap;
     }
 
     //实现比较器
@@ -66,12 +66,5 @@ public class FootPrintServiceImpl implements FootPrintService{
     public boolean delFootPrint(int userId,int goodsId){
         return footPrintMapper.delFootPrint(userId, goodsId);
     }
-
-    @Override
-    //查询某一项浏览记录是否已存在
-    public FootPrintItem queryFootPrint(int userId,int goodsId){return  footPrintMapper.queryFootPrint(userId, goodsId);}
-
-    @Override
-    public boolean updateFootPrint(int userId,int goodsId, Date time){return footPrintMapper.updateFootPrint(userId, goodsId, time);}
 
 }

@@ -1,14 +1,10 @@
 package com.bookShop.service;
 
-import com.haizhang.entitiyList.PersonalCart;
-import com.haizhang.entity.GoodsInfo;
-import com.haizhang.entity.OrderItem;
-import com.haizhang.entity.OrderItemCustom;
+import com.haizhang.DTO.OrderDTO;
+import com.haizhang.DTO.OrderDetailDTO;
+import com.haizhang.entity.*;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.ui.Model;
 
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,58 +12,75 @@ import java.util.List;
  * @date 2019/5/4
  */
 public interface OrderService {
-    //用户添加订单；(当用户点击了付款后执行)
-    public boolean addUserOrders(PersonalCart cart, OrderItem orderItem) throws SQLException;
 
-    //确认收货
-    public boolean acceptGood(int userId, int goodsId, int payFlag);
+    /****************************用户********************************/
+    //查询用户订单
+    public List<Order> queryAllUserOrderByUserId(int userId);
 
-    //得到该账户的所有订单
-    public List<OrderItemCustom> getUserOrders(int userId) throws SQLException;
+    //查询用户订单详情
+    public Order queryAllUserOrderDetail(long orderId);
 
-    //取消订单
-    public boolean deleteOrder(int orderId) throws SQLException;
+    //根据订单状态查询用户订单
+    public List<Order> queryUserOrderByStatus(int userId,int status);
 
-    //查询sendflag状态的货物
-    public List<OrderItemCustom> getUserOrderBySendFlag(int userId, int sendFlag) throws SQLException;
+    //删除用户订单
+    public boolean deleteUserOrder(long orderId);
 
-    //查询payFlag状态的货物
-    public List<OrderItemCustom> getUserOrderByPayFlag(int userId, int payFlag) throws SQLException;
+    //修改用户订单状态
+    public boolean modifyUserOrderStatus(long orderId,int status);
 
-    //更改订单状态
-    public boolean modifylOrderFlag(int orderId,int orderFlag) throws SQLException;
+    //修改用户退款/退货状态
+    public boolean modifyUserOrderBybackpay(long orderId,int status);
 
-    //退款退货
-    public boolean modifybackFlag(int orderId) throws SQLException;
+    //创建订单
+    public boolean createOrder(OrderDTO orderDTO, List<OrderDetailDTO> orderDetailDTOList);
 
-    //更改货物状态
-    public boolean modifysendFlag(int orderId,int sendFlag) throws SQLException;
-
-    //查询orderFlag状态的货物
-    public List<OrderItemCustom> getUserOrderByOrderFlag(@Param("userId") int userId,@Param("orderFlag") int orderFlag) throws SQLException;
+    //付款方式
+    public boolean updatePaymentType(@Param("orderId") long orderId,@Param("paymentType") int paymentType);
 
 
-    /*****************************************管理员***********************************************/
+    //查询最新提交等待付款的订单
+    public Order TheNewOrderBypay();
 
-    //商家查询用户购买的订单
-    public List<OrderItemCustom> getManagerOrder(int merchantId) throws SQLException;
+    /********************************商家********************************************/
 
-    //商家查询待发货订单
-    public List<OrderItemCustom> getManagerReadyOrder(int merchantId,int sendFlag,int payFlag,int backFlag,int orderFlag) throws SQLException;
+    //查询商家订单
+    public List<Order> queryAllManagerOrderByUserId(int merchantId);
 
-    //商家查询退款退货订单
-    public List<OrderItemCustom> getManagerReturnMoney(int merchantId, int backFlag,int orderFlag) throws SQLException;
+    //根据订单状态查询用户订单
+    public List<Order> queryManagerOrderByStatus(int merchantId,int status);
 
-    //商家查询待付款订单
-    public List<OrderItemCustom> getManagerByPayFlag(int merchantId, int payFlag,int orderFlag) throws SQLException;
+    //更新付款时间
+    public boolean updatePaymentTime(long orderId);
 
-    //商家发货
-    public boolean modifyManagerSendFlag(int orderId,int sendFlag) throws SQLException;
+    //更新发货时间
+    public boolean updateConsignTime(long orderId);
 
-    //更改商家货物状态
-    public boolean modifyManagerOrderFlag(int orderId,int orderFlag) throws Exception;
+    //更新交易完成时间
+    public boolean updateEndTime(long orderId);
 
-    //商家退款退货
-    public boolean agreeOrder(int orderId,int backFlag,int orderFlag) throws Exception;
+    //更新交易关闭时间
+    public boolean updateCloseTime(long orderId);
+
+    //更新评价时间
+    public boolean updateCommentTime(long orderId);
+
+
+
+
+
+    /********************************************************************************/
+
+    /*JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ*/
+
+    //根据orderId查询取到没有被评论的商品goodsId
+    public List<String> queryGoodIdHaveNotRateByOrderId(long orderId);
+
+    //根据goodsId查询取到该orderId  problem?
+    public long queryOrderIdByGoodsId(int goodsId);
+
+    //通过goodsId查询货物，返回orderDetail
+    public OrderDetail queryOrderDetailByGoodsId(int goodsId,long orderId);
+
 
 }

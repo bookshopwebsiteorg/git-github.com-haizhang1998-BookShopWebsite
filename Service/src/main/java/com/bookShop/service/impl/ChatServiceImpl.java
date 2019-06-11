@@ -82,4 +82,19 @@ public class ChatServiceImpl implements ChatService {
     public List<Friend> queryAllFriends(int userId) {
         return chatMapper.queryAllFriends(userId);
     }
+
+    @Override
+    public Integer queryMsgNumber(int userId) {
+        return chatMapper.queryMsgNumber(userId);
+    }
+
+    @Override
+    public int queryExistFriend(int userId, int friendId) {
+        return chatMapper.queryExistFriend(userId,friendId);
+    }
+
+    @Override
+    public Friend queryFriendById(int userId, int friendId) {
+        return chatMapper.queryFriendById(userId,friendId);
+    }
 }

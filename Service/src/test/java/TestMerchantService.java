@@ -1,7 +1,5 @@
 import com.bookShop.service.MerchantService;
-import com.haizhang.entity.GoodsInfo;
 import com.haizhang.entity.MerchantShop;
-import com.haizhang.entity.OrderItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

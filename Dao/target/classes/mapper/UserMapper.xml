@@ -20,7 +20,6 @@
 
     <!--查询用户常用sql-->
     <sql id="queryUserSql">
-
             <if test="username!=null and username.trim()!=''.toString()">
                 username=#{username}
             </if>
@@ -66,7 +65,9 @@
           <select id="loginUser" resultMap="userInfoResMap" >
               select * from user where username=#{username} and password=#{password}
           </select>
-<!--    public  UserInfo queryUserInfo(@Param("userInfo")UserInfo userInfo);-->
+
+
+<!--    public List<UserInfo> queryUserInfo(@Param("userInfo")UserInfo userInfo);-->
           <select id="queryUserInfo" resultMap="userInfoResMap">
               <if test="name!=null and name.toString().trim()!=null">
                 <bind name="_name" value="'%'+name+'%'"></bind>

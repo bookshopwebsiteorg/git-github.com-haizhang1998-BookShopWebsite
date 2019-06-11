@@ -13,6 +13,15 @@ public class EnshrineItem {
     private int validFlag=0;  //无效标志   0为有效1为无校
     private double changePrice=0; //价格较上次降低或升高多少
     private String goodsName; //货物名称
+    private double price; //价格
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
     public String getGoodsName() {
         return goodsName;
@@ -60,5 +69,18 @@ public class EnshrineItem {
 
     public void setValidFlag(int validFlag) {
         this.validFlag = validFlag;
+    }
+
+    @Override
+    public String toString() {
+        return "EnshrineItem{" +
+                "goodsId=" + goodsId +
+                ", id=" + id +
+                ", updatePriceFlag=" + updatePriceFlag +
+                ", validFlag=" + validFlag +
+                ", changePrice=" + changePrice +
+                ", goodsName='" + goodsName + '\'' +
+                ", price=" + price +
+                '}';
     }
 }

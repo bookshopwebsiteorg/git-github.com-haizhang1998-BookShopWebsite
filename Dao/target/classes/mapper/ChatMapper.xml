@@ -6,6 +6,16 @@
     <resultMap id="FriendMap" type="Friend">
         <result property="userId" column="userId"></result>
         <association property="friendInfo" column="friendId" select="com.bookShop.mapper.UserMapper.queryUserInfoById"></association>
+        <collection property="tempMsg" javaType="java.util.ArrayList" select="com.bookShop.mapper.ChatMapper.getTempMsg"
+                    column="{userId=userId,friendId=friendId}">
+            <!--之所以改变列名称，是因为如果查询时两张表的id都要查询，这时如果不改变重复字段的其中一个字段名称，就会报重复字段错误-->
+            <result column="tempMsg" property="tempMsg" />
+            <result column="userId" property="userId" />
+            <result column="friendId" property="friendId" />
+            <result column="date" property="date"/>
+        </collection>
+
+
     </resultMap>
     <resultMap id="TempMsgMap" type="TempMsg">
         <result property="userId" column="userId"></result>
@@ -17,15 +27,15 @@
 <!--    //查询离线记录-->
 <!--    public List<TempMsg> getTempMsg(@Param("userId") int userId,@Param("friendId") int friendId);-->
     <select id="getTempMsg" resultMap="TempMsgMap">
-        select * from tempmsg where userId = #{userId}
-        and friendId = #{friendId} order  by date desc;
+        select * from tempmsg where userId = #{friendId}
+        and friendId = #{userId} order  by date desc;
     </select>
 
     <!--    //清空指定朋友的所有离线记录-->
 <!--    public boolean clearTempMsg(@Param("userId") int userId,@Param("friendId") int friendId);-->
     <delete id="clearTempMsg">
-        delete from tempmsg where userId = #{userId}
-        and friendId = #{friendId}
+        delete from tempmsg where friendId = #{userId}
+        and userId = #{friendId}
     </delete>
 
     <!--    //插入离线记录-->
@@ -48,10 +58,26 @@
         delete from friends where userId = #{userId} and friendId = #{friendId};
     </delete>
 
+<!--    //查询是否添加过此好友-->
+<!--    public int queryExistFriend(@Param("userId")int userId,@Param("friendId")int friendId);-->
+    <select id="queryExistFriend" resultType="int">
+        select count(userId) from friends where userId=#{userId} and friendId=#{friendId}
+    </select>
 <!--    //获取所有的好友-->
 <!--    public List<Friend> queryAllFriends(@Param("userId")int userId);-->
     <select id="queryAllFriends" resultMap="FriendMap">
         select * from friends where userId = #{userId}
+    </select>
+<!--    //获取所有离线消息的条数-->
+<!--    public Integer queryMsgNumber(int userId);-->
+    <select id="queryMsgNumber" resultType="int">
+        select count(friendId) from tempmsg  where friendId=#{userId} GROUP BY friendId
+    </select>
+
+<!--    //查询指定的好友-->
+<!--    public Friend queryFriendById(@Param("userId")int userId,@Param("friendId")int friendId);-->
+    <select id="queryFriendById" resultMap="FriendMap">
+        select * from friends where userId = #{userId} and friendId = #{friendId}
     </select>
 
 </mapper>

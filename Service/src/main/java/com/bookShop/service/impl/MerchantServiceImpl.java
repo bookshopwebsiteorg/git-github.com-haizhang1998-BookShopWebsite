@@ -2,13 +2,10 @@ package com.bookShop.service.impl;
 
 import com.bookShop.mapper.MerchantMapper;
 import com.bookShop.service.MerchantService;
-import com.haizhang.entity.GoodsInfo;
 import com.haizhang.entity.MerchantShop;
-import com.haizhang.entity.OrderItem;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.SQLException;
 import java.util.List;
 @Service("merchantServiceImpl")
 public class MerchantServiceImpl implements MerchantService {
@@ -43,10 +40,10 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
 
-    @Override
-    public List<OrderItem> getAllUserOrder(int merchantId) {
+
+    /*public List<OrderItem> getAllUserOrder(int merchantId) {
         return null;
-    }
+    }*/
 
     @Override
     public List<MerchantShop> getRankShop(int number) {

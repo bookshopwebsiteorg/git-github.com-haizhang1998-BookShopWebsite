@@ -18,12 +18,14 @@ public class Message {
     private Date date;
     //写消息的人的名称
     private String fromName;
-    //信息类型 1代表上线信息，-1代表下线，0是正常信息 2是初始化消息 3是添加用户的信息,4代表要求对方更新列表
+    //信息类型 1代表上线信息，-1代表下线，0是正常信息 2是初始化消息
+    // 3是添加用户的信息,4代表要求对方更新列表,5表示添加好友后对方不在线标志，
+    // 6点吧添加好友后对方在线标志
     private int msgType;
     //当前在线的用户列表
-    private List<UserInfo> userOnlineList;
+    private List<Friend> userOnlineList;
     //当前用户的离线列表
-    private List<UserInfo> userDisOnlineList;
+    private List<Friend> userDisOnlineList;
     //设置消息传递的用户头像
     private String transportImageLogo;
 
@@ -35,19 +37,19 @@ public class Message {
         this.transportImageLogo = transportImageLogo;
     }
 
-    public List<UserInfo> getUserOnlineList() {
+    public List<Friend> getUserOnlineList() {
         return userOnlineList;
     }
 
-    public void setUserOnlineList(List<UserInfo> userOnlineList) {
+    public void setUserOnlineList(List<Friend> userOnlineList) {
         this.userOnlineList = userOnlineList;
     }
 
-    public List<UserInfo> getUserDisOnlineList() {
+    public List<Friend> getUserDisOnlineList() {
         return userDisOnlineList;
     }
 
-    public void setUserDisOnlineList(List<UserInfo> userDisOnlineList) {
+    public void setUserDisOnlineList(List<Friend> userDisOnlineList) {
         this.userDisOnlineList = userDisOnlineList;
     }
 

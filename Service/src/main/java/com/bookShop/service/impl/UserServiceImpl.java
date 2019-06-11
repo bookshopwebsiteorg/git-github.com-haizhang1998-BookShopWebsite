@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
         List<UserInfo> users=userMapper.queryUserInfo(userInfo);
         if(users.isEmpty())throw new QueryUserException("用户不存在，请检查信息是否正确！");
         return users;
+
     }
 
     @Override

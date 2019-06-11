@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" type="text/css" href="css/userOrderManage.css"/>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
@@ -7,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
-
+    <script src="../static/js/vue.js"></script>
     <style>
         .row {
             height: 40px;
@@ -19,9 +18,9 @@
             display: inline-block;
             margin-top: 50px;
             padding-left: 50px;
-            background-color: black;
+            background-color: gray;
             font-size: 60px;
-            color: white;
+            color: black;
             line-height: 120px;
         }
         .headerOfCartDivSon{
@@ -69,22 +68,9 @@
             height: 100px;
             line-height: 100px;
         }
-        .goodDetail-shang{
 
-
-
-        }
-        .goodDetail-xia{
-            height: 80px;
-        }
-        .goodAll{
-            margin-bottom: 40px;
-            border: 1px solid;
-            height: 170px;
-            width: 100%;
-        }
         #nav-head{
-            background-color: #d4d4d4;
+            background-color: black;
         }
     </style>
 </head>
@@ -105,7 +91,7 @@
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
 
                     <li>
@@ -122,14 +108,14 @@
                     </c:otherwise>
                     </c:choose>
                     </li>
-                    <li><a href="#">消息<span class="badge">0</span></a></li>
+                    <li><a href="#">消息<span class="badge">${sessionScope.tmpmsgNumber}</span></a></li>
 
                     <c:if test="${sessionScope.userInfo.merchantFlag==0}">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">商家管理<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">店铺管理</a></li>
-                                <li><a href="/order/getManagerOrder">货物管理</a></li>
+                                <li><a href="/merchant/shop/${sessionScope.userInfo.id}">店铺管理</a></li>
+                                <li><a href="/order/queryAllManagerOrderByUserId">货物管理</a></li>
                             </ul>
                         </li>
                     </c:if>
@@ -141,10 +127,10 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">信息管理<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">收藏夹</a></li>
+                            <li><a href="/goods/queryAllEnshrineGoods">收藏夹</a></li>
                             <li><a href="#">反馈信息<span class="badge"></span> </a> </li>
-                            <li><a href="#">我的足迹</a></li>
-                            <li><a href="/order/allOrder">我的订单</a></li>
+                            <li><a href="/goods/myfootprint">我的足迹</a></li>
+                            <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -162,200 +148,246 @@
 <section class="logo-text">
     <div class="clearfix">
         <span>订单界面</span>
-        <a href="../goods/homepage" style="margin-left: 100px;font-size: 30px;vertical-align: center">首页</a>
+        <a href="${pageContext.request.contextPath}/goods/homepage" style="margin-left: 100px;font-size: 30px;vertical-align: center">首页</a>
     </div>
 </section>
+
+<c:if test="${state==2}">
+    <script>alert("付款失败！")</script>
+</c:if>
+<c:if test="${state==7}">
+    <script>alert("提醒发货失败！")</script>
+</c:if>
+<c:if test="${state==4}">
+    <script>alert("确认收货失败！")</script>
+</c:if>
+<c:if test="${state==5}">
+    <script>alert("交易取消失败！")</script>
+</c:if>
+
 
 <div class="content">
     <div class="container">
         <div class="content-header">
-            <a href="/order/allOrder">所有订单</a><span >|</span>
-            <a href="/order/getUserOrderByPayFlag?payFlag=0">待付款</a><span>|</span>
-            <a href="/order/getUserOrderBySendFlag?sendFlag=0">待发货</a><span >|</span>
-            <a href="/order/getUserOrderBySendFlag?sendFlag=1">待收货</a><span >|</span>
-            <a href="/order/getUserOrderByOrderFlag?orderFlag=1">待评价</a>
+            <a href="/order/queryAllUserOrderByUserId">所有订单</a><span >|</span>
+            <a href="/order/queryUserOrderByStatus/userOrderManagePay/1">待付款</a><span>|</span>
+            <a href="/order/queryUserOrderByStatus/userOrderManageSend/2">待发货</a><span >|</span>
+            <a href="/order/queryUserOrderByStatus/userOrderManageReceive/3">待收货</a><span >|</span>
+            <a href="/order/queryUserOrderByStatus/userOrderManageEvaluate/4">待评价</a>
         </div>
         <hr>
-
-        <div class="content-middle">
-        <div class="row">
-        <div class="headerOfCartDivSon col-md-3 text-center" style="padding-left: 30px">商品详情</div>
-        <div class="headerOfCartDivSon col-md-1 text-center" style="padding-left: 50px">单价</div>
-        <div class="headerOfCartDivSon col-md-1 text-center" style="padding-left: 45px">数量</div>
-        <div class="headerOfCartDivSon col-md-2 text-center" style="padding-left: 45px">商品操作</div>
-        <div class="headerOfCartDivSon col-md-1 text-center" style="padding-left: 40px">实付款</div>
-        <div class="headerOfCartDivSon col-md-2 text-center" style="padding-left: 50px">交易状态</div>
-        <div class="headerOfCartDivSon col-md-2 text-center" style="padding-left: 40px">交易操作</div>
-        </div>
-        <br><br>
-            <c:forEach var="Item" items="${orderItem}">
-                <div class="goodAll">
-                <div class="container">
-                <div class="row" style="margin-top:-10px;">
-                    <div class="container" style="background-color: #a6e1ec;margin-left: -15px;height: 40px">
-                        <div class="row">
-                            <div class="goodDetail-shang">
-                                <div class="col-md-5 text-left">
-                                    <span style="padding-left: 40px;padding-top: -10px">创建时间:${Item.createTime}</span>
-                                    <span style="margin-left: 30px">订单号:${Item.orderId}</span>
-                                </div>
-                                <div class="col-md-3 text-left">
-                                        ${Item.shopName}
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <a href="" class="glyphicon glyphicon-user" style="padding:10px">联系卖家</a>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <c:choose>
-                                        <c:when test="${Item.orderFlag!=0}">
-                                            <a href="/order/deleteOrder?orderId=${Item.orderId}" class="glyphicon glyphicon-trash" style="padding:10px">删除订单</a>
-                                        </c:when>
-                                    </c:choose>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="container">
-                        <div class="row">
-                            <div class="goodDetail-xia" style="margin-top: 10px;">
-                                <div class="goodsItemLi col-md-3 text-center">
-                                    <img src="${Item.imgDir}" class="goodsImg" alt="图片加载中.....">
-                                    <span style="margin-left:30px">${Item.goodsName}</span>
-                                </div>
-                                <div class="goodsItemLi col-md-1 text-center">
-                                    ￥${Item.price}
-                                </div>
-                                <div class="goodsItemLi col-md-1 text-center">
-                                        ${Item.sumOfGoods}
-                                </div>
-                                <div class="goodsItemLi col-md-2 text-center">
-                                        <c:choose>
-                                            <c:when test="${Item.backFlag==2&&Item.orderFlag==2}">商家同意退款/退货申请</c:when>
-                                            <c:when test="${Item.backFlag==3&&Item.orderFlag==0}">商家不同意退款/退货申请</c:when>
-                                            <c:when test="${Item.backFlag==1&&Item.orderFlag==0}">退款/退货申请中</c:when>
-                                            <c:when test="${Item.sendFlag==0&&Item.orderFlag==0}">未发货</c:when>
-                                            <c:when test="${Item.sendFlag==1&&Item.orderFlag==0}">已发货</c:when>
-                                            <c:when test="${Item.sendFlag==2&&Item.orderFlag==1}">已收货</c:when>
-                                        </c:choose>
-                                </div>
-                                <div class="goodsItemLi col-md-1 text-center">
-                                    ￥${Item.price*Item.sumOfGoods}
-                                </div>
-                                <div class="goodsItemLi col-md-2 text-center">
-                                    <c:choose>
-                                        <c:when test="${Item.orderFlag==1}">交易成功</c:when>
-                                        <c:when test="${Item.orderFlag==2}">交易取消</c:when>
-                                        <c:when test="${Item.payFlag==0&&Item.orderFlag==0}">未付款</c:when>
-                                        <c:when test="${Item.payFlag==1&&Item.orderFlag==0}">已付款</c:when>
-                                    </c:choose>
-                                </div>
-                                <div class="goodsItemLi col-md-2 text-center">
-                                    <c:choose>
-                                        <c:when test="${Item.orderFlag==0}">
-                                            <div  class="row">
-                                                <a href="/order/modifyOrderFlag?orderId=${Item.orderId}&&orderFlag=2" class="btn btn-primary btn-sm active" role="button">取消订单</a>
-                                            </div>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <div  class="row">
-                                                <a href="/order/modifyOrderFlag?orderId=${Item.orderId}&&orderFlag=2" class="btn btn-primary btn-sm disabled" role="button">取消订单</a>
-                                            </div>
-                                        </c:otherwise>
-                                    </c:choose>
-
-                                        <c:choose>
-                                            <c:when test="${Item.sendFlag==1&&Item.orderFlag==0}">
-                                                <div class="row">
-                                                    <a href="/order/modifysendFlag?orderId=${Item.orderId}&&sendFlag=2" class="btn btn-primary btn-sm active" role="button">确认收货</a>
-                                                </div>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <div class="row">
-                                                    <a href="/order/modifysendFlag?orderId=${Item.orderId}&&sendFlag=2" class="btn btn-primary btn-sm disabled" role="button">确认收货</a>
-                                                </div>
-                                            </c:otherwise>
-                                        </c:choose>
-                                        <c:choose>
-                                            <c:when test="">
-                                                <c:choose>
-                                                    <c:when test="${Item.orderFlag==1}">
-                                                        <div class="row">
-                                                            <a href="" class="btn btn-primary btn-sm active" role="button" style="width: 40px">评&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</a>
-                                                        </div>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div class="row">
-                                                            <a href="" class="btn btn-primary btn-sm disabled" role="button" style="width: 70px">评&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</a>
-                                                        </div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <c:choose>
-                                                    <c:when test="${Item.orderFlag==0}">
-                                                        <div class="row">
-                                                            <div class="dropdown">
-                                                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                                    退货/退款
-                                                                    <span class="caret"></span>
-                                                                </button>
-                                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                                    <li class="text-center"><a href="/order/modifybackFlag/${Item.orderId}">仅退款(未收到货)</a></li>
-                                                                    <li class="text-center"><a href="/order/modifybackFlag/${Item.orderId}">退货退款(已收到货)</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div class="row">
-                                                            <div class="dropdown">
-                                                                <button class="btn btn-primary dropdown-toggle disabled" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                                    退货/退款
-                                                                    <span class="caret"></span>
-                                                                </button>
-                                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                                    <li class="text-center"><a href="/order/modifybackFlag/${Item.orderId}">仅退款(未收到货)</a></li>
-                                                                    <li class="text-center"><a href="/order/modifybackFlag/${Item.orderId}">退货退款(已收到货)</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:otherwise>
-                                        </c:choose>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
-                </div>
-            </c:forEach>
-        </div>
     </div>
 </div>
 
-<nav aria-label="Page navigation" class="text-center">
-    <ul class="pagination">
-        <li>
-            <a href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        <li><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li>
-            <a href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+
+        <div class="container">
+            <div class="row">
+                <div class="headerOfCartDivSon col-md-4 text-center">商品详情</div>
+                <div class="headerOfCartDivSon col-md-1 text-center">单价</div>
+                <div class="headerOfCartDivSon col-md-1 text-center">数量</div>
+                <div class="headerOfCartDivSon col-md-2 text-center">商品操作</div>
+                <div class="headerOfCartDivSon col-md-1 text-center">实付款</div>
+                <div class="headerOfCartDivSon col-md-2 text-center">交易状态</div>
+                <div class="headerOfCartDivSon col-md-1 text-center">交易操作</div>
+            </div>
+        </div>
+
+
+<c:if test="${list.size()==0}">
+    <div class="container">
+        <div class="row" style="height: 300px">
+            <h1 class="text-center" style="margin-top: 10%">用户订单为空</h1>
+        </div>
+    </div>
+</c:if>
+
+            <c:forEach var="Item" items="${list}">
+                <div class="container" style="margin-top: 20px">
+                <div class="row" >
+                    <div class="container" style="<c:choose><c:when test="${Item.orderStatus.status==5||Item.orderStatus.status==6}">background-color: #cccccc;</c:when><c:otherwise>background-color: #a6e1ec;</c:otherwise></c:choose>height: 40px">
+                        <div class="row">
+                            <div class="col-md-6 text-left">
+                                <span style="padding-left: 40px;padding-top: -10px">创建时间 : ${Item.orderStatus.createTime}</span>
+                                <span style="margin-left: 30px">订单号 : ${Item.orderId}</span>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                    ${Item.orderDetails.get(0).shopName}
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <a href="/merchant/chat/${Item.orderDetails.get(0).merchantId}" class="glyphicon glyphicon-user" style="padding:10px">联系卖家</a>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <c:choose>
+                                    <c:when test="${Item.orderStatus.status >= 4 && Item.orderStatus.status<=6}">
+                                        <a href="/order/deleteUserOrder/${Item.orderId}" class="glyphicon glyphicon-trash" style="padding:10px">删除订单</a>
+                                    </c:when>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </div>
+
+                    <c:forEach items="${Item.orderDetails}" var="detail">
+                            <div class="container" style="border: 1px solid black;">
+                                <div class="row">
+                                    <div class="goodsItemLi col-md-2 text-center" style="margin-top: 10px">
+                                        <img src="${detail.image}" class="goodsImg" alt="图片加载中.....">
+                                    </div>
+                                    <div class="goodsItemLi col-md-2">
+                                        ${detail.goodsName}
+                                    </div>
+                                    <div class="goodsItemLi col-md-1 text-center">
+                                        ￥${detail.price}
+                                    </div>
+                                    <div class="goodsItemLi col-md-1 text-center">
+                                            ${detail.num}
+                                    </div>
+                                    <div class="goodsItemLi col-md-2 text-center">
+                                        <div class="row">
+                                            <c:choose>
+                                                <c:when test="${Item.orderStatus.status==1||Item.orderStatus.status==2||Item.orderStatus.status==3}"><a href="#">投诉卖家</a></c:when>
+                                                <c:when test="${Item.orderStatus.status==4||Item.orderStatus.status==6}"><a href="">申请售后</a></c:when>
+                                                <c:when test="${Item.orderStatus.status==7}">已提醒卖家发货</c:when>
+                                            </c:choose>
+                                        </div>
+                                        <div class="row">
+                                            <c:choose>
+                                                <c:when test="${Item.orderStatus.backpay==1}">退款申请中</c:when>
+                                                <c:when test="${Item.orderStatus.backpay==2}">退货申请中</c:when>
+                                                <c:when test="${Item.orderStatus.backpay==3}">退款成功</c:when>
+                                                <c:when test="${Item.orderStatus.backpay==4}">
+                                                    <c:choose>
+                                                        <c:when test="${Item.orderStatus.status!=4}">
+                                                            不同意退款申请
+                                                        </c:when>
+                                                    </c:choose>
+
+                                                </c:when>
+                                                <c:when test="${Item.orderStatus.backpay==5}">
+                                                    同意退货申请
+                                                    <%--<a href="/order/modifyUserOrderBybackpay/userOrderManage/0/7/${detail.orderId}">填写退货信息</a>--%>
+                                                </c:when>
+                                                <c:when test="${Item.orderStatus.backpay==6}">
+                                                    <c:choose>
+                                                        <c:when test="${Item.orderStatus.status!=4}">
+                                                            不同意退货申请
+                                                        </c:when>
+                                                    </c:choose>
+                                                </c:when>
+                                                <c:when test="${Item.orderStatus.backpay==7}">等待卖家退货审核</c:when>
+                                                <c:when test="${Item.orderStatus.backpay==8}">退货成功</c:when>
+                                                <c:when test="${Item.orderStatus.backpay==9}">退货失败(卖家寄回,等待签收)</c:when>
+                                            </c:choose>
+                                        </div>
+                                    </div>
+                                    <div class="goodsItemLi col-md-1 text-center">
+                                        <div class="row">
+                                            ￥${Item.actualPay}
+                                        </div>
+                                        <div class="row">
+                                            (含运费:￥${Item.postFee})
+                                        </div>
+                                    </div>
+                                    <div class="goodsItemLi col-md-2 text-center">
+                                        <div class="row">
+                                            <c:choose>
+                                                <c:when test="${Item.orderStatus.status==1}">等待付款</c:when>
+                                                <c:when test="${Item.orderStatus.status==2 ||Item.orderStatus.status==7}">买家已付款</c:when>
+                                                <c:when test="${Item.orderStatus.status==3}">等待签收</c:when>
+                                                <c:when test="${Item.orderStatus.status==4}">交易成功</c:when>
+                                                <c:when test="${Item.orderStatus.status==5}">交易取消</c:when>
+                                                <c:when test="${Item.orderStatus.status==6}">已评价</c:when>
+                                            </c:choose>
+                                        </div>
+                                        <div class="row">
+                                            <a href="/order/queryAllUserOrderDetail/${Item.orderId}">订单详情</a>
+                                        </div>
+                                    </div>
+                                    <div class="goodsItemLi col-md-1 text-center" style="margin-top: 7px;">
+                                        <c:choose>
+                                               <c:when test="${Item.orderStatus.status==1}">
+                                                <div class="row">
+                                                    <a href="/order/modifyUserOrderStatus/userOrderManage/2/${detail.orderId}" class="btn btn-danger btn-sm active" role="button">立即付款</a>
+                                                </div>
+                                                   <div class="row">
+                                                    <a href="/order/modifyUserOrderStatus/userOrderManage/5/${detail.orderId}" class="btn btn-primary btn-sm active" role="button">取消订单</a>
+                                                </div>
+                                               </c:when>
+                                            <c:when test="${Item.orderStatus.status==2 ||Item.orderStatus.status==7}">
+                                                <div class="row">
+                                                    <c:choose>
+                                                        <c:when test="${Item.orderStatus.status==7}">
+                                                            <div class="row">
+                                                                <a href="/order/modifyUserOrderStatus/userOrderManage/7/${detail.orderId}" class="btn btn-primary btn-sm disabled" role="button">提醒发货</a>
+                                                            </div>
+                                                            <div class="row">
+                                                                <a href="/order/modifyUserOrderStatus/userOrderManage/5/${detail.orderId}" class="btn btn-primary btn-sm active" role="button">取消订单</a>
+                                                            </div>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <a href="/order/modifyUserOrderStatus/userOrderManage/7/${detail.orderId}" class="btn btn-primary btn-sm active" role="button">提醒发货</a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                                <c:choose>
+                                                    <c:when test="${Item.orderStatus.backpay==0||Item.orderStatus.backpay==4||Item.orderStatus.backpay==6}">
+                                                        <div class="row">
+                                                            <div class="dropdown">
+                                                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                    退货/退款
+                                                                    <span class="caret"></span>
+                                                                </button>
+                                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                                    <li class="text-center"><a href="/order/modifyUserOrderBybackpay/userOrderManage/0/1/${detail.orderId}">仅退款(未收到货)</a></li>
+                                                                    <li class="text-center"><a href="/order/modifyUserOrderBybackpay/userOrderManage/0/2/${detail.orderId}">退货退款(已收到货)</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </c:when>
+                                                </c:choose>
+                                            </c:when>
+                                            <c:when test="${Item.orderStatus.status==3}">
+                                                <div class="row">
+                                                    <a href="/order/modifyUserOrderStatus/userOrderManage/4/${detail.orderId}" class="btn btn-primary btn-sm active" role="button">确认收货</a>
+                                                </div>
+                                                <c:choose>
+                                                    <c:when test="${Item.orderStatus.backpay==0||Item.orderStatus.backpay==4||Item.orderStatus.backpay==6}">
+                                                        <div class="row">
+                                                            <div class="dropdown">
+                                                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                    退货/退款
+                                                                    <span class="caret"></span>
+                                                                </button>
+                                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                                    <li class="text-center"><a href="/order/modifyUserOrderBybackpay/userOrderManage/0/1/${detail.orderId}">仅退款(未收到货)</a></li>
+                                                                    <li class="text-center"><a href="/order/modifyUserOrderBybackpay/userOrderManage/0/2/${detail.orderId}">退货退款(已收到货)</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </c:when>
+                                                </c:choose>
+                                            </c:when>
+                                            <c:when test="${Item.orderStatus.status==4}">
+                                                <div class="row">
+                                                    <a href="/goods/makeComment/${Item.orderId}" class="btn btn-primary btn-sm active" role="button">评价</a>
+                                                </div>
+                                            </c:when>
+                                        </c:choose>
+                                        <c:choose>
+                                            <c:when test="${Item.orderStatus.backpay==5}">
+                                                <a href="/order/modifyUserOrderBybackpay/userOrderManage/0/7/${detail.orderId}" class="btn btn-primary btn-sm active" role="button">寄回图书</a>
+                                            </c:when>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                            </div>
+                    </c:forEach>
+                </div>
+                </div>
+
+            </c:forEach>
+
+
+
 
 <section id="FooterSection">
     <div class="page-header" style="background: black;color:white;padding-top: 1px">

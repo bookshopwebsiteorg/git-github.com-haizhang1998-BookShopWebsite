@@ -1,10 +1,8 @@
+
 package com.bookShop.mapper;
-import com.haizhang.entity.OrderItem;
 import com.haizhang.entity.UserInfo;
 import org.apache.ibatis.annotations.Param;
 
-import javax.jws.soap.SOAPBinding;
-import java.sql.SQLException;
 import java.util.List;
 
 /**

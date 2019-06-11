@@ -168,7 +168,7 @@ return true;
                         <ul class="dropdown-menu">
                             <li><a href="#">收藏夹</a></li>
                             <li><a href="#">我的足迹</a></li>
-                            <li><a href="#">我的订单</a></li>
+                            <li><a href="/order/queryAllUserOrderByUserId">我的订单</a></li>
                         </ul>
                     </li>
                 </ul>

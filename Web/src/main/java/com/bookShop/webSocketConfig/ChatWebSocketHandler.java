@@ -1,10 +1,12 @@
 package com.bookShop.webSocketConfig;
 
 import com.bookShop.service.ChatService;
+import com.bookShop.service.UserService;
 import com.bookShop.service.impl.ChatServiceImpl;
 import com.google.gson.Gson;
 import com.haizhang.entity.Friend;
 import com.haizhang.entity.Message;
+import com.haizhang.entity.TempMsg;
 import com.haizhang.entity.UserInfo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     private static final Map<Integer,List<Friend>>friendMap;
     @Resource
     ChatService chatService;
+    @Resource
+    UserService userService;
     //存储所有的在线用户
     static{
         USER_SOCKETSESSION_MAP=new HashMap<>();
@@ -47,9 +51,9 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         USER_SOCKETSESSION_MAP.put(userId,session);
         Message msg =new Message();
         //当前在线的用户列表
-        List<UserInfo> userOnlineList=new ArrayList<>();
+        List<Friend> userOnlineList=new ArrayList<>();
         //当前用户的离线列表
-        List<UserInfo> userDisOnlineList=new ArrayList<>();
+        List<Friend> userDisOnlineList=new ArrayList<>();
         //上线信息
         msg.setMsgType(1);
         //设置你自己的id
@@ -70,9 +74,9 @@ public class ChatWebSocketHandler implements WebSocketHandler {
      * @param msg
      * @throws IOException
      */
-    private void handleAddFriendOrInitFriendList(WebSocketSession session,List<UserInfo>userOnlineList
-    ,List<UserInfo>userDisOnlineList,Message msg) throws IOException {
-        System.err.println(this+"msgType:"+msg.getMsgType());
+    private void handleAddFriendOrInitFriendList(WebSocketSession session,List<Friend>userOnlineList
+    ,List<Friend>userDisOnlineList,Message msg) throws IOException {
+        System.err.println(msg);
        //得到用户id
         UserInfo userInfo=(UserInfo)session.getAttributes().get("userInfo");
         int userId=userInfo.getId();
@@ -83,22 +87,38 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         //更新自己的用户列表，不用发给其他人你上线了
         if(msg.getMsgType()==3)
         {
-            for(Friend friend:friendList){
-                //如果朋友在线，则拔这个上线消息给朋友,并添加进在线列表
-                if(USER_SOCKETSESSION_MAP.get(friend.getFriendInfo().getId())!=null)
-                    userOnlineList.add(friend.getFriendInfo());
-                else
-                    userDisOnlineList.add(friend.getFriendInfo());
-            }
+            //得到好友的信息
+            UserInfo friendInfo=userService.queryUserInfoById(msg.getTo());
+
             //拿出你添加的那个朋有webSocketSession 如果它存在的话
-            if(!msg.getText().equals("更新我的列表")){
             if(USER_SOCKETSESSION_MAP.containsKey(msg.getTo())){
                 //我们就直接拿到它的webSocketSession给他发信息，让他更新在线列表
                 msg.setMsgType(4);
+                //添加我的id和昵称给对方
+                msg.setFromName(userInfo.getNikeName());
+                msg.setFrom(userId);
+                msg.setTransportImageLogo(userInfo.getImageLogo());
+                //更新friendMap
+                friendMap.put(friendInfo.getId(),chatService.queryAllFriends(friendInfo.getId()));
                 //告诉它有人添加了你，要求他更新列表
                 USER_SOCKETSESSION_MAP.get(msg.getTo()).sendMessage(new TextMessage(gsonUtils.toJson(msg)));
+                //同时通知我更新放在在线列表
+                 msg.setMsgType(6);
+                 msg.setFrom(friendInfo.getId());
+                 msg.setFromName(friendInfo.getNikeName());
+                 msg.setTransportImageLogo(friendInfo.getImageLogo());
+                 session.sendMessage(new TextMessage(gsonUtils.toJson(msg)));
+
+            }else{
+                System.err.println("好友不在线！"+friendInfo);
+                //添加的好友离线，只用更新自己的
+                msg.setMsgType(5);
+                msg.setFrom(friendInfo.getId());
+                msg.setFromName(friendInfo.getNikeName());
+                msg.setTransportImageLogo(friendInfo.getImageLogo());
+                session.sendMessage(new TextMessage(gsonUtils.toJson(msg)));
             }
-            }
+
         }
         //否则是初始化列表的操作,通知其他人做更新
         else{
@@ -107,19 +127,18 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 if (USER_SOCKETSESSION_MAP.get(friend.getFriendInfo().getId()) != null){
                     //单发
                     sendMessageToUser(friend.getFriendInfo().getId(),new TextMessage(gsonUtils.toJson(msg)));
-                    userOnlineList.add(friend.getFriendInfo());
+                    userOnlineList.add(friend);
+
             }
                 else
-                    userDisOnlineList.add(friend.getFriendInfo());
+                    userDisOnlineList.add(friend);
             }
+            //设置给自己更新添加好友后的列表
+            msg.setMsgType(2);
+            msg.setUserOnlineList(userOnlineList);
+            msg.setUserDisOnlineList(userDisOnlineList);
+            session.sendMessage(new TextMessage(gsonUtils.toJson(msg)));
         }
-
-        //设置给自己更新列表
-        msg.setMsgType(2);
-        msg.setUserOnlineList(userOnlineList);
-        msg.setUserDisOnlineList(userDisOnlineList);
-        session.sendMessage(new TextMessage(gsonUtils.toJson(msg)));
-
     }
 
 
@@ -133,36 +152,47 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
 
-          //如果消息没有任何内容，则直接返回
-          if(message.getPayloadLength() == 0)return;
+        //如果消息没有任何内容，则直接返回
+        if(message.getPayloadLength() == 0)return;
           //反序列化服务端接受到的json数据
         Message msg= gsonUtils.fromJson(message.getPayload().toString(),Message.class);
         //判断是否为添加用户的msg 类型为3
         if(msg.getMsgType()==3){
             //当前在线的用户列表
-            List<UserInfo> userOnlineList=new ArrayList<>();
+            List<Friend> userOnlineList=new ArrayList<>();
             //当前用户的离线列表
-            List<UserInfo> userDisOnlineList=new ArrayList<>();
+            List<Friend> userDisOnlineList=new ArrayList<>();
             handleAddFriendOrInitFriendList(session,userOnlineList,userDisOnlineList,msg);
         }else{
+            msg.setDate(new Date());
+            //处理html的字符，转义
+            String text = msg.getText();
+            //转译为HTML转义字符表示
+            String htmlEscapeText = HtmlUtils.htmlEscape(text);
+            msg.setText(htmlEscapeText);
+            //标志为普通信息
+            msg.setMsgType(0);
 
-        msg.setDate(new Date());
-        //处理html的字符，转义
-        String text = msg.getText();
-        //转译为HTML转义字符表示
-        String htmlEscapeText = HtmlUtils.htmlEscape(text);
-        msg.setText(htmlEscapeText);
-        //标志为普通信息
-        msg.setMsgType(0);
-        //判断是群发还是单发
-        if(msg.getTo() == -1){
-            //群发
-            sendMessageToAll(new TextMessage(gsonUtils.toJson(msg)));
-        }
-        else{
-            //单发
-            sendMessageToUser(msg.getTo(),new TextMessage(gsonUtils.toJson(msg)));
-        }
+            //判断是群发还是单发
+            if(msg.getTo() == -1){
+                //群发
+                sendMessageToAll(new TextMessage(gsonUtils.toJson(msg)));
+            }
+            else{
+                //单发 判断用户是否在线
+                if(!USER_SOCKETSESSION_MAP.containsKey(msg.getTo())){
+                    TempMsg tempMsg =new TempMsg();
+                    tempMsg.setTempMsg(msg.getText());
+                    tempMsg.setDate(new Date());
+                    tempMsg.setFriendId(msg.getTo());
+                    tempMsg.setUserId(msg.getFrom());
+                    chatService.addTempMsg(tempMsg);
+
+                }else
+
+                sendMessageToUser(msg.getTo(),new TextMessage(gsonUtils.toJson(msg)));
+
+            }
         }
     }
 
@@ -238,8 +268,6 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         //清楚该用户的在线列表
         USER_SOCKETSESSION_MAP.remove(user.getId());
         friendMap.remove(user.getId());
-
-
     }
 
     /**
@@ -261,7 +289,8 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     private void sendMessageToUser(Integer id, TextMessage textMessage) throws IOException {
         //获取要接受消息的用户
         WebSocketSession webSocketSession=USER_SOCKETSESSION_MAP.get(id);
-        if(webSocketSession.isOpen()){
+
+        if(webSocketSession!=null&&webSocketSession.isOpen()){
             webSocketSession.sendMessage(textMessage);
         }
     }

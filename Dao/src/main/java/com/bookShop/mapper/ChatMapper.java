@@ -17,6 +17,7 @@ public interface ChatMapper {
     //插入离线记录
     public int addTempMsg(TempMsg tempMsg);
 
+
     //添加好友
     public boolean addFriend(@Param("userId") int userId,@Param("friendId") int friendId);
 
@@ -25,5 +26,15 @@ public interface ChatMapper {
 
     //获取所有的好友
     public List<Friend> queryAllFriends(@Param("userId")int userId);
+
+    //查询是否添加过此好友
+    public int queryExistFriend(@Param("userId")int userId,@Param("friendId")int friendId);
+
+    //查询指定的好友
+    public Friend queryFriendById(@Param("userId")int userId,@Param("friendId")int friendId);
+    //获取所有离线消息的条数
+    public Integer queryMsgNumber(int userId);
+
+
 
 }

@@ -44,5 +44,4 @@ public interface GoodsMapper {
     //更新货物金额
     public boolean updateGoodsPrice(@Param("goodsId") int goodsId,@Param("price")double price);
 
-
 }
