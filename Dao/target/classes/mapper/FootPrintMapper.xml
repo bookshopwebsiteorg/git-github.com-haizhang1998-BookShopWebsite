@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookShop.mapper.FootPrintMapper">
+
+    <resultMap id="FootPrintItemMap" type="FootPrintItem">
+        <result property="goodsId" column="goodsId"></result>
+        <result property="id" column="id"></result>
+        <result property="goodsName" column="goodsName"></result>
+        <result property="imgDir" column="imgDir"></result>
+        <result property="time" column="time"></result>
+    </resultMap>
+
+    <!--    //获取用户足迹-->
+    <select id="getAllFootPrint" resultMap="FootPrintItemMap">
+        select * from footprint where id=#{userId} order by time desc;
+    </select>
+
+    <!--    //添加足迹-->
+    <insert id="addFootPrint">
+        insert into footprint(goodsId,id,goodsName,imgDir,time) values (#{goodsId},#{userId},#{goodsName},#{imgDir},#{time});
+    </insert>
+    <!--    //删除足迹-->
+    <delete id="delFootPrint">
+        delete from footprint where id=#{userId} and goodsId=#{goodsId} ;
+    </delete>
+
+    <!--//查询某一项浏览记录是否已存在-->
+    <select id="queryFootPrint" resultMap="FootPrintItemMap">
+        select * from footprint where id=#{userId} and goodsId=#{goodsId};
+    </select>
+
+    <!-- //更新商品的浏览时间   -->
+    <update id="updateFootPrint">
+        update footprint set time=#{time} where id=#{userId} and goodsId=#{goodsId};
+    </update>
+</mapper>

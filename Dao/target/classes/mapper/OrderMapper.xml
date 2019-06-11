@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookShop.mapper.OrderMapper">
+    <resultMap id="OrderItemMap" type="OrderItem">
+        <id property="id" column="id"></id>
+        <result property="goodsId" column="goodsId"></result>
+        <result property="merchantId" column="merchantId"></result>
+        <result property="sumOfGoods" column="sumOfGoods"></result>
+        <result property="name" column="name"></result>
+        <result property="addr" column="addr"></result>
+        <result property="phone" column="phone"></result>
+        <result property="totalMoney" column="totalMoney"></result>
+        <result property="payFlag" column="payFlag"></result>
+        <result property="backFlag" column="backFlag"></result>
+        <result property="sendFlag" column="sendFlag"></result>
+    </resultMap>
+
+    <resultMap id="OrderItemCustomMap" type="OrderItemCustom">
+        <id property="orderId" column="orderId"></id>
+        <result property="id" column="id"></result>
+        <result property="goodsId" column="goodsId"></result>
+        <result property="merchantId" column="merchantId"></result>
+        <result property="sumOfGoods" column="sumOfGoods"></result>
+        <result property="name" column="name"></result>
+        <result property="addr" column="addr"></result>
+        <result property="createTime" column="createTime"></result>
+        <result property="phone" column="phone"></result>
+        <result property="payFlag" column="payFlag"></result>
+        <result property="backFlag" column="backFlag"></result>
+        <result property="sendFlag" column="sendFlag"></result>
+        <result property="goodsName" column="goodsName"></result>
+        <result property="price" column="price"></result>
+        <result property="imgDir" column="imgDir"></result>
+        <result property="shopName" column="shopName"></result>
+        <result property="orderFlag" column="orderFlag"></result>
+    </resultMap>
+
+    <!--用户-->
+    <select id="getUserOrders" resultMap="OrderItemCustomMap">
+           select orders.*,goods.goodsName,goods.price,goods.imgDir,merchantshop.shopName from orders,goods,merchantshop where merchantshop.merchantId=orders.merchantId and orders.goodsId = goods.goodsId and id=#{userId}
+     </select>
+
+    <delete id="deleteOrder">
+        delete from orders where orderId=#{orderId};
+    </delete>
+
+    <select id="getUserOrderByPayFlag" resultMap="OrderItemCustomMap">
+        select orders.*,goods.goodsName,goods.price,goods.imgDir,merchantshop.shopName from orders,goods,merchantshop where merchantshop.merchantId=orders.merchantId and orders.goodsId = goods.goodsId and payFlag=#{payFlag} and id=#{userId}
+    </select>
+
+    <select id="getUserOrderBySendFlag" resultMap="OrderItemCustomMap">
+        select orders.*,goods.goodsName,goods.price,goods.imgDir,merchantshop.shopName from orders,goods,merchantshop where merchantshop.merchantId=orders.merchantId and orders.goodsId = goods.goodsId and sendFlag=#{sendFlag} and id=#{userId}
+    </select>
+
+    <select id="getUserOrderByOrderFlag" resultMap="OrderItemCustomMap">
+        select orders.*,goods.goodsName,goods.price,goods.imgDir,merchantshop.shopName from orders,goods,merchantshop where merchantshop.merchantId=orders.merchantId and orders.goodsId = goods.goodsId and orderFlag=#{orderFlag} and id=#{userId}
+    </select>
+
+    <update id="modifyOrderFlag">
+        update orders set orderFlag=#{orderFlag} where orderId=#{orderId};
+    </update>
+
+    <update id="modifybackFlag">
+        update orders set backFlag=1 where orderId=#{orderId};
+    </update>
+
+    <update id="modifysendFlag">
+        update orders set sendFlag=#{sendFlag} where orderId=#{orderId};
+    </update>
+
+
+    <!--管理员-->
+    <select id="getManagerOrder" resultMap="OrderItemCustomMap">
+        select orders.*,goods.goodsName,goods.price,goods.imgDir,merchantshop.shopName from orders,goods,merchantshop where merchantshop.merchantId=orders.merchantId and orders.goodsId = goods.goodsId and orders.merchantId=#{merchantId}
+    </select>
+
+    <select id="getManagerReadyOrder" resultMap="OrderItemCustomMap">
+        select orders.*,goods.goodsName,goods.price,goods.imgDir,merchantshop.shopName from orders,goods,merchantshop where merchantshop.merchantId=orders.merchantId and orders.goodsId = goods.goodsId and orders.merchantId=#{merchantId} and payFlag=#{payFlag} and sendFlag=#{sendFlag} and orderFlag=#{orderFlag} and backFlag=#{backFlag}
+    </select>
+
+    <select id="getManagerReturnMoney" resultMap="OrderItemCustomMap">
+        select orders.*,goods.goodsName,goods.price,goods.imgDir,merchantshop.shopName from orders,goods,merchantshop where merchantshop.merchantId=orders.merchantId and orders.goodsId = goods.goodsId and orders.merchantId=#{merchantId} and backFlag=#{backFlag} and orderFlag=#{orderFlag}
+    </select>
+
+    <select id="getManagerByPayFlag" resultMap="OrderItemCustomMap">
+        select orders.*,goods.goodsName,goods.price,goods.imgDir,merchantshop.shopName from orders,goods,merchantshop where merchantshop.merchantId=orders.merchantId and orders.goodsId = goods.goodsId and orders.merchantId=#{merchantId} and payFlag=#{payFlag} and orderFlag=#{orderFlag}
+    </select>
+
+    <update id="modifyManagerSendFlag">
+        update orders set sendFlag=#{sendFlag} where orderId=#{orderId}
+    </update>
+
+    <update id="agreeOrder">
+        update orders set backFlag=#{backFlag},orderFlag=#{orderFlag} where orderId=#{orderId}
+    </update>
+
+</mapper>
